@@ -27,7 +27,7 @@
             align-items: center;
             padding: 20px 50px;
             background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -59,7 +59,7 @@
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%),
-                        url('/images/Container.png') no-repeat;
+                url('/images/Container.png') no-repeat;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -121,7 +121,7 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
         .btn-secondary {
@@ -198,7 +198,7 @@
 
         .feature:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .feature-icon {
@@ -319,7 +319,7 @@
 
         .btn-light:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
         .btn-outline {
@@ -347,7 +347,7 @@
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: 2fr 1fr;
             gap: 30px;
             margin-bottom: 30px;
         }
@@ -382,7 +382,7 @@
         }
 
         .footer-bottom {
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 20px;
             text-align: center;
             font-size: 14px;
@@ -421,17 +421,6 @@
 
             .section {
                 padding: 40px 20px;
-            }
-
-            .section h2 {
-                font-size: 28px;
-            }
-
-            .coverage-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats {
                 padding: 30px 20px;
                 flex-direction: column;
             }
@@ -456,7 +445,8 @@
         <div class="hero-content">
             <h1>SIPETANG</h1>
             <h2>Sistem Informasi Pencatatan Hasil Tangkap</h2>
-            <p>Sistem Pelaporan Hasil Tangkapan Resmi: Ruang terkurasi untuk dokumentasi data pendaratan ikan secara presisi guna menjamin validitas aset produksi perikanan tangkap Kabupaten Subang.</p>
+            <p>Sistem Pelaporan Hasil Tangkapan Resmi: Ruang terkurasi untuk dokumentasi data pendaratan ikan secara
+                presisi guna menjamin validitas aset produksi perikanan tangkap Kabupaten Subang.</p>
             <div class="hero-buttons">
                 <a href="/login" class="btn btn-primary">Akses Portal</a>
                 <a href="#layanan" class="btn btn-secondary">Pelajari Lebih Lanjut</a>
@@ -479,18 +469,21 @@
     <!-- About Section -->
     <section class="section" id="layanan">
         <h2>Dinas Perikanan Kabupaten Subang</h2>
-        <p>SIPETANG hadir sebagai alat utama dalam modernisasi administrasi perikanan di Kabupaten Subang, menghadirkan efisiensi yang belum pernah ada sebelumnya.</p>
-        
+        <p>SIPETANG hadir sebagai alat utama dalam modernisasi administrasi perikanan di Kabupaten Subang, menghadirkan
+            efisiensi yang belum pernah ada sebelumnya.</p>
+
         <div class="features">
             <div class="feature">
                 <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
                 <h3>Analisis Statistik Real-time</h3>
-                <p>Pantau dan tangkap data pengerakkan pasar perikanan Subang melalui dashboard analitik yang komprehensif.</p>
+                <p>Pantau dan tangkap data pengerakkan pasar perikanan Subang melalui dashboard analitik yang
+                    komprehensif.</p>
             </div>
             <div class="feature">
                 <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
                 <h3>Pelaporan Otomatis</h3>
-                <p>Generate laporan periodik sinas secara otomatis dengan akurasi data yang terjamin sesuai standar kementerian.</p>
+                <p>Generate laporan periodik sinas secara otomatis dengan akurasi data yang terjamin sesuai standar
+                    kementerian.</p>
             </div>
         </div>
     </section>
@@ -524,33 +517,30 @@
 
     <!-- CTA Section -->
     <section class="cta" id="kontak">
-        <h2>Siap Mengoptimalkan Tata Kelola Perikanan?</h2>
-        <p>Bergabunglah dalam ekosistem digital SIPETANG untuk transparansi data yang lebih baik dan pertumbuhan ekonomi maritim yang berkelanjutan di Kabupaten Subang.</p>
+        <h2>Media Sosial Kami</h2>
+        <p>Bergabunglah dalam ekosistem digital SIPETANG untuk transparansi data yang lebih baik dan pertumbuhan ekonomi
+            maritim yang berkelanjutan di Kabupaten Subang.</p>
         <div class="cta-buttons">
-            <a href="/login" class="btn-light">Masuk ke Dashboard</a>
-            <a href="https://wa.me/6282320455264" class="btn-outline"><i class="fab fa-whatsapp"></i> Hubungi Helpdesk</a>
+            <a href="https://wa.me/6282320455264" class="btn-outline"><i class="fab fa-whatsapp"></i> Hubungi
+                Helpdesk</a>
+            <a href="https://www.instagram.com/dinasperikanansubang?igsh=MWsxcWd5cjdiY2pzcg==" class="btn-outline"><i
+                    class="fab fa-instagram"></i> Instagram</a>
+            <a href="https://www.youtube.com/@dinasperikanankabupatensub2885" class="btn-outline"><i
+                    class="fab fa-youtube"></i> YouTube</a>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-section">
                 <h4>SIPETANG</h4>
-                <p>Portal Administrasi Terpadu Dinas Perikanan Kabupaten Subang. Menciptakan transparansi data untuk tujuan keberlanjutan perikanan tangkap.</p>
-            </div>
-            <div class="footer-section">
-                <h4>NAVIGASI</h4>
-                <ul>
-                    <li><a href="#beranda">Beranda</a></li>
-                    <li><a href="#layanan">Layanan</a></li>
-                    <li><a href="#statistik">Statistik</a></li>
-                </ul>
+                <p>Portal Administrasi Terpadu Dinas Perikanan Kabupaten Subang.</p>
+                <p>Menciptakan transparansi data untuk keberlanjutan perikanan tangkap.</p>
             </div>
             <div class="footer-section">
                 <h4>KONTAK KAMI</h4>
-                <p><i class="fas fa-map-marker-alt"></i> Jl. A Nanta Sukarya No. 28, Cipeundeuy Subang, Jawa Barat 41211</p>
-                <p><i class="fas fa-phone"></i> (0260) 407341</p>
+                <p><i class="fas fa-map-marker-alt"></i> Jl. A. Nata Sukarya No. 28, Subang, Jawa Barat, 41211</p>
+                <p><i class="fas fa-phone"></i> (0260) 4113251</p>
                 <p><i class="fas fa-envelope"></i> perikanan@subang.go.id</p>
             </div>
         </div>
