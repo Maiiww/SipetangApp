@@ -644,7 +644,7 @@
 
         <div class="content-header-top">
             <div class="content-header-left">
-                <h2>Ringkasan Operasional</h2>
+                <h2>Dashboard Staff</h2>
                 <p>Selamat datang kembali di sistem informasi hasil tangkap</p>
             </div>
             <div class="content-header-right">

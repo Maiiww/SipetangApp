@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('juruRekap', function (Blueprint $table) {
             $table->string('idJururekap')->primary();
-            $table->string('idUser');
-            $table->foreignId('idUser')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('nama');
             $table->string('wilayah');
             $table->string('no_telepon');

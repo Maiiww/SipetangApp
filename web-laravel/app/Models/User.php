@@ -20,33 +20,15 @@ class User extends Authenticatable
     protected $table = 'users';
 
     /**
-     * The primary key associated with the table.
+     * The attributes that are mass assignable.
      *
-     * @var string
+     * @var array<int, string>
      */
-    protected $primaryKey = 'idUser';
-
-    /**
-     * Indicates if the model's ID is auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * The data type of the primary key.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
-     * Get the name of the unique identifier for the user.
-     */
-    public function getAuthIdentifierName()
-    {
-        return 'idUser';
-    }
+    protected $fillable = [
+        'username',
+        'password',
+        'role',
+    ];
 
     /**
      * Get the unique identifier for the user.
@@ -62,17 +44,6 @@ class User extends Authenticatable
      * @var bool
      */
     public $timestamps = false;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'username',
-        'password',
-        'role',
-    ];
 
     /**
      * The attributes that should be hidden for serialization.

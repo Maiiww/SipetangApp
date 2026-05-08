@@ -28,7 +28,7 @@ class LaporanSeeder extends Seeder
         for ($i = 1; $i <= 30; $i++) {
             Laporan::create([
                 'idLaporan' => 'LPR' . str_pad($i, 4, '0', STR_PAD_LEFT),
-                'idUser' => $users->random()->idUser,
+                'user_id' => $users->random()->id,
                 'namaTPI' => $tpi[array_rand($tpi)],
                 'jenisIkan' => $ikan[array_rand($ikan)],
                 'beratTotal' => rand(50, 500) / 10,

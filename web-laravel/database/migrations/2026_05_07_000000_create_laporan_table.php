@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('laporan', function (Blueprint $table) {
             $table->string('idLaporan')->primary();
-            $table->string('idUser');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('namaTPI');
             $table->string('jenisIkan');
             $table->decimal('beratTotal', 10, 2);
@@ -21,7 +21,6 @@ return new class extends Migration
             $table->text('catatan')->nullable();
             $table->timestamps();
 
-            $table->foreign('idUser')->references('idUser')->on('users')->onDelete('cascade');
             $table->foreign('validasiOleh')->references('username')->on('users')->onDelete('set null');
         });
     }

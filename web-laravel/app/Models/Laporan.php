@@ -17,7 +17,7 @@ class Laporan extends Model
 
     protected $fillable = [
         'idLaporan',
-        'idUser',
+        'user_id',
         'namaTPI',
         'jenisIkan',
         'beratTotal',
