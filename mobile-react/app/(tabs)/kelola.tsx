@@ -16,7 +16,7 @@ const COLORS = {
     background: '#F5F7FA',
     white: '#FFFFFF',
     orange: '#FF6F20',
-    yellow: '#FFC107', // Warna kuning untuk card produksi
+    yellow: '#FFC107', 
     grayText: '#6B7280',
     lightGray: '#E5E7EB',
     border: '#D1D5DB',
@@ -25,9 +25,9 @@ const COLORS = {
 };
 
 const tableData = [
-  { id: '1', tanggal: '12 April 2026\n06:15', pembeli: 'Muhaimin', nelayan: 'Mamat', ikan: 'Tongkol', berat: '15.0', harga: '330.000' },
-  { id: '2', tanggal: '12 April 2026\n09:00', pembeli: 'Karina', nelayan: 'Johan', ikan: 'Kembung', berat: '8.5', harga: '148.000' },
-  { id: '3', tanggal: '11 April 2026\n07:30', pembeli: 'Maulana', nelayan: 'Kibo', ikan: 'Tuna', berat: '22.0', harga: '990.000' },
+    { id: '1', tanggal: '12 April 2026\n06:15', pembeli: 'Muhaimin', nelayan: 'Mamat', ikan: 'Tongkol', berat: '15.0', harga: '330.000' },
+    { id: '2', tanggal: '12 April 2026\n09:00', pembeli: 'Karina', nelayan: 'Johan', ikan: 'Kembung', berat: '8.5', harga: '148.000' },
+    { id: '3', tanggal: '11 April 2026\n07:30', pembeli: 'Maulana', nelayan: 'Kibo', ikan: 'Tuna', berat: '22.0', harga: '990.000' },
 ];
 
 export default function KelolaScreen() {
@@ -54,7 +54,6 @@ export default function KelolaScreen() {
                 <Text style={styles.pageDescription}>Monitor data operasional harian perikanan.</Text>
 
                 <View style={styles.cardRow}>
-                {/* Card Total Berat */}
                 <View style={[styles.summaryCard, { backgroundColor: COLORS.primary }]}>
                     <Text style={[styles.summaryLabel, { color: COLORS.lightGray }]}>TOTAL BERAT</Text>
                     <Text style={[styles.summaryValue, { color: COLORS.white }]}>500 <Text style={styles.summaryUnit}>KG</Text></Text>
@@ -136,7 +135,6 @@ export default function KelolaScreen() {
 
             </ScrollView>
 
-            {/* --- FLOATING ACTION BUTTON (FAB) --- */}
             <TouchableOpacity 
                 style={styles.fab}
                 onPress={() => router.push('/tambah-data')} 

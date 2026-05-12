@@ -30,7 +30,6 @@ export default function CustomTabBar({ state, descriptors, navigation }: BottomT
                     }
                 };
 
-                // Menentukan Ikon berdasarkan nama rute
                 let iconName: any = 'home';
                 if (route.name === 'index') iconName = isFocused ? 'home' : 'home-outline';
                 if (route.name === 'kelola') iconName = isFocused ? 'bar-chart' : 'bar-chart-outline';

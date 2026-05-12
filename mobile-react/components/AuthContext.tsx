@@ -15,7 +15,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      // Saat ini hanya simulasi login; jika ingin menyimpan token, tambahkan AsyncStorage/secure store.
       setIsAuthenticated(false);
       setIsAuthChecking(false);
     };
