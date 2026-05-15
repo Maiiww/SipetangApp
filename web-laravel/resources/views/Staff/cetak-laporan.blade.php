@@ -309,8 +309,13 @@
             border: 1px solid #dce1e9;
             border-radius: 18px;
             padding: 16px;
-            transition: border-color 0.2s ease;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
             cursor: pointer;
+        }
+
+        .frequency-option.active-laporan {
+            border-color: #0d2640;
+            background: #edf2ff;
         }
 
         .frequency-option:hover {
@@ -572,12 +577,156 @@
             color: #102a43;
             cursor: pointer;
             font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .pagination button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
         }
 
         .pagination button.active {
             background: #0d2640;
             color: #fff;
             border-color: #0d2640;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 22px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e9eef5;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            color: #102a43;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #102a43;
+        }
+
+        .modal-body {
+            margin-bottom: 24px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f4f8;
+        }
+
+        .detail-label {
+            font-weight: 700;
+            color: #7a869a;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            color: #102a43;
+            font-weight: 600;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .modal-button {
+            border: 1px solid #dce1e9;
+            border-radius: 12px;
+            background: #fff;
+            color: #102a43;
+            padding: 10px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-button:hover {
+            background: #f8fafc;
+        }
+
+        .modal-button.primary {
+            background: #0d2640;
+            color: #fff;
+            border-color: #0d2640;
+        }
+
+        .modal-button.primary:hover {
+            background: #0a2d35;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         @media (max-width: 1100px) {
@@ -695,7 +844,7 @@
 
                 <div class="frequency-card">
                     <label class="form-label">Jenis Laporan Berkala</label>
-                    <label class="frequency-option">
+                    <label class="frequency-option" data-laporan="harian">
                         <div style="display:flex; align-items:center; gap:12px;">
                             <input type="radio" name="laporan_type" value="harian">
                             <div class="option-body">
@@ -705,7 +854,7 @@
                         </div>
                         <i class="fas fa-calendar-day" style="color:#0d2640"></i>
                     </label>
-                    <label class="frequency-option" style="border-color: #0d2640; background: #edf2ff;">
+                    <label class="frequency-option active-laporan" data-laporan="bulanan">
                         <div style="display:flex; align-items:center; gap:12px;">
                             <input type="radio" name="laporan_type" value="bulanan" checked>
                             <div class="option-body">
@@ -715,7 +864,7 @@
                         </div>
                         <i class="fas fa-calendar-alt" style="color:#0d2640"></i>
                     </label>
-                    <label class="frequency-option">
+                    <label class="frequency-option" data-laporan="tahunan">
                         <div style="display:flex; align-items:center; gap:12px;">
                             <input type="radio" name="laporan_type" value="tahunan">
                             <div class="option-body">
@@ -730,10 +879,12 @@
                 <div class="output-actions">
                     <div class="output-label">Format Output:</div>
                     <div class="format-buttons">
-                        <button class="format-button active">PDF</button>
-                        <button class="format-button">EXCEL</button>
+                        <button type="button" class="format-button active" id="format-pdf"
+                            data-format="pdf">PDF</button>
+                        <button type="button" class="format-button" id="format-excel"
+                            data-format="excel">EXCEL</button>
                     </div>
-                    <button class="button-primary">Lihat Pratinjau</button>
+                    <button type="button" class="button-primary" id="btn-preview">Lihat Pratinjau</button>
                 </div>
             </section>
 
@@ -814,25 +965,313 @@
                         <td>24 Jan 2026, 09:12</td>
                         <td><span class="badge">01 JAN - 23 JAN</span></td>
                         <td>TPI Pondok Bali</td>
-                        <td><a href="#" class="action-link">Lihat Detail</a></td>
+                        <td><a href="#" class="action-link detail-link" data-id="#MAR-2601-092"
+                                data-date="24 Jan 2026, 09:12" data-range="01 JAN - 23 JAN"
+                                data-tpi="TPI Pondok Bali">Lihat Detail</a></td>
                     </tr>
                     <tr>
                         <td><strong>#MAR-2601-088</strong></td>
                         <td>22 Jan 2026, 15:45</td>
                         <td><span class="badge">TPI Patimban Only</span></td>
                         <td>TPI Blanakan</td>
-                        <td><a href="#" class="action-link">Lihat Detail</a></td>
+                        <td><a href="#" class="action-link detail-link" data-id="#MAR-2601-088"
+                                data-date="22 Jan 2026, 15:45" data-range="TPI Patimban Only"
+                                data-tpi="TPI Blanakan">Lihat Detail</a></td>
                     </tr>
                 </tbody>
             </table>
             <div class="pagination">
-                <button>&lt;</button>
-                <button class="active">1</button>
-                <button>2</button>
-                <button>&gt;</button>
+                <button class="pagination-prev" data-action="prev">&lt;</button>
+                <button class="pagination-page active" data-page="1">1</button>
+                <button class="pagination-page" data-page="2">2</button>
+                <button class="pagination-page" data-page="3">3</button>
+                <button class="pagination-next" data-action="next">&gt;</button>
             </div>
         </div>
     </main>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detail Laporan</h2>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-row">
+                    <span class="detail-label">ID Laporan</span>
+                    <span class="detail-value" id="modal-id"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Tanggal Dibuat</span>
+                    <span class="detail-value" id="modal-date"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Cakupan Data</span>
+                    <span class="detail-value" id="modal-range"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Dibuat Oleh</span>
+                    <span class="detail-value" id="modal-tpi"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" onclick="closeDetailModal()">Tutup</button>
+                <button class="modal-button primary" id="modal-download">Download Laporan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFormat = 'pdf';
+
+        // Laporan type selection toggle
+        document.querySelectorAll('input[name="laporan_type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Hapus class active dari semua frequency-option
+                document.querySelectorAll('.frequency-option').forEach(opt => {
+                    opt.classList.remove('active-laporan');
+                });
+                // Tambah class active ke label yang berisi radio yang dipilih
+                this.closest('.frequency-option').classList.add('active-laporan');
+            });
+        });
+
+        // Format button toggle
+        document.getElementById('format-pdf').addEventListener('click', function() {
+            selectedFormat = 'pdf';
+            document.querySelectorAll('.format-button').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+
+        document.getElementById('format-excel').addEventListener('click', function() {
+            selectedFormat = 'excel';
+            document.querySelectorAll('.format-button').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+
+        // Pagination functionality
+        let currentPage = 1;
+        const itemsPerPage = 2;
+        const allReportData = [{
+                id: '#MAR-2601-092',
+                date: '24 Jan 2026, 09:12',
+                range: '01 JAN - 23 JAN',
+                tpi: 'TPI Pondok Bali'
+            },
+            {
+                id: '#MAR-2601-088',
+                date: '22 Jan 2026, 15:45',
+                range: 'TPI Patimban Only',
+                tpi: 'TPI Blanakan'
+            },
+            {
+                id: '#MAR-2601-085',
+                date: '20 Jan 2026, 11:30',
+                range: '01 JAN - 19 JAN',
+                tpi: 'TPI Genteng'
+            },
+            {
+                id: '#MAR-2601-082',
+                date: '18 Jan 2026, 14:20',
+                range: 'TPI Mayangan Only',
+                tpi: 'TPI Mayangan'
+            },
+            {
+                id: '#MAR-2601-079',
+                date: '16 Jan 2026, 10:00',
+                range: '01 JAN - 15 JAN',
+                tpi: 'TPI Blanakan'
+            },
+            {
+                id: '#MAR-2601-075',
+                date: '14 Jan 2026, 13:40',
+                range: 'TPI Patimban Only',
+                tpi: 'TPI Patimban'
+            }
+        ];
+
+        const totalPages = Math.ceil(allReportData.length / itemsPerPage);
+
+        function updatePaginationTable(page) {
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = allReportData.slice(start, end);
+
+            // Update table content
+            const tableBody = document.querySelector('.report-table tbody');
+            tableBody.innerHTML = pageData.map(item => `
+                <tr>
+                    <td><strong>${item.id}</strong></td>
+                    <td>${item.date}</td>
+                    <td><span class="badge">${item.range}</span></td>
+                    <td>${item.tpi}</td>
+                    <td><a href="#" class="action-link detail-link" data-id="${item.id}"
+                            data-date="${item.date}" data-range="${item.range}"
+                            data-tpi="${item.tpi}">Lihat Detail</a></td>
+                </tr>
+            `).join('');
+
+            // Attach event listeners to new detail links
+            attachDetailLinkListeners();
+
+            // Update info text
+            const startNum = start + 1;
+            const endNum = Math.min(end, allReportData.length);
+            document.querySelector('.table-header .info-text').textContent =
+                `Menampilkan ${startNum} - ${endNum} dari ${allReportData.length} entri`;
+
+            // Update pagination buttons
+            updatePaginationButtons(page);
+
+            currentPage = page;
+        }
+
+        function updatePaginationButtons(page) {
+            // Update prev button
+            const prevBtn = document.querySelector('.pagination-prev');
+            prevBtn.disabled = page === 1;
+
+            // Update next button
+            const nextBtn = document.querySelector('.pagination-next');
+            nextBtn.disabled = page === totalPages;
+
+            // Update page buttons
+            document.querySelectorAll('.pagination-page').forEach(btn => {
+                const pageNum = parseInt(btn.getAttribute('data-page'));
+                btn.classList.toggle('active', pageNum === page);
+            });
+        }
+
+        // Pagination button click handlers
+        function attachPaginationListeners() {
+            // Previous button
+            const prevBtn = document.querySelector('.pagination-prev');
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function() {
+                    if (currentPage > 1) {
+                        updatePaginationTable(currentPage - 1);
+                    }
+                });
+            }
+
+            // Next button
+            const nextBtn = document.querySelector('.pagination-next');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function() {
+                    if (currentPage < totalPages) {
+                        updatePaginationTable(currentPage + 1);
+                    }
+                });
+            }
+
+            // Page number buttons
+            document.querySelectorAll('.pagination-page').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const pageNum = parseInt(this.getAttribute('data-page'));
+                    if (pageNum <= totalPages) {
+                        updatePaginationTable(pageNum);
+                    }
+                });
+            });
+        }
+
+        attachPaginationListeners();
+
+        function attachDetailLinkListeners() {
+            document.querySelectorAll('.detail-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const id = this.dataset.id;
+                    const date = this.dataset.date;
+                    const range = this.dataset.range;
+                    const tpi = this.dataset.tpi;
+
+                    // Populate modal with data
+                    document.getElementById('modal-id').textContent = id;
+                    document.getElementById('modal-date').textContent = date;
+                    document.getElementById('modal-range').textContent = range;
+                    document.getElementById('modal-tpi').textContent = tpi;
+
+                    // Show modal
+                    document.getElementById('detailModal').classList.add('show');
+                });
+            });
+        }
+
+        // Initialize detail link listeners
+        attachDetailLinkListeners();
+
+        // Preview button
+        document.getElementById('btn-preview').addEventListener('click', function() {
+            const asalTpi = document.getElementById('asal-tpi').value;
+            const mulaiDari = document.getElementById('mulai-dari').value;
+            const sampaiDengan = document.getElementById('sampai-dengan').value;
+            const laporanType = document.querySelector('input[name="laporan_type"]:checked')?.value;
+
+            // Validasi input
+            if (!asalTpi) {
+                alert('Silakan pilih Asal TPI');
+                return;
+            }
+            if (!mulaiDari) {
+                alert('Silakan masukkan tanggal mulai');
+                return;
+            }
+            if (!sampaiDengan) {
+                alert('Silakan masukkan tanggal akhir');
+                return;
+            }
+            if (!laporanType) {
+                alert('Silakan pilih jenis laporan');
+                return;
+            }
+
+            // Generate preview/download
+            const params = new URLSearchParams({
+                tpi: asalTpi,
+                tanggal_mulai: mulaiDari,
+                tanggal_akhir: sampaiDengan,
+                jenis_laporan: laporanType,
+                format: selectedFormat
+            });
+
+            const url = `/laporan/generate?${params.toString()}`;
+
+            if (selectedFormat === 'pdf') {
+                // Buka preview PDF di tab baru
+                window.open(url, '_blank');
+            } else if (selectedFormat === 'excel') {
+                // Download Excel
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Laporan_${asalTpi}_${mulaiDari}.xlsx`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
+
+        // Close modal function
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside content
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDetailModal();
+            }
+        });
+
+        // Download button handler
+        document.getElementById('modal-download').addEventListener('click', function() {
+            const id = document.getElementById('modal-id').textContent;
+            // Trigger download dengan ID laporan
+            const downloadUrl = `/laporan/download?id=${encodeURIComponent(id)}`;
+            window.location.href = downloadUrl;
+        });
+    </script>
 </body>
 
 </html>

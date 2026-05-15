@@ -375,37 +375,61 @@
         .reports-table {
             width: 100%;
             border-collapse: collapse;
+            border-spacing: 0;
         }
 
         .reports-table thead {
             background: #f5f5f5;
         }
 
+        .reports-table tr {
+            height: 50px;
+        }
+
         .reports-table th {
-            padding: 15px 12px;
+            padding: 0 12px;
             text-align: left;
             font-size: 11px;
             text-transform: uppercase;
             color: #999;
             font-weight: 600;
             border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+            line-height: 50px;
         }
 
         .reports-table td {
-            padding: 15px 12px;
+            padding: 0 12px;
             border-bottom: 1px solid #e0e0e0;
             font-size: 13px;
             color: #333;
+            vertical-align: middle;
+            height: 50px;
+            text-align: left;
+        }
+
+        .reports-table td div,
+        .reports-table td span {
+            margin: 0;
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            text-align: left;
         }
 
         .date-cell {
             font-weight: 600;
             color: #1a4d7d;
+            text-align: left;
         }
 
         .tpi-name {
             font-weight: 600;
             color: #1a4d7d;
+            margin: 0;
+            line-height: 1.2;
+            text-align: left;
         }
 
         .tpi-location {
@@ -414,47 +438,61 @@
         }
 
         .fish-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
             padding: 4px 10px;
-            background: #e3f2fd;
-            color: #1976d2;
+            background: transparent;
+            color: #333;
             border-radius: 4px;
             font-size: 11px;
             font-weight: 600;
+            height: 24px;
         }
 
         .volume-cell {
             font-weight: 600;
             color: #1a4d7d;
+            text-align: left;
         }
 
         .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 4px 12px 4px 0;
             border-radius: 4px;
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
+            height: 26px;
+            line-height: 1;
+            flex-shrink: 0;
+            background: transparent;
+            color: #333;
         }
 
         .status-pending {
-            background: #fff3cd;
-            color: #ff9800;
+            background: transparent;
+            color: #333;
         }
 
         .status-validated {
-            background: #d4edda;
-            color: #4caf50;
+            background: transparent;
+            color: #333;
         }
 
         .status-rejected {
-            background: #f8d7da;
-            color: #f44336;
+            background: transparent;
+            color: #333;
         }
 
         .action-cell {
             display: flex;
             gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            height: 100%;
         }
 
         .action-btn {
@@ -465,6 +503,19 @@
             font-size: 11px;
             font-weight: 600;
             transition: all 0.3s;
+            line-height: 1;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .action-cell form {
+            display: inline-flex !important;
+            margin: 0 !important;
+            height: 100%;
+            align-items: center;
         }
 
         .action-validate {

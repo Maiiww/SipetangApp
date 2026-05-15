@@ -7,6 +7,10 @@
     <title>SIPETANG - Sistem Informasi Pencatatan Hasil Tangkap</title>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <!-- Leaflet Map JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -256,27 +260,76 @@
         }
 
         .coverage-map {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
+            padding: 0;
         }
 
         .coverage-map h4 {
-            color: #1a4d7d;
+            color: white;
             margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .map-card {
+            background: linear-gradient(180deg, #eaf4ff 0%, #ffffff 100%);
+            border-radius: 18px;
+            min-height: 280px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.03);
+            height: 280px;
+        }
+
+        .map-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 20% 25%, rgba(13, 37, 64, 0.12), transparent 14%),
+                radial-gradient(circle at 72% 35%, rgba(59, 130, 246, 0.11), transparent 12%),
+                radial-gradient(circle at 50% 70%, rgba(90, 121, 213, 0.14), transparent 18%);
+            z-index: 0;
+        }
+
+        #mapid {
+            height: 100%;
+            position: relative;
+            z-index: 1;
+            border-radius: 18px;
         }
 
         .map-placeholder {
-            width: 100%;
-            height: 300px;
-            background: linear-gradient(135deg, #e8f4f8 0%, #d0e8f2 100%);
-            border-radius: 8px;
+            position: absolute;
+            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            color: #666;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .map-dot {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #0d2640;
+            box-shadow: 0 0 0 6px rgba(13, 37, 64, 0.12);
+        }
+
+        .map-dot.dot-1 {
+            top: 32%;
+            left: 28%;
+        }
+
+        .map-dot.dot-2 {
+            top: 54%;
+            left: 64%;
+        }
+
+        .map-dot.dot-3 {
+            top: 68%;
+            left: 44%;
         }
 
         /* CTA Section */
@@ -508,8 +561,8 @@
             </div>
             <div class="coverage-map">
                 <h4>Peta Sebaran TPI</h4>
-                <div class="map-placeholder">
-                    <i class="fas fa-map" style="font-size: 48px; opacity: 0.3;"></i>
+                <div class="map-card">
+                    <div id="mapid"></div>
                 </div>
             </div>
         </div>
@@ -541,13 +594,58 @@
                 <h4>KONTAK KAMI</h4>
                 <p><i class="fas fa-map-marker-alt"></i> Jl. A. Nata Sukarya No. 28, Subang, Jawa Barat, 41211</p>
                 <p><i class="fas fa-phone"></i> (0260) 4113251</p>
-                <p><i class="fas fa-envelope"></i> perikanan@subang.go.id</p>
+                <p><i class="fas fa-envelope"></i> kabupatensubangdinasperikanan@gmail.com</p>
             </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2024 Dinas Perikanan Kabupaten Subang. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        // Initialize Leaflet Map - Kabupaten Subang
+        const map = L.map('mapid').setView([-6.35, 107.85], 11);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Define TPI locations in Kabupaten Subang
+        const tpiLocations = [{
+                name: 'Blanakan',
+                lat: -6.27,
+                lng: 107.87,
+                info: 'Lokasi pendaratan ikan terbesar dengan volume produksi perikanan tertinggi.'
+            },
+            {
+                name: 'Pondok Bali',
+                lat: -6.35,
+                lng: 107.88,
+                info: 'Lokasi pemberdayaan teknologi melalui tradisional dan modernisasi pesce.'
+            },
+            {
+                name: 'Mayangan',
+                lat: -6.42,
+                lng: 107.82,
+                info: 'Lokasi dengan distribusi hasil dasar laut untuk pasar regional jawa barat.'
+            }
+        ];
+
+        // Add markers for each TPI
+        tpiLocations.forEach((location, index) => {
+            const marker = L.marker([location.lat, location.lng]).addTo(map);
+            marker.bindPopup(`
+                <div style="font-weight: bold; color: #1a4d7d; margin-bottom: 5px;">
+                    ${index + 1}. ${location.name}
+                </div>
+                <div style="font-size: 12px; color: #666;">
+                    ${location.info}
+                </div>
+            `);
+        });
+    </script>
 </body>
 
 </html>

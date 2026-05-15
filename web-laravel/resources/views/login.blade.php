@@ -315,6 +315,7 @@
                 opacity: 0;
                 transform: translateY(-8px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -381,18 +382,19 @@
             <div class="login-left-content">
                 <div class="logo-section">
                     <div class="logo-box">
-                    <img src="{{ asset('images/sipetang.jpg.png') }}" alt="SIPETANG Logo" class="sipetang-logo">
-                </div>
-                <div class="logo-text">
-                    <h1>SIPETANG</h1>
-                    <p>Sistem Informasi Pencatatan Hasil Tangkap</p>
-                </div>
+                        <img src="{{ asset('images/sipetang.jpg.png') }}" alt="SIPETANG Logo" class="sipetang-logo">
+                    </div>
+                    <div class="logo-text">
+                        <h1>SIPETANG</h1>
+                        <p>Sistem Informasi Pencatatan Hasil Tangkap</p>
+                    </div>
                 </div>
 
                 <h2 class="login-title">MASUK</h2>
-                <p class="login-description">Lingkungan terukur untuk mengelola data maritim dan aset perikanan dengan presisi dan otoritas.</p>
+                <p class="login-description">Lingkungan terukur untuk mengelola data maritim dan aset perikanan dengan
+                    presisi dan otoritas.</p>
             </div>
-            
+
             <div class="login-footer">
                 <p>&copy; 2024 Dinas Perikanan Kabupaten Subang.</p>
                 <p>Sekuritas dan kebijakan undang-undang.</p>
@@ -408,51 +410,48 @@
                 </div>
 
                 @if ($errors->any())
-                <div class="error-message">
-                    <strong>Login gagal!</strong>
-                    @foreach ($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
-                </div>
-            @endif
-            @if (session('success'))
-                <div class="success-message">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('login.store') }}">
-                @csrf
-
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" name="username"
-                        placeholder="Masukan Nama" required value="{{ old('username') }}"
-                        autofocus>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password
-                        <a href="{{ route('password.request') }}" class="forgot-password">Lupa Kata Sandi?</a>
-                    </label>
-                    <div class="password-group">
-                        <input type="password" class="form-control" id="password" name="password"
-                            placeholder="••••••••" required>
-                        <span class="password-toggle" onclick="togglePassword()">
-                            <i class="fas fa-eye"></i>
-                        </span>
+                    <div class="error-message">
+                        <strong>Login gagal!</strong>
+                        @foreach ($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
                     </div>
-                </div>
+                @endif
+                @if (session('success'))
+                    <div class="success-message">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-                <div class="remember-me">
-                    <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                    <label for="remember">Ingat saya untuk sesi berikutnya</label>
-                </div>
+                <form method="POST" action="{{ route('login.store') }}">
+                    @csrf
 
-                <button type="submit" class="btn-login">
-                    MASUK <i class="fas fa-arrow-right"></i>
-                </button>
-            </form>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                            placeholder="Masukan Nama" required value="{{ old('username') }}" autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-group">
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="••••••••" required>
+                            <span class="password-toggle" onclick="togglePassword()">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                        <label for="remember">Ingat saya untuk sesi berikutnya</label>
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        MASUK <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
