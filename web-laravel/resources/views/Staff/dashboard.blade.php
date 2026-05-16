@@ -645,7 +645,7 @@
         <div class="content-header-top">
             <div class="content-header-left">
                 <h2>Dashboard Staff</h2>
-                <p>Selamat datang kembali di sistem informasi hasil tangkap</p>
+                <p>Selamat datang kembali di Sistem Informasi Pencatatan Hasil Tangkap</p>
             </div>
             <div class="content-header-right">
                 <div class="date-selector">

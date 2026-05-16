@@ -391,8 +391,7 @@
                 </div>
 
                 <h2 class="login-title">MASUK</h2>
-                <p class="login-description">Lingkungan terukur untuk mengelola data maritim dan aset perikanan dengan
-                    presisi dan otoritas.</p>
+                <p class="login-description">Akses sistem SIPETANG untuk mengelola data hasil tangkap, aset perikanan, dan laporan maritim secara terintegrasi dan efisien.</p>
             </div>
 
             <div class="login-footer">
@@ -406,7 +405,7 @@
             <div class="login-card">
                 <div class="form-header">
                     <h2>Selamat Datang</h2>
-                    <p>Masuk untuk mengelola data maritim dan aset perikanan secara presisi.</p>
+                    <p>Masuk untuk mengelola data maritim dan aset perikanan secara aman dan terintegrasi.</p>
                 </div>
 
                 @if ($errors->any())

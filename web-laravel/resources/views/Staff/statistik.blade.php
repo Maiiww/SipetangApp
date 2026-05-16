@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Statistik - SIPETANG</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -465,21 +467,22 @@
         }
 
         .map-card {
-            background: linear-gradient(180deg, #eaf4ff 0%, #ffffff 100%);
+            background: white;
             border-radius: 18px;
-            min-height: 280px;
+            min-height: 400px;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.03);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
-        .map-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(circle at 20% 25%, rgba(13, 37, 64, 0.12), transparent 14%),
-                radial-gradient(circle at 72% 35%, rgba(59, 130, 246, 0.11), transparent 12%),
-                radial-gradient(circle at 50% 70%, rgba(90, 121, 213, 0.14), transparent 18%);
+        #map {
+            width: 100%;
+            height: 400px;
+            border-radius: 16px;
+        }
+
+        .leaflet-control-attribution {
+            display: none;
         }
 
         .map-placeholder {
@@ -714,30 +717,89 @@
 
         <div class="region-card">
             <div class="region-info">
-                <h2>Sebaran Wilayah TPI Kabupaten Subang</h2>
-                <p>Lokasi wilayah persebaran 8 TPI di sekitar Kabupaten Subang. Pantau aktivitas perikanan secara
+                <h2>Sebaran Tempat Pelelangan Ikan (TPI)</h2>
+                <p>Data lengkap 8 Tempat Pelelangan Ikan di Kabupaten Subang. Pantau aktivitas perikanan secara
                     geografis untuk mengambil keputusan alokasi sumber daya dan logistik.</p>
-                <ul class="region-list">
-                    <li>
-                        <span>Wilayah Blanakan</span>
-                        <span class="region-status">High Activity</span>
-                    </li>
-                    <li>
-                        <span>Wilayah Legonkulon</span>
-                        <span class="region-status">Moderate</span>
-                    </li>
-                    <li>
-                        <span>Wilayah Patimban</span>
-                        <span class="region-status">Developing</span>
-                    </li>
+                <ul class="region-list" style="margin-top: 20px;">
+                    <li><span>Patimban</span></li>
+                    <li><span>Genteng</span></li>
+                    <li><span>Mayangan</span></li>
+                    <li><span>Cirewang</span></li>
+                    <li><span>Muara Ciasem</span></li>
+                    <li><span>Blanakan</span></li>
+                    <li><span>Rawameneng</span></li>
+                    <li><span>Cilamaya Girang</span></li>
                 </ul>
             </div>
             <div class="map-card">
-                <div class="map-placeholder">Peta Sebaran TPI</div>
-                <div class="map-dot dot-1"></div>
-                <div class="map-dot dot-2"></div>
-                <div class="map-dot dot-3"></div>
+                <div id="map"></div>
             </div>
+
+            <script>
+                // Inisialisasi peta Leaflet
+                const map = L.map('map').setView([-6.73, 107.65], 11);
+
+                // Tambahkan tile layer dari OpenStreetMap
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: 'OpenStreetMap',
+                    maxZoom: 19
+                }).addTo(map);
+
+                // Data TPI dengan koordinat yang akurat
+                const tpiLocations = [{
+                        name: 'Patimban',
+                        lat: -6.8139,
+                        lng: 107.7350
+                    },
+                    {
+                        name: 'Genteng',
+                        lat: -6.7856,
+                        lng: 107.6944
+                    },
+                    {
+                        name: 'Mayangan',
+                        lat: -6.7500,
+                        lng: 107.7222
+                    },
+                    {
+                        name: 'Cirewang',
+                        lat: -6.7667,
+                        lng: 107.6500
+                    },
+                    {
+                        name: 'Muara Ciasem',
+                        lat: -6.6950,
+                        lng: 107.5944
+                    },
+                    {
+                        name: 'Blanakan',
+                        lat: -6.7028,
+                        lng: 107.6389
+                    },
+                    {
+                        name: 'Rawameneng',
+                        lat: -6.7306,
+                        lng: 107.6778
+                    },
+                    {
+                        name: 'Cilamaya Girang',
+                        lat: -6.7583,
+                        lng: 107.5750
+                    }
+                ];
+
+                // Tambahkan marker untuk setiap TPI
+                tpiLocations.forEach(function(tpi) {
+                    L.circleMarker([tpi.lat, tpi.lng], {
+                        radius: 8,
+                        fillColor: '#0d2640',
+                        color: '#0d2640',
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).bindPopup('<strong>' + tpi.name + '</strong>').addTo(map);
+                });
+            </script>
         </div>
 
         <div class="dashboard-footer">

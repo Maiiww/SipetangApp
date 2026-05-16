@@ -522,21 +522,18 @@
     <!-- About Section -->
     <section class="section" id="layanan">
         <h2>Dinas Perikanan Kabupaten Subang</h2>
-        <p>SIPETANG hadir sebagai alat utama dalam modernisasi administrasi perikanan di Kabupaten Subang, menghadirkan
-            efisiensi yang belum pernah ada sebelumnya.</p>
+        <p>SIPETANG hadir sebagai solusi digital terpadu untuk mendukung modernisasi pengelolaan perikanan di Kabupaten Subang secara efektif, transparan, dan berkelanjutan.</p>
 
         <div class="features">
             <div class="feature">
                 <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
                 <h3>Analisis Statistik Real-time</h3>
-                <p>Pantau dan tangkap data pengerakkan pasar perikanan Subang melalui dashboard analitik yang
-                    komprehensif.</p>
+                <p>Pantau perkembangan data perikanan secara langsung melalui dashboard statistik interaktif yang cepat, akurat, dan mudah dipahami.</p>
             </div>
             <div class="feature">
                 <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
                 <h3>Pelaporan Otomatis</h3>
-                <p>Generate laporan periodik sinas secara otomatis dengan akurasi data yang terjamin sesuai standar
-                    kementerian.</p>
+                <p>Permudah proses administrasi dengan sistem pelaporan otomatis yang terintegrasi dan sesuai standar pelaporan instansi pemerintah.</p>
             </div>
         </div>
     </section>
@@ -571,8 +568,7 @@
     <!-- CTA Section -->
     <section class="cta" id="kontak">
         <h2>Media Sosial Kami</h2>
-        <p>Bergabunglah dalam ekosistem digital SIPETANG untuk transparansi data yang lebih baik dan pertumbuhan ekonomi
-            maritim yang berkelanjutan di Kabupaten Subang.</p>
+        <p>Ikuti media sosial Dinas Perikanan Kabupaten Subang untuk mendapatkan informasi terbaru, layanan bantuan, serta perkembangan data maritim Kabupaten Subang secara cepat dan transparan.</p>
         <div class="cta-buttons">
             <a href="https://wa.me/6282320455264" class="btn-outline"><i class="fab fa-whatsapp"></i> Hubungi
                 Helpdesk</a>
@@ -593,7 +589,7 @@
             <div class="footer-section">
                 <h4>KONTAK KAMI</h4>
                 <p><i class="fas fa-map-marker-alt"></i> Jl. A. Nata Sukarya No. 28, Subang, Jawa Barat, 41211</p>
-                <p><i class="fas fa-phone"></i> (0260) 4113251</p>
+                <p><i class="fas fa-phone"></i> (0260) 411325</p>
                 <p><i class="fas fa-envelope"></i> kabupatensubangdinasperikanan@gmail.com</p>
             </div>
         </div>

@@ -854,9 +854,9 @@
                         </div>
                         <i class="fas fa-calendar-day" style="color:#0d2640"></i>
                     </label>
-                    <label class="frequency-option active-laporan" data-laporan="bulanan">
+                    <label class="frequency-option" data-laporan="bulanan">
                         <div style="display:flex; align-items:center; gap:12px;">
-                            <input type="radio" name="laporan_type" value="bulanan" checked>
+                            <input type="radio" name="laporan_type" value="bulanan">
                             <div class="option-body">
                                 <span class="option-title">Laporan Bulanan</span>
                                 <span class="option-desc">Statistik dan produksi</span>
@@ -938,7 +938,7 @@
                         </li>
                     </ul>
                     <div style="margin-top: 18px; text-align: right;">
-                        <a href="#" class="action-link">Lihat Semua Riwayat</a>
+                        <a href="#" class="action-link" id="view-all-history">Lihat Semua Riwayat</a>
                     </div>
                 </div>
             </section>
@@ -1270,6 +1270,97 @@
             // Trigger download dengan ID laporan
             const downloadUrl = `/laporan/download?id=${encodeURIComponent(id)}`;
             window.location.href = downloadUrl;
+        });
+
+        // View all history functionality
+        document.getElementById('view-all-history').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Get the report list container
+            const reportList = document.querySelector('.report-list');
+            const viewAllLink = document.getElementById('view-all-history').parentElement;
+
+            // Define all history data
+            const allHistoryData = [{
+                    name: 'Rekap_Blanakan_Jan.pdf',
+                    meta: '12 menit yang lalu',
+                    size: '4.2 MB',
+                    icon: 'fa-file-pdf',
+                    bgColor: '#0d2640'
+                },
+                {
+                    name: 'Rekap_Pondok_Bali.xlsx',
+                    meta: '2 jam yang lalu',
+                    size: '12.8 MB',
+                    icon: 'fa-file-excel',
+                    bgColor: '#0c8f6b'
+                },
+                {
+                    name: 'Rekap_Mayangan_April.pdf',
+                    meta: 'Kemarin',
+                    size: '11 MB',
+                    icon: 'fa-file-pdf',
+                    bgColor: '#0d2640'
+                },
+                {
+                    name: 'Laporan_Genteng_Mei.pdf',
+                    meta: '3 hari yang lalu',
+                    size: '8.5 MB',
+                    icon: 'fa-file-pdf',
+                    bgColor: '#0d2640'
+                },
+                {
+                    name: 'Rekap_Cirewang_Feb.xlsx',
+                    meta: '1 minggu yang lalu',
+                    size: '15.3 MB',
+                    icon: 'fa-file-excel',
+                    bgColor: '#0c8f6b'
+                },
+                {
+                    name: 'Laporan_Patimban_Mar.pdf',
+                    meta: '2 minggu yang lalu',
+                    size: '9.2 MB',
+                    icon: 'fa-file-pdf',
+                    bgColor: '#0d2640'
+                }
+            ];
+
+            // Check if already showing all
+            if (reportList.dataset.showAll === 'true') {
+                // Toggle back to showing 3 items
+                reportList.innerHTML = allHistoryData.slice(0, 3).map(item => `
+                    <li class="report-item">
+                        <div class="report-info">
+                            <div class="report-icon" style="background:${item.bgColor};"><i class="fas ${item.icon}"></i></div>
+                            <div class="report-text">
+                                <span class="report-name">${item.name}</span>
+                                <span class="report-meta">${item.meta}</span>
+                            </div>
+                        </div>
+                        <span class="report-size">${item.size}</span>
+                    </li>
+                `).join('');
+
+                reportList.dataset.showAll = 'false';
+                document.getElementById('view-all-history').textContent = 'Lihat Semua Riwayat';
+            } else {
+                // Show all items
+                reportList.innerHTML = allHistoryData.map(item => `
+                    <li class="report-item">
+                        <div class="report-info">
+                            <div class="report-icon" style="background:${item.bgColor};"><i class="fas ${item.icon}"></i></div>
+                            <div class="report-text">
+                                <span class="report-name">${item.name}</span>
+                                <span class="report-meta">${item.meta}</span>
+                            </div>
+                        </div>
+                        <span class="report-size">${item.size}</span>
+                    </li>
+                `).join('');
+
+                reportList.dataset.showAll = 'true';
+                document.getElementById('view-all-history').textContent = 'Sembunyikan';
+            }
         });
     </script>
 </body>
