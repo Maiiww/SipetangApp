@@ -55,15 +55,25 @@
             color: #0d2640;
         }
 
-        .sidebar-logo-text h3 { font-size: 14px; margin: 0; }
-        .sidebar-logo-text p { font-size: 9px; opacity: 0.7; margin: 0; }
+        .sidebar-logo-text h3 {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .sidebar-logo-text p {
+            font-size: 9px;
+            opacity: 0.7;
+            margin: 0;
+        }
 
         .sidebar-menu {
             flex: 1;
             list-style: none;
         }
 
-        .sidebar-menu li { margin-bottom: 20px; }
+        .sidebar-menu li {
+            margin-bottom: 20px;
+        }
 
         .sidebar-menu a {
             color: white;
@@ -93,7 +103,11 @@
             border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .sidebar-logout a { color: white; text-decoration: none; font-size: 14px; }
+        .sidebar-logout a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
 
         /* Main Content Area */
         .main-content {
@@ -154,9 +168,19 @@
         }
 
         /* Content Components */
-        .content-header { margin-bottom: 25px; }
-        .content-header h2 { font-size: 24px; color: #0d2640; }
-        .content-header p { color: #666; font-size: 14px; }
+        .content-header {
+            margin-bottom: 25px;
+        }
+
+        .content-header h2 {
+            font-size: 24px;
+            color: #0d2640;
+        }
+
+        .content-header p {
+            color: #666;
+            font-size: 14px;
+        }
 
         /* Filter Row */
         .filter-row {
@@ -174,8 +198,15 @@
             min-width: 150px;
         }
 
-        .total-card small { font-size: 10px; opacity: 0.7; text-transform: uppercase; }
-        .total-card h2 { font-size: 32px; }
+        .total-card small {
+            font-size: 10px;
+            opacity: 0.7;
+            text-transform: uppercase;
+        }
+
+        .total-card h2 {
+            font-size: 32px;
+        }
 
         .filter-form {
             background: white;
@@ -184,12 +215,23 @@
             display: flex;
             gap: 15px;
             flex: 1;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
-        .form-group { flex: 1; }
-        .form-group label { display: block; font-size: 11px; color: #888; font-weight: 700; margin-bottom: 5px; }
-        .form-group select, .form-group input {
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .form-group select,
+        .form-group input {
             width: 100%;
             padding: 8px;
             border: 1px solid #eee;
@@ -207,22 +249,50 @@
             font-weight: 600;
         }
 
-        .btn-primary { background: #2563eb; color: white; }
-        .btn-dark { background: #0d2640; color: white; }
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-dark {
+            background: #0d2640;
+            color: white;
+        }
 
         /* Table User */
         .table-container {
             background: white;
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; font-size: 12px; color: #888; border-bottom: 1px solid #eee; text-transform: uppercase; }
-        td { padding: 15px 12px; font-size: 13px; border-bottom: 1px solid #eee; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-        .user-info { display: flex; align-items: center; gap: 12px; }
+        th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            color: #888;
+            border-bottom: 1px solid #eee;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px 12px;
+            font-size: 13px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .avatar {
             width: 35px;
             height: 35px;
@@ -251,8 +321,16 @@
             margin-top: 20px;
         }
 
-        .page-info { font-size: 12px; color: #888; }
-        .page-nav { display: flex; gap: 5px; }
+        .page-info {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .page-nav {
+            display: flex;
+            gap: 5px;
+        }
+
         .page-link {
             padding: 5px 10px;
             border: 1px solid #eee;
@@ -261,12 +339,28 @@
             color: #334155;
             font-size: 12px;
         }
-        .page-link.active { background: #0d2640; color: white; border-color: #0d2640; }
+
+        .page-link.active {
+            background: #0d2640;
+            color: white;
+            border-color: #0d2640;
+        }
 
         @media (max-width: 768px) {
-            .sidebar { width: 60px; padding: 20px 10px; }
-            .sidebar-logo-text, .sidebar-menu span, .sidebar-logout span { display: none; }
-            .main-content { margin-left: 60px; }
+            .sidebar {
+                width: 60px;
+                padding: 20px 10px;
+            }
+
+            .sidebar-logo-text,
+            .sidebar-menu span,
+            .sidebar-logout span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 60px;
+            }
         }
 
         /* Modal Styles */
@@ -427,7 +521,6 @@
             background: #ccc;
             cursor: not-allowed;
         }
-    
     </style>
 </head>
 
@@ -436,10 +529,7 @@
 
     <div class="main-content">
         <div class="header">
-            <div class="search-box">
-                <i class="fas fa-search" style="color: #999;"></i>
-                <input type="text" placeholder="Cari data...">
-            </div>
+            <div style="flex: 1;"></div>
             <div class="header-right">
                 <i class="fas fa-bell" style="color: #64748b;"></i>
                 <i class="fas fa-cog" style="color: #64748b;"></i>
@@ -448,20 +538,19 @@
                         <p style="font-size: 14px; font-weight: bold;">Admin</p>
                         <small style="color: #888;">DINAS PERIKANAN</small>
                     </div>
-                    <img src="https://via.placeholder.com/35" alt="Profile">
                 </div>
             </div>
         </div>
 
         <div class="content-header">
-            <h2>Manajemen User</h2>
+            <h2>Kelola Data Pengguna</h2>
             <p>Kelola seluruh data Juru Rekap</p>
         </div>
 
         <div class="filter-row">
             <div class="total-card">
                 <small>TOTAL DATA USER</small>
-                <h2>25</h2>
+                <h2>{{ count($users) }}</h2>
             </div>
             <div class="filter-form">
                 <div class="form-group">
@@ -469,11 +558,12 @@
                     <input type="text" placeholder="Ketik nama atau ID...">
                 </div>
                 <div class="form-group">
-                    <label>ASAL TPI</label>
+                    <label>ROLE</label>
                     <select>
-                        <option>Semua TPI</option>
-                        <option>TPI Blanakan</option>
-                        <option>TPI Mayangan</option>
+                        <option>Semua Role</option>
+                        <option>Admin</option>
+                        <option>Juru Rekap</option>
+                        <option>Staff</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -486,7 +576,7 @@
                 </div>
                 <button class="btn btn-primary">Terapkan</button>
             </div>
-            <button class="btn btn-dark" onclick="openModal()"><i class="fas fa-user-plus"></i> Tambah User</button>
+            <button class="btn btn-dark" onclick="openModal()"><i class="fas fa-user-plus"></i> Tambah Pengguna</button>
         </div>
 
         <div class="table-container">
@@ -501,32 +591,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($users as $user)
-                        @php
-                            $nameParts = explode(' ', $user->nama);
-                            $initials = strtoupper(substr($nameParts[0] ?? '', 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
-                        @endphp
+                    @forelse($users as $user)
                         <tr>
                             <td>
                                 <div class="user-info">
-                                    <div class="avatar" style="background: #e0f2fe; color: #0369a1;">{{ $initials }}</div>
+                                    <div class="avatar"
+                                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                        {{ strtoupper(substr($user->nama ?? $user->username, 0, 2)) }}
+                                    </div>
                                     <div>
-                                        <strong>{{ $user->nama }}</strong><br>
-                                        <small style="color: #888;">ID: {{ $user->idPetugas }}</small>
+                                        <strong>{{ $user->nama ?? $user->username }}</strong>
+                                        <br>
+                                        <small style="color: #999;">{{ $user->no_induk ?? '-' }}</small>
                                     </div>
                                 </div>
                             </td>
-                            <td><span class="tpi-badge">{{ $user->asal_tpi ?: '-' }}</span></td>
-                            <td>{{ $user->jenis_kelamin }}</td>
-                            <td>{{ $user->no_telepon }}</td>
-                            <td>{{ $user->alamat }}</td>
+                            <td><span class="tpi-badge">{{ $user->wilayah ?? 'Umum' }}</span></td>
+                            <td>{{ $user->jenis_kelamin ?? '-' }}</td>
+                            <td>{{ $user->no_telepon ?? '-' }}</td>
+                            <td>{{ $user->alamat ?? '-' }}</td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #999; padding: 30px;">Tidak ada data
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
 
             <div class="pagination">
-                <p class="page-info">Menampilkan 1-4 dari 1,284 data</p>
+                <p class="page-info">
+                    {{ count($users) > 0 ? 'Menampilkan ' . count($users) . ' data' : 'Tidak ada data' }}</p>
                 <div class="page-nav">
                     <a href="#" class="page-link"><i class="fas fa-chevron-left"></i></a>
                     <a href="#" class="page-link active">1</a>
@@ -556,7 +652,7 @@
                         <input type="text" name="nama" placeholder="Masukkan nama lengkap" required>
                     </div>
                     <div class="form-group-modal">
-                        <label>No. Induk *</label>
+                        <label>No. Id *</label>
                         <input type="text" name="no_induk" placeholder="Contoh: JR-001" required>
                     </div>
                 </div>
@@ -644,7 +740,7 @@
             const asal_tpi_field = document.getElementById('asal_tpi_field');
             const wilayah_input = document.getElementById('wilayah_input');
             const wilayah_required = document.getElementById('wilayah_required');
-            
+
             // Show asal TPI field only for juruRekap role
             if (role === 'juruRekap') {
                 asal_tpi_field.style.display = 'grid';
@@ -668,51 +764,52 @@
         // Handle form submission
         document.getElementById('formTambahUser').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const formData = new FormData(this);
-            
+
             // Log data untuk debugging
             console.log('Form Data:');
             for (let [key, value] of formData.entries()) {
                 console.log(key + ': ' + value);
             }
-            
+
             fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response:', data);
-                
-                if (data.success) {
-                    alert('User berhasil ditambahkan!');
-                    closeModal();
-                    // Reload halaman untuk melihat data terbaru
-                    location.reload();
-                } else {
-                    // Tampilkan error messages detail
-                    let errorMsg = data.message || 'Gagal menambahkan user';
-                    if (data.errors) {
-                        errorMsg += '\n\nDetail Error:\n';
-                        for (let field in data.errors) {
-                            if (Array.isArray(data.errors[field])) {
-                                errorMsg += '• ' + field + ': ' + data.errors[field].join(', ') + '\n';
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response:', data);
+
+                    if (data.success) {
+                        alert('User berhasil ditambahkan!');
+                        closeModal();
+                        // Reload halaman untuk melihat data terbaru
+                        location.reload();
+                    } else {
+                        // Tampilkan error messages detail
+                        let errorMsg = data.message || 'Gagal menambahkan user';
+                        if (data.errors) {
+                            errorMsg += '\n\nDetail Error:\n';
+                            for (let field in data.errors) {
+                                if (Array.isArray(data.errors[field])) {
+                                    errorMsg += '• ' + field + ': ' + data.errors[field].join(', ') + '\n';
+                                }
                             }
                         }
+                        alert(errorMsg);
+                        console.error('Validation Errors:', data.errors);
                     }
-                    alert(errorMsg);
-                    console.error('Validation Errors:', data.errors);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan: ' + error);
-            });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan: ' + error);
+                });
         });
     </script>
 </body>
+
 </html>
