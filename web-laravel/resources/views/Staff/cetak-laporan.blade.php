@@ -220,6 +220,7 @@
             grid-template-columns: 1.5fr 1fr;
             gap: 24px;
             margin-bottom: 30px;
+            align-items: start;
         }
 
         .card {
@@ -348,6 +349,7 @@
             align-items: center;
             gap: 16px;
             flex-wrap: wrap;
+            margin-top: 32px;
         }
 
         .output-label {
@@ -382,12 +384,12 @@
         .button-primary {
             background: #0d2640;
             color: #fff;
-            border: none;
-            padding: 14px 26px;
-            border-radius: 14px;
+            border: 1px solid #0d2640;
+            padding: 10px 18px;
+            border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .button-primary:hover {
@@ -879,8 +881,7 @@
                 <div class="output-actions">
                     <div class="output-label">Format Output:</div>
                     <div class="format-buttons">
-                        <button type="button" class="format-button active" id="format-pdf"
-                            data-format="pdf">PDF</button>
+                        <button type="button" class="format-button" id="format-pdf" data-format="pdf">PDF</button>
                         <button type="button" class="format-button" id="format-excel"
                             data-format="excel">EXCEL</button>
                     </div>

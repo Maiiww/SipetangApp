@@ -753,38 +753,38 @@
                     },
                     {
                         name: 'Genteng',
-                        lat: -6.7856,
-                        lng: 107.6944
+                        lat: -6.2344311,
+                        lng: 107.8773191
                     },
                     {
                         name: 'Mayangan',
-                        lat: -6.7500,
-                        lng: 107.7222
+                        lat: -6.212156,
+                        lng: 107.783512
                     },
                     {
                         name: 'Cirewang',
-                        lat: -6.7667,
-                        lng: 107.6500
+                        lat: -6.8267,
+                        lng: 107.6734
                     },
                     {
                         name: 'Muara Ciasem',
-                        lat: -6.6950,
-                        lng: 107.5944
+                        lat: -6.8456,
+                        lng: 107.6578
                     },
                     {
                         name: 'Blanakan',
-                        lat: -6.7028,
-                        lng: 107.6389
+                        lat: -6.2703712,
+                        lng: 107.6631992
                     },
                     {
                         name: 'Rawameneng',
-                        lat: -6.7306,
-                        lng: 107.6778
+                        lat: -6.9123,
+                        lng: 107.5645
                     },
                     {
                         name: 'Cilamaya Girang',
-                        lat: -6.7583,
-                        lng: 107.5750
+                        lat: -6.9456,
+                        lng: 107.5234
                     }
                 ];
 

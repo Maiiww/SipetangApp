@@ -501,7 +501,7 @@
             <p>Sistem Pelaporan Hasil Tangkapan Resmi: Ruang terkurasi untuk dokumentasi data pendaratan ikan secara
                 presisi guna menjamin validitas aset produksi perikanan tangkap Kabupaten Subang.</p>
             <div class="hero-buttons">
-                <a href="/login" class="btn btn-primary">Akses Portal</a>
+                <a href="/login" class="btn btn-primary">Masuk</a>
                 <a href="#layanan" class="btn btn-secondary">Pelajari Lebih Lanjut</a>
             </div>
         </div>
