@@ -737,7 +737,7 @@
 
             <script>
                 // Inisialisasi peta Leaflet
-                const map = L.map('map').setView([-6.73, 107.65], 11);
+                const map = L.map('map').setView([-6.24, 107.76], 11);
 
                 // Tambahkan tile layer dari OpenStreetMap
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -748,8 +748,8 @@
                 // Data TPI dengan koordinat yang akurat
                 const tpiLocations = [{
                         name: 'Patimban',
-                        lat: -6.8139,
-                        lng: 107.7350
+                        lat: -6.2499579,
+                        lng: 107.9193405
                     },
                     {
                         name: 'Genteng',
@@ -763,13 +763,13 @@
                     },
                     {
                         name: 'Cirewang',
-                        lat: -6.8267,
-                        lng: 107.6734
+                        lat: -6.1911136,
+                        lng: 107.8493557
                     },
                     {
                         name: 'Muara Ciasem',
-                        lat: -6.8456,
-                        lng: 107.6578
+                        lat: -6.236964,
+                        lng: 107.7012623
                     },
                     {
                         name: 'Blanakan',
@@ -778,13 +778,13 @@
                     },
                     {
                         name: 'Rawameneng',
-                        lat: -6.9123,
-                        lng: 107.5645
+                        lat: -6.2427331,
+                        lng: 107.6281886
                     },
                     {
                         name: 'Cilamaya Girang',
-                        lat: -6.9456,
-                        lng: 107.5234
+                        lat: -6.2223626,
+                        lng: 107.6240459
                     }
                 ];
 

@@ -522,18 +522,21 @@
     <!-- About Section -->
     <section class="section" id="layanan">
         <h2>Dinas Perikanan Kabupaten Subang</h2>
-        <p>SIPETANG hadir sebagai solusi digital terpadu untuk mendukung modernisasi pengelolaan perikanan di Kabupaten Subang secara efektif, transparan, dan berkelanjutan.</p>
+        <p>SIPETANG hadir sebagai solusi digital terpadu untuk mendukung modernisasi pengelolaan perikanan di Kabupaten
+            Subang secara efektif, transparan, dan berkelanjutan.</p>
 
         <div class="features">
             <div class="feature">
                 <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
                 <h3>Analisis Statistik Real-time</h3>
-                <p>Pantau perkembangan data perikanan secara langsung melalui dashboard statistik interaktif yang cepat, akurat, dan mudah dipahami.</p>
+                <p>Pantau perkembangan data perikanan secara langsung melalui dashboard statistik interaktif yang cepat,
+                    akurat, dan mudah dipahami.</p>
             </div>
             <div class="feature">
                 <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
                 <h3>Pelaporan Otomatis</h3>
-                <p>Permudah proses administrasi dengan sistem pelaporan otomatis yang terintegrasi dan sesuai standar pelaporan instansi pemerintah.</p>
+                <p>Permudah proses administrasi dengan sistem pelaporan otomatis yang terintegrasi dan sesuai standar
+                    pelaporan instansi pemerintah.</p>
             </div>
         </div>
     </section>
@@ -568,7 +571,8 @@
     <!-- CTA Section -->
     <section class="cta" id="kontak">
         <h2>Media Sosial Kami</h2>
-        <p>Ikuti media sosial Dinas Perikanan Kabupaten Subang untuk mendapatkan informasi terbaru, layanan bantuan, serta perkembangan data maritim Kabupaten Subang secara cepat dan transparan.</p>
+        <p>Ikuti media sosial Dinas Perikanan Kabupaten Subang untuk mendapatkan informasi terbaru, layanan bantuan,
+            serta perkembangan data maritim Kabupaten Subang secara cepat dan transparan.</p>
         <div class="cta-buttons">
             <a href="https://wa.me/6282320455264" class="btn-outline"><i class="fab fa-whatsapp"></i> Hubungi
                 Helpdesk</a>
@@ -600,7 +604,7 @@
 
     <script>
         // Initialize Leaflet Map - Kabupaten Subang
-        const map = L.map('mapid').setView([-6.35, 107.85], 11);
+        const map = L.map('mapid').setView([-6.24, 107.76], 11);
 
         // Add OpenStreetMap tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -610,36 +614,57 @@
 
         // Define TPI locations in Kabupaten Subang
         const tpiLocations = [{
-                name: 'Blanakan',
-                lat: -6.27,
-                lng: 107.87,
-                info: 'Lokasi pendaratan ikan terbesar dengan volume produksi perikanan tertinggi.'
+                name: 'Patimban',
+                lat: -6.2499579,
+                lng: 107.9193405
             },
             {
-                name: 'Pondok Bali',
-                lat: -6.35,
-                lng: 107.88,
-                info: 'Lokasi pemberdayaan teknologi melalui tradisional dan modernisasi pesce.'
+                name: 'Genteng',
+                lat: -6.2344311,
+                lng: 107.8773191
             },
             {
                 name: 'Mayangan',
-                lat: -6.42,
-                lng: 107.82,
-                info: 'Lokasi dengan distribusi hasil dasar laut untuk pasar regional jawa barat.'
+                lat: -6.212156,
+                lng: 107.783512
+            },
+            {
+                name: 'Cirewang',
+                lat: -6.1911136,
+                lng: 107.8493557
+            },
+            {
+                name: 'Muara Ciasem',
+                lat: -6.236964,
+                lng: 107.7012623
+            },
+            {
+                name: 'Blanakan',
+                lat: -6.2703712,
+                lng: 107.6631992
+            },
+            {
+                name: 'Rawameneng',
+                lat: -6.2427331,
+                lng: 107.6281886
+            },
+            {
+                name: 'Cilamaya Girang',
+                lat: -6.2223626,
+                lng: 107.6240459
             }
         ];
 
         // Add markers for each TPI
-        tpiLocations.forEach((location, index) => {
-            const marker = L.marker([location.lat, location.lng]).addTo(map);
-            marker.bindPopup(`
-                <div style="font-weight: bold; color: #1a4d7d; margin-bottom: 5px;">
-                    ${index + 1}. ${location.name}
-                </div>
-                <div style="font-size: 12px; color: #666;">
-                    ${location.info}
-                </div>
-            `);
+        tpiLocations.forEach(function(tpi) {
+            L.circleMarker([tpi.lat, tpi.lng], {
+                radius: 8,
+                fillColor: '#0d2640',
+                color: '#0d2640',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).bindPopup('<strong>' + tpi.name + '</strong>').addTo(map);
         });
     </script>
 </body>
