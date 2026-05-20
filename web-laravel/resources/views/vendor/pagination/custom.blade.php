@@ -1,4 +1,4 @@
-@if ($paginator->hasPages())
+@if ($paginator->hasPages() && $paginator->lastPage() > 1)
     <div class="pagination-section">
         {{-- Previous Page Link --}}
         @if ($paginator->onFirstPage())
@@ -21,10 +21,13 @@
             {{-- Array Of Links --}}
             @if (is_array($element))
                 @foreach ($element as $page => $url)
-                    @if ($page == $paginator->currentPage())
-                        <button class="pagination-btn active" aria-current="page">{{ $page }}</button>
-                    @else
-                        <a href="{{ $url }}" class="pagination-btn">{{ $page }}</a>
+                    {{-- Hanya tampilkan halaman 1, hide halaman 2 dan 3 --}}
+                    @if ($page <= 1 || $paginator->currentPage() > 1)
+                        @if ($page == $paginator->currentPage())
+                            <button class="pagination-btn active" aria-current="page">{{ $page }}</button>
+                        @else
+                            <a href="{{ $url }}" class="pagination-btn">{{ $page }}</a>
+                        @endif
                     @endif
                 @endforeach
             @endif

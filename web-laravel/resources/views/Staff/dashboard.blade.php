@@ -637,8 +637,9 @@
     <div class="main-content">
         <div class="header">
             <div class="header-right">
-                <div class="header-icon"><i class="fas fa-bell"></i></div>
-                <div class="header-icon"><i class="fas fa-user"></i></div>
+                <a href="{{ route('staff.profile') }}" style="text-decoration: none; color: inherit;">
+                    <div class="header-icon" style="cursor: pointer;"><i class="fas fa-user"></i></div>
+                </a>
             </div>
         </div>
 
@@ -711,28 +712,6 @@
                     <h3>Aktivitas Terbaru</h3>
                     <a href="{{ route('staff.validasi') }}">Lihat Semua</a>
                 </div>
-
-                @forelse($aktivitas as $activity)
-                    <div class="activity-item">
-                        <div class="activity-avatar"
-                            style="background: #{{ $activity['avatarBg'] }}; color: #{{ $activity['avatarBg'] === 'e0f2fe' ? '0369a1' : ($activity['avatarBg'] === 'f0fdf4' ? '166534' : '1f2937') }};">
-                            {{ $activity['avatar'] }}
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-name">{{ $activity['nama'] }}</div>
-                            <div class="activity-location">{{ $activity['lokasi'] }}</div>
-                            <span
-                                class="activity-status {{ $activity['status'] === 'validated' ? 'verified' : 'pending' }}">
-                                {{ strtoupper($activity['status'] === 'validated' ? 'TERVALIDASI' : 'PENDING') }}
-                            </span>
-                            <div class="activity-time">{{ $activity['waktu']->diffForHumans() }}</div>
-                        </div>
-                    </div>
-                @empty
-                    <div style="text-align: center; padding: 20px; color: #888;">
-                        <p>Tidak ada aktivitas terbaru</p>
-                    </div>
-                @endforelse
             </div>
         </div>
     </div>

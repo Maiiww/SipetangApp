@@ -264,17 +264,14 @@
         }
 
         .stat-icon-pending {
-            background: #fff3cd;
             color: #ff9800;
         }
 
         .stat-icon-validated {
-            background: #d4edda;
             color: #4caf50;
         }
 
         .stat-icon-anomaly {
-            background: #f8d7da;
             color: #f44336;
         }
 
@@ -713,15 +710,11 @@
         <div class="header">
             <div class="header-right">
                 <div class="header-icons">
-                    <div class="header-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <div class="header-icon">
-                        <i class="fas fa-cog"></i>
-                    </div>
-                    <div class="header-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
+                    <a href="{{ route('staff.profile') }}" style="text-decoration: none; color: inherit;">
+                        <div class="header-icon" style="cursor: pointer;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -741,7 +734,8 @@
                     <div class="stat-value">{{ $stats['pending'] }}</div>
                 </div>
                 <div class="stat-icon-box stat-icon-pending">
-                    ⏳
+                    <img src="{{ asset('images/file.png') }}" alt="Menunggu"
+                        style="width: 50px; height: 50px; object-fit: contain;">
                 </div>
             </div>
 
@@ -751,7 +745,8 @@
                     <div class="stat-value">{{ $stats['validated'] }}</div>
                 </div>
                 <div class="stat-icon-box stat-icon-validated">
-                    ✓
+                    <img src="{{ asset('images/list.png') }}" alt="Tervalidasi"
+                        style="width: 50px; height: 50px; object-fit: contain;">
                 </div>
             </div>
 
@@ -761,7 +756,8 @@
                     <div class="stat-value">{{ number_format($stats['totalVolume'], 1) }}</div>
                 </div>
                 <div class="stat-icon-box stat-icon-validated">
-                    📊
+                    <img src="{{ asset('images/bar-graph.png') }}" alt="Volume"
+                        style="width: 50px; height: 50px; object-fit: contain;">
                 </div>
             </div>
 
@@ -771,7 +767,8 @@
                     <div class="stat-value" style="color: #f44336;">{{ $stats['anomaly'] }}</div>
                 </div>
                 <div class="stat-icon-box stat-icon-anomaly">
-                    ⚠️
+                    <img src="{{ asset('images/warning.png') }}" alt="Anomali"
+                        style="width: 50px; height: 50px; object-fit: contain;">
                 </div>
             </div>
         </div>
@@ -900,13 +897,12 @@
                         @endforeach
                     </tbody>
                 </table>
-
-                {{ $laporans->links('pagination::custom') }}
+                {{ $laporans->links('pagination.custom') }}
             @else
                 <div style="text-align: center; padding: 40px; color: #888;">
                     <i class="fas fa-inbox"
                         style="font-size: 48px; margin-bottom: 16px; opacity: 0.5; display: block;"></i>
-                    <p>Tidak ada laporan yang menunggu validasi</p>
+                    <p>Belum Ada Antrean Laporan!</p>
                 </div>
             @endif
         </div>

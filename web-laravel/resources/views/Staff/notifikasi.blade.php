@@ -469,15 +469,11 @@
     <div class="main-content">
         <div class="header">
             <div class="header-right">
-                <div class="date-selector">
-                    <i class="fas fa-calendar"></i>
-                    <span>Mei 2026</span>
-                </div>
-                <button class="btn-input"><i class="fas fa-filter"></i> Filter</button>
                 <div class="header-icons">
-                    <div class="header-icon"><i class="fas fa-bell" style="color: #1a4d7d;"></i></div>
-                    <div class="header-icon"><i class="fas fa-cog" style="color: #1a4d7d;"></i></div>
-                    <div class="header-icon"><i class="fas fa-user" style="color: #1a4d7d;"></i></div>
+                    <a href="{{ route('staff.profile') }}" style="text-decoration: none; color: inherit;">
+                        <div class="header-icon" style="cursor: pointer;"><i class="fas fa-user"
+                                style="color: #1a4d7d;"></i></div>
+                    </a>
                 </div>
             </div>
         </div>
