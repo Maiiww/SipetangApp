@@ -12,10 +12,20 @@ class TangkapanController extends Controller
     {
         $tanggal = $request->query('tanggal', date('Y-m-d'));
 
-        $totalBerat = Tangkapan::whereDate('created_at', $tanggal)->sum('berat');
-        $totalProduksi = Tangkapan::whereDate('created_at', $tanggal)->count();
+        $userId = $request->query('user_id');
 
-        $tangkapan = Tangkapan::whereDate('created_at', $tanggal)->orderBy('created_at', 'desc')->paginate(10);
+        $totalBerat = Tangkapan::whereDate('created_at', $tanggal)
+                               ->where('user_id', $userId)
+                               ->sum('berat');
+                               
+        $totalProduksi = Tangkapan::whereDate('created_at', $tanggal)
+                                  ->where('user_id', $userId)
+                                  ->count();
+
+        $tangkapan = Tangkapan::whereDate('created_at', $tanggal)
+                              ->where('user_id', $userId)
+                              ->orderBy('created_at', 'desc')
+                              ->paginate(10);
 
         return response()->json([
             'status' => 'success',
@@ -27,6 +37,7 @@ class TangkapanController extends Controller
             'data' => $tangkapan
         ], 200);
     }
+    
 
     public function store(Request $request)
     {

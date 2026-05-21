@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_URL from '../config';
 
 const COLORS = {
@@ -47,18 +48,22 @@ export default function TambahDataScreen() {
             return;
         }
 
-        const payload = {
-            user_id: 1, 
-            nama_pembeli: namaPembeli,
-            nama_nelayan: namaNelayan,
-            berat: parseFloat(berat), 
-            jenis_ikan: jenisIkan,
-            harga_jual: parseInt(harga.replace(/[^0-9]/g, ''), 10), 
-        };
-
         setIsLoading(true);
 
         try {
+            const storedUserId = await AsyncStorage.getItem('user_id');
+
+            const activeUserId = storedUserId ? parseInt(storedUserId, 10) : 1; 
+
+            const payload = {
+                user_id: activeUserId,
+                nama_pembeli: namaPembeli,
+                nama_nelayan: namaNelayan,
+                berat: parseFloat(berat), 
+                jenis_ikan: jenisIkan,
+                harga_jual: parseInt(harga.replace(/[^0-9]/g, ''), 10), 
+            };
+
             const response = await fetch(`${API_URL}/tangkapan`, {
                 method: 'POST',
                 headers: {

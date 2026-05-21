@@ -14,6 +14,7 @@ import {
     View
 } from "react-native";
 import { useAuth } from "../components/AuthContext";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_URL from "../config";
 
 const COLORS = {
@@ -66,37 +67,6 @@ export default function LoginScreen() {
     }
   };
 
-
-
-//   const handleLogin = async () => {
-
-//     setErrors({ username: '', password: '', general: '' });
-
-  
-//     if (!validateForm()) {
-//       return; 
-//     }
-
-//     setIsLoading(true);
-
-//     try {
-//       const result = await apiLoginSimulasi();
-
-//       console.log('Login Sukses:', result);
-
-//       await signIn(); 
-//       router.replace('/(tabs)');
-      
-//     } catch (error: any) {
-//       console.log('Login Gagal:', error.message);
-//       setErrors((prev) => ({ ...prev, general: error.message }));
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-
-//---------- Handle login with API ------------------------
     const handleLogin = async () => {
         setErrors({ username: '', password: '', general: '' });
         if (!validateForm()) return;
@@ -122,13 +92,18 @@ export default function LoginScreen() {
             console.log('API login response:', response.status, data);
 
             if (response.ok && data.status === 'success') {      
+                
+                const activeId = data.data.id; 
+                
+                await AsyncStorage.setItem('user_id', activeId.toString());
+                
+                console.log('BERHASIL MENYIMPAN ID KE MEMORI:', activeId);
+
                 await signIn(); 
                 router.replace('/(tabs)');
             } else {
-                
                 throw new Error(data.message || 'Nama pengguna atau kata sandi salah.');
             }
-
             
         } catch (error: any) {
             setErrors((prev) => ({ ...prev, general: error.message || 'Terjadi kesalahan jaringan.' }));

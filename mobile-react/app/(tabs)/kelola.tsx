@@ -14,6 +14,7 @@ import {
     Platform
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_URL from '../../config';
 
 const COLORS = {
@@ -51,7 +52,9 @@ export default function KelolaScreen() {
         try {
             const formattedDate = dateObj.toISOString().split('T')[0];
 
-            const response = await fetch(`${API_URL}/tangkapan?page=${page}&tanggal=${formattedDate}`);
+            const userId = await AsyncStorage.getItem('user_id');
+
+            const response = await fetch(`${API_URL}/tangkapan?page=${page}&tanggal=${formattedDate}&user_id=${userId}`);
             const json = await response.json();
 
             if (response.ok && json.status === 'success') {
@@ -67,7 +70,6 @@ export default function KelolaScreen() {
         } finally {
             setIsLoading(false);
         }
-        
     };
 
     useFocusEffect(

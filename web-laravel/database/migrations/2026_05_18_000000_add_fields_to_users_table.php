@@ -18,6 +18,11 @@ return new class extends Migration
             $table->string('no_telepon')->nullable()->after('jenis_kelamin');
             $table->text('alamat')->nullable()->after('no_telepon');
             $table->string('wilayah')->nullable()->after('alamat');
+
+            $table->string('status_akun')->default('Aktif');
+
+            $table->string('foto_profil')->nullable();
+
         });
     }
 
@@ -27,7 +32,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['nama', 'no_induk', 'jenis_kelamin', 'no_telepon', 'alamat', 'wilayah']);
+            $table->dropColumn(['nama', 'no_induk', 'jenis_kelamin', 'no_telepon', 'alamat', 'wilayah', 'status_akun', 'foto_profil']);
         });
     }
 };

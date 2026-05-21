@@ -24,7 +24,7 @@ class LaporanSeeder extends Seeder
         $ikan = ['Kembung', 'Tongkol', 'Cumi-cumi', 'Tenggiri', 'Cakalang'];
         $status = ['pending', 'validated', 'rejected'];
 
-        // Create sample data
+
         for ($i = 1; $i <= 30; $i++) {
             Laporan::create([
                 'idLaporan' => 'LPR' . str_pad($i, 4, '0', STR_PAD_LEFT),
