@@ -131,26 +131,29 @@
 
         .sidebar-logout-button {
             color: #ffffff;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 16px;
-            padding: 14px 18px;
+            background: #1a4d7d;
+            border-radius: 25px;
+            padding: 12px 20px;
             width: 100%;
             border: none;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 16px;
+            justify-content: center;
+            gap: 10px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.25s ease;
+            transition: all 0.3s ease;
         }
 
         .sidebar-logout-button:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: #0f3a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .sidebar-logout-button i {
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .main-content {
