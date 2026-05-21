@@ -42,7 +42,7 @@ export default function ProfilScreen() {
         avatar: 'https://randomuser.me/api/portraits/men/32.jpg', 
     };
 
-    // --- FUNGSI LOGOUT ---
+
     const handleLogout = () => {
         Alert.alert(
         "Konfirmasi Keluar",

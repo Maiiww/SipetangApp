@@ -1,6 +1,6 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useRouter, useFocusEffect } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import {
     SafeAreaView,
     ScrollView,
@@ -8,8 +8,13 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
+    Alert,
+    ActivityIndicator,
+    Platform
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import API_URL from '../../config';
 
 const COLORS = {
     primary: '#002D62',
@@ -22,19 +27,96 @@ const COLORS = {
     border: '#D1D5DB',
     actionEdit: '#F59E0B',
     actionDelete: '#EF4444',
+    success: '#10B981', 
 };
-
-const tableData = [
-    { id: '1', tanggal: '12 April 2026\n06:15', pembeli: 'Muhaimin', nelayan: 'Mamat', ikan: 'Tongkol', berat: '15.0', harga: '330.000' },
-    { id: '2', tanggal: '12 April 2026\n09:00', pembeli: 'Karina', nelayan: 'Johan', ikan: 'Kembung', berat: '8.5', harga: '148.000' },
-    { id: '3', tanggal: '11 April 2026\n07:30', pembeli: 'Maulana', nelayan: 'Kibo', ikan: 'Tuna', berat: '22.0', harga: '990.000' },
-];
 
 export default function KelolaScreen() {
  
-    const [currentPage, setCurrentPage] = useState(1);
-
     const router = useRouter();
+
+    const [dataTangkapan, setDataTangkapan] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const [totalBerat, setTotalBerat] = useState<number>(0);
+    const [totalProduksi, setTotalProduksi] = useState<number>(0);
+
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
+    const fetchData = async (page = 1, dateObj = selectedDate) => {
+        setIsLoading(true);
+        try {
+            const formattedDate = dateObj.toISOString().split('T')[0];
+
+            const response = await fetch(`${API_URL}/tangkapan?page=${page}&tanggal=${formattedDate}`);
+            const json = await response.json();
+
+            if (response.ok && json.status === 'success') {
+                setDataTangkapan(json.data.data);
+                setCurrentPage(json.data.current_page);
+                setTotalPages(json.data.last_page);
+
+                setTotalBerat(json.statistik?.total_berat || 0);
+                setTotalProduksi(json.statistik?.total_produksi || 0);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Gagal terhubung ke server untuk mengambil data.');
+        } finally {
+            setIsLoading(false);
+        }
+        
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchData(currentPage, selectedDate);
+        }, [currentPage, selectedDate])
+    );
+
+    const onChangeDate = (event: any, date?: Date) => {
+        setShowDatePicker(Platform.OS === 'ios');
+        if (date) {
+            setSelectedDate(date);
+            setCurrentPage(1);
+        }
+    };
+
+    const formatRupiah = (angka: number | string) => {
+        if (!angka) return 'Rp 0';
+        const numerik = typeof angka === 'string' ? parseInt(angka, 10) : angka;
+        return 'Rp ' + numerik.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+    const formatTanggal = (tanggalString: string) => {
+        if (!tanggalString) return '-\n-';
+        const date = new Date(tanggalString);
+        const bulanIndo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const tanggal = date.getDate().toString().padStart(2, '0');
+        const bulan = bulanIndo[date.getMonth()];
+        const tahun = date.getFullYear();
+        const jam = date.getHours().toString().padStart(2, '0');
+        const menit = date.getMinutes().toString().padStart(2, '0');
+        return `${tanggal} ${bulan} ${tahun}\n${jam}:${menit}`;
+    };
+
+    const renderPaginationButtons = () => {
+        let buttons = [];
+        for (let i = 1; i <= totalPages; i++) {
+            buttons.push(
+                <TouchableOpacity 
+                    key={i} 
+                    style={[styles.pageBtn, currentPage === i && styles.pageBtnActive]}
+                    onPress={() => setCurrentPage(i)}
+                >
+                    <Text style={currentPage === i ? styles.pageTextActive : styles.pageText}>{i}</Text>
+                </TouchableOpacity>
+            );
+        }
+        return buttons;
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -43,46 +125,80 @@ export default function KelolaScreen() {
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
            
                 <View style={styles.header}>
-                <View>
-                    <Text style={styles.headerTitle}>Data Hasil Tangkap</Text>
-                    <Text style={styles.headerSubtitle}>SIPETANG</Text>
-                </View>
-                <TouchableOpacity>
-                    <Ionicons name="search" size={24} color={COLORS.primary} />
-                </TouchableOpacity>
+                    <View>
+                        <Text style={styles.headerTitle}>Data Hasil Tangkap</Text>
+                        <Text style={styles.headerSubtitle}>SIPETANG</Text>
+                    </View>
+                    <TouchableOpacity>
+                        <Ionicons name="search" size={24} color={COLORS.primary} />
+                    </TouchableOpacity>
                 </View>
                 <Text style={styles.pageDescription}>Monitor data operasional harian perikanan.</Text>
 
                 <View style={styles.cardRow}>
-                <View style={[styles.summaryCard, { backgroundColor: COLORS.primary }]}>
-                    <Text style={[styles.summaryLabel, { color: COLORS.lightGray }]}>TOTAL BERAT</Text>
-                    <Text style={[styles.summaryValue, { color: COLORS.white }]}>500 <Text style={styles.summaryUnit}>KG</Text></Text>
+                    <View style={[styles.summaryCard, { backgroundColor: COLORS.primary }]}>
+                        <Text style={[styles.summaryLabel, { color: COLORS.lightGray }]}>TOTAL BERAT</Text>
+                        <Text style={[styles.summaryValue, { color: COLORS.white }]}>
+                            {totalBerat} <Text style={styles.summaryUnit}>KG</Text>
+                        </Text>
+                    </View>
+
+                    <View style={[styles.summaryCard, { backgroundColor: COLORS.yellow }]}>
+                        <Text style={[styles.summaryLabel, { color: COLORS.primary }]}>TOTAL PRODUKSI</Text>
+                        <Text style={[styles.summaryValue, { color: COLORS.primary }]}>{totalProduksi}</Text>
+                    </View>
                 </View>
 
-                <View style={[styles.summaryCard, { backgroundColor: COLORS.yellow }]}>
-                    <Text style={[styles.summaryLabel, { color: COLORS.primary }]}>PRODUKSI HARI INI</Text>
-                    <Text style={[styles.summaryValue, { color: COLORS.primary }]}>42</Text>
-                </View>
-                </View>
+                <View style={styles.actionRow}>
+                    <View style={styles.filterGroup}>
+                        {/* <TouchableOpacity style={styles.filterBox}>
+                            <Text style={styles.filterText}>Jenis Ikan</Text>
+                            <Ionicons name="chevron-down" size={16} color={COLORS.grayText} />
+                        </TouchableOpacity> */}
 
-                <View style={styles.filterContainer}>
-                    <TouchableOpacity style={styles.filterBox}>
-                        <Text style={styles.filterText}>Jenis Ikan</Text>
-                        <Ionicons name="chevron-down" size={18} color={COLORS.grayText} />
+                        <TouchableOpacity style={styles.filterBox} onPress={() => setShowDatePicker(true)}>
+                            <Text style={styles.filterText}>
+                                {selectedDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
+                            </Text>
+                            <Ionicons name="calendar-outline" size={16} color={COLORS.grayText} />
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity 
+                        style={[styles.printButton, { backgroundColor: '#3B82F6' }]} 
+                        onPress={() => {
+                            Alert.alert(
+                                'Kirim Laporan Harian',
+                                `Apakah Anda yakin ingin mengirim data produksi tanggal ${selectedDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })} ke Staf Dinas untuk divalidasi? Data yang sudah dikirim tidak bisa diubah.`,
+                                [
+                                    { text: 'Batal', style: 'cancel' },
+                                    { 
+                                        text: 'Kirim Sekarang', 
+                                        onPress: () => Alert.alert('Sukses', 'Data berhasil dikirim ke Staf Dinas! Menunggu validasi.') 
+                                    }
+                                ]
+                            )
+                        }}
+                    >
+                        <Ionicons name="send-outline" size={18} color={COLORS.white} />
+                        <Text style={styles.printButtonText}>Kirim ke Staf</Text>
                     </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.filterBox}>
-                        <Text style={styles.filterText}>Tanggal</Text>
-                        <Ionicons name="calendar-outline" size={18} color={COLORS.grayText} />
-                    </TouchableOpacity>
                 </View>
+
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={selectedDate}
+                        mode="date"
+                        display="default"
+                        onChange={onChangeDate}
+                    />
+                )}
 
                 <View style={styles.tableWrapper}>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={true} style={styles.tableScroll}>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={true}>
                         <View>
-                        
                             <View style={styles.tableHeader}>
-                                <Text style={[styles.thText, { width: 100 }]}>Tanggal &{"\n"}Waktu</Text>
+                                <Text style={[styles.thText, { width: 120 }]}>Tanggal &{"\n"}Waktu</Text>
                                 <Text style={[styles.thText, { width: 120 }]}>Nama{"\n"}Pembeli</Text>
                                 <Text style={[styles.thText, { width: 120 }]}>Nama{"\n"}Nelayan</Text>
                                 <Text style={[styles.thText, { width: 100 }]}>Jenis Ikan</Text>
@@ -91,47 +207,61 @@ export default function KelolaScreen() {
                                 <Text style={[styles.thText, { width: 80, textAlign: 'center' }]}>Aksi</Text>
                             </View>
 
-                            {tableData.map((row, index) => (
-                            <View key={row.id} style={styles.tableRow}>
-                                <Text style={[styles.tdText, { width: 100, color: COLORS.grayText }]}>{row.tanggal}</Text>
-                                <Text style={[styles.tdText, { width: 120, fontWeight: 'bold' }]}>{row.pembeli}</Text>
-                                <Text style={[styles.tdText, { width: 120, fontWeight: 'bold' }]}>{row.nelayan}</Text>
-                                <Text style={[styles.tdText, { width: 100, fontWeight: 'bold' }]}>{row.ikan}</Text>
-                                <Text style={[styles.tdText, { width: 80 }]}>{row.berat}</Text>
-                                <Text style={[styles.tdText, { width: 120, fontWeight: 'bold' }]}>{row.harga}</Text>
-                                
-                                
-                                <View style={[styles.tdAction, { width: 80 }]}>
-                                    <TouchableOpacity style={styles.actionBtn}>
-                                    <MaterialCommunityIcons name="pencil-outline" size={20} color={COLORS.actionEdit} />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.actionBtn}>
-                                    <MaterialCommunityIcons name="trash-can-outline" size={20} color={COLORS.actionDelete} />
-                                    </TouchableOpacity>
+                            {isLoading ? (
+                                <View style={{ padding: 30, alignItems: 'center' }}>
+                                    <ActivityIndicator size="large" color={COLORS.primary} />
+                                    <Text style={{ marginTop: 10, color: COLORS.grayText }}>Memuat data...</Text>
                                 </View>
-                            </View>
-                        ))}
+                            ) : dataTangkapan.length === 0 ? (
+                                <View style={{ padding: 30, alignItems: 'center' }}>
+                                    <Text style={{ color: COLORS.grayText }}>Belum ada tangkapan di tanggal ini.</Text>
+                                </View>
+                            ) : (
+                                dataTangkapan.map((row) => (
+                                    <View key={row.id.toString()} style={styles.tableRow}>
+                                        <Text style={[styles.tdText, { width: 120, color: COLORS.grayText }]}>{formatTanggal(row.created_at)}</Text>
+                                        <Text style={[styles.tdText, { width: 120, fontWeight: 'bold' }]}>{row.nama_pembeli}</Text>
+                                        <Text style={[styles.tdText, { width: 120, fontWeight: 'bold' }]}>{row.nama_nelayan}</Text>
+                                        <Text style={[styles.tdText, { width: 100, fontWeight: 'bold' }]}>{row.jenis_ikan}</Text>
+                                        <Text style={[styles.tdText, { width: 80 }]}>{row.berat}</Text>
+                                        <Text style={[styles.tdText, { width: 120, fontWeight: 'bold', color: COLORS.success }]}>{formatRupiah(row.harga_jual)}</Text>
+                                        
+                                        <View style={[styles.tdAction, { width: 80 }]}>
+                                            <TouchableOpacity style={styles.actionBtn}>
+                                                <MaterialCommunityIcons name="pencil-outline" size={20} color={COLORS.actionEdit} />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity style={styles.actionBtn}>
+                                                <MaterialCommunityIcons name="trash-can-outline" size={20} color={COLORS.actionDelete} />
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                ))
+                            )}
                         </View>
                     </ScrollView>
                 </View>
 
-                <View style={styles.paginationContainer}>
-                <TouchableOpacity style={styles.pageBtn}>
-                    <Ionicons name="chevron-back" size={16} color={COLORS.grayText} />
-                </TouchableOpacity>
-                
-                <TouchableOpacity style={[styles.pageBtn, styles.pageBtnActive]}>
-                    <Text style={styles.pageTextActive}>1</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity style={styles.pageBtn}>
-                    <Text style={styles.pageText}>2</Text>
-                </TouchableOpacity>
+                {!isLoading && dataTangkapan.length > 0 && (
+                    <View style={styles.paginationContainer}>
+                        <TouchableOpacity 
+                            style={[styles.pageBtn, currentPage === 1 && { opacity: 0.5 }]}
+                            disabled={currentPage === 1}
+                            onPress={() => setCurrentPage(currentPage - 1)}
+                        >
+                            <Ionicons name="chevron-back" size={16} color={COLORS.grayText} />
+                        </TouchableOpacity>
+                        
+                        {renderPaginationButtons()}
 
-                <TouchableOpacity style={styles.pageBtn}>
-                    <Ionicons name="chevron-forward" size={16} color={COLORS.grayText} />
-                </TouchableOpacity>
-                </View>
+                        <TouchableOpacity 
+                            style={[styles.pageBtn, currentPage === totalPages && { opacity: 0.5 }]}
+                            disabled={currentPage === totalPages}
+                            onPress={() => setCurrentPage(currentPage + 1)}
+                        >
+                            <Ionicons name="chevron-forward" size={16} color={COLORS.grayText} />
+                        </TouchableOpacity>
+                    </View>
+                )}
 
             </ScrollView>
 
@@ -139,7 +269,7 @@ export default function KelolaScreen() {
                 style={styles.fab}
                 onPress={() => router.push('/tambah-data')} 
             >
-            <Ionicons name="add" size={30} color={COLORS.white} />
+                <Ionicons name="add" size={30} color={COLORS.white} />
             </TouchableOpacity>
 
         </SafeAreaView>
@@ -207,8 +337,16 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
     },
-    filterContainer: {
-        marginBottom: 20,
+    
+    // STYLE FILTER & CETAK BUTTON
+    actionRow: {
+        flexDirection: 'column',
+        marginBottom: 15,
+    },
+    filterGroup: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        marginBottom: 10,
     },
     filterBox: {
         flexDirection: 'row',
@@ -218,14 +356,33 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.border,
         borderRadius: 8,
-        paddingHorizontal: 15,
-        paddingVertical: 12,
-        marginBottom: 10,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        marginRight: 10,
+        width: 120,
     },
     filterText: {
-        fontSize: 14,
+        fontSize: 12,
         color: COLORS.grayText,
     },
+    printButton: {
+        flexDirection: 'row',
+        backgroundColor: COLORS.success,
+        paddingVertical: 12,
+        paddingHorizontal: 15,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 2,
+    },
+    printButtonText: {
+        color: COLORS.white,
+        fontWeight: 'bold',
+        fontSize: 14,
+        marginLeft: 8,
+    },
+    /* ----------------------------------------------- */
+
     tableWrapper: {
         backgroundColor: COLORS.white,
         borderRadius: 12,
@@ -233,9 +390,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.border,
         marginBottom: 20,
-    },
-    tableScroll: {
-        // Agar scroll bar terlihat jelas
     },
     tableHeader: {
         flexDirection: 'row',

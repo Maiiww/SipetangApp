@@ -9,10 +9,12 @@ import {
   StatusBar,
   ScrollView,
   Modal,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import API_URL from '../config';
 
 const COLORS = {
     primary: '#002D62',
@@ -35,30 +37,52 @@ export default function TambahDataScreen() {
     const [berat, setBerat] = useState('');
     const [jenisIkan, setJenisIkan] = useState('');
     const [harga, setHarga] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-    const handleSimpanData = () => {
-        // 1. Validasi sederhana
+    const handleSimpanData = async () => {
         if (!namaPembeli || !namaNelayan || !berat || !jenisIkan || !harga) {
-        Alert.alert('Gagal', 'Pastikan semua kolom formulir telah diisi.');
-        return;
+            Alert.alert('Gagal', 'Pastikan semua kolom formulir telah diisi.');
+            return;
         }
 
         const payload = {
-        nama_pembeli: namaPembeli,
-        nama_nelayan: namaNelayan,
-        jumlah_berat: parseFloat(berat),
-        jenis_ikan: jenisIkan,
-        harga_jual: parseInt(harga.replace(/[^0-9]/g, ''), 10), // Hanya ambil angkanya
+            user_id: 1, 
+            nama_pembeli: namaPembeli,
+            nama_nelayan: namaNelayan,
+            berat: parseFloat(berat), 
+            jenis_ikan: jenisIkan,
+            harga_jual: parseInt(harga.replace(/[^0-9]/g, ''), 10), 
         };
 
-        console.log('Data yang akan dikirim ke DB:', payload);
+        setIsLoading(true);
 
-        Alert.alert('Sukses', 'Data berhasil disimpan!', [
-        { text: 'OK', onPress: () => router.back() }
-        ]);
+        try {
+            const response = await fetch(`${API_URL}/tangkapan`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
 
+            const data = await response.json();
+
+            if (response.ok && data.status === 'success') {
+                Alert.alert('Sukses', 'Data berhasil disimpan!', [
+                    { text: 'OK', onPress: () => router.back() }
+                ]);
+            } else {
+                Alert.alert('Gagal Menyimpan', data.message || 'Terjadi kesalahan di server.');
+            }
+        } catch (error) {
+            Alert.alert('Error Jaringan', 'Gagal terhubung ke server Laravel.');
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -141,9 +165,19 @@ export default function TambahDataScreen() {
                 </View>
             </View>
 
-            <TouchableOpacity style={styles.submitButton} onPress={handleSimpanData}>
-                <MaterialCommunityIcons name="content-save-outline" size={20} color={COLORS.white} />
-                <Text style={styles.submitButtonText}>Simpan Data</Text>
+            <TouchableOpacity 
+                style={[styles.submitButton, isLoading && { opacity: 0.7 }]} 
+                onPress={handleSimpanData}
+                disabled={isLoading}
+                >
+                {isLoading ? (
+                    <ActivityIndicator color={COLORS.white} />
+                ) : (
+                    <>
+                        <MaterialCommunityIcons name="content-save-outline" size={20} color={COLORS.white} />
+                        <Text style={styles.submitButtonText}>Simpan Data</Text>
+                    </>
+                )}
             </TouchableOpacity>
 
             </View>
@@ -166,7 +200,7 @@ export default function TambahDataScreen() {
             <TouchableOpacity 
             style={styles.modalOverlay} 
             activeOpacity={1} 
-            onPress={() => setIsDropdownVisible(false)} // Tutup jika area luar di-klik
+            onPress={() => setIsDropdownVisible(false)}
             >
             <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Pilih Jenis Ikan</Text>

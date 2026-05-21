@@ -14,6 +14,7 @@ import {
     View
 } from "react-native";
 import { useAuth } from "../components/AuthContext";
+import API_URL from "../config";
 
 const COLORS = {
   primary: '#002D62',
@@ -67,72 +68,74 @@ export default function LoginScreen() {
 
 
 
-  const handleLogin = async () => {
+//   const handleLogin = async () => {
 
-    setErrors({ username: '', password: '', general: '' });
+//     setErrors({ username: '', password: '', general: '' });
 
   
-    if (!validateForm()) {
-      return; 
-    }
+//     if (!validateForm()) {
+//       return; 
+//     }
 
-    setIsLoading(true);
+//     setIsLoading(true);
 
-    try {
-      const result = await apiLoginSimulasi();
+//     try {
+//       const result = await apiLoginSimulasi();
 
-      console.log('Login Sukses:', result);
+//       console.log('Login Sukses:', result);
 
-      await signIn(); 
-      router.replace('/(tabs)');
+//       await signIn(); 
+//       router.replace('/(tabs)');
       
-    } catch (error: any) {
-      console.log('Login Gagal:', error.message);
-      setErrors((prev) => ({ ...prev, general: error.message }));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//     } catch (error: any) {
+//       console.log('Login Gagal:', error.message);
+//       setErrors((prev) => ({ ...prev, general: error.message }));
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
 
 
 //---------- Handle login with API ------------------------
-    // const handleLogin = async () => {
-    //     setErrors({ username: '', password: '', general: '' });
-    //     if (!validateForm()) return;
-    //     setIsLoading(true);
+    const handleLogin = async () => {
+        setErrors({ username: '', password: '', general: '' });
+        if (!validateForm()) return;
+        setIsLoading(true);
 
-    //     try {
-            
-    //         const response = await fetch('http://192.168.100.64:8000/api/login', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 username: username.trim(),
-    //                 password: password,
-    //             }),
-    //         });
+        try {         
+            const body = JSON.stringify({
+                username: username.trim(),
+                password: password,
+            });
 
-    //         const data = await response.json();
+            console.log('API login request:', `${API_URL}/login`, body);
+            const response = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body,
+            });
 
-           
-    //         if (response.ok && data.status === 'success') {      
-    //             await signIn(); 
-    //             router.replace('/(tabs)');
-    //         } else {
+            const data = await response.json();
+            console.log('API login response:', response.status, data);
+
+            if (response.ok && data.status === 'success') {      
+                await signIn(); 
+                router.replace('/(tabs)');
+            } else {
                 
-    //             throw new Error(data.message || 'Nama pengguna atau kata sandi salah.');
-    //         }
+                throw new Error(data.message || 'Nama pengguna atau kata sandi salah.');
+            }
 
             
-    //     } catch (error: any) {
-    //         setErrors((prev) => ({ ...prev, general: error.message || 'Terjadi kesalahan jaringan.' }));
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
+        } catch (error: any) {
+            setErrors((prev) => ({ ...prev, general: error.message || 'Terjadi kesalahan jaringan.' }));
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>

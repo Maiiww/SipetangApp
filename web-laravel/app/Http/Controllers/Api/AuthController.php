@@ -16,8 +16,9 @@ class AuthController extends Controller
 
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $user = Auth::user();
+            $cleanRole = strtolower(str_replace('_', '', $user->role));
             
-            if ($user->role !== 'juru_rekap') {
+            if ($cleanRole !== 'jururekap') {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Akses Ditolak!'
