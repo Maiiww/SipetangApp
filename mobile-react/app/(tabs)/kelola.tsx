@@ -120,6 +120,37 @@ export default function KelolaScreen() {
         return buttons;
     };
 
+    const handleKirimKeStaf = async () => {
+        try {
+            const formattedDate = selectedDate.toISOString().split('T')[0];
+            const userId = await AsyncStorage.getItem('user_id');
+
+            const response = await fetch(`${API_URL}/tangkapan/kirim`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    tanggal: formattedDate,
+                    user_id: userId
+                }),
+            });
+
+            const json = await response.json();
+
+            if (response.ok && json.status === 'success') {
+                Alert.alert('Sukses', json.message);
+                // Refresh data tabel agar status terbarunya langsung terlihat
+                fetchData(currentPage, selectedDate); 
+            } else {
+                Alert.alert('Peringatan', json.message || 'Gagal mengirim data.');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Terjadi kesalahan jaringan.');
+        }
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
@@ -176,7 +207,7 @@ export default function KelolaScreen() {
                                     { text: 'Batal', style: 'cancel' },
                                     { 
                                         text: 'Kirim Sekarang', 
-                                        onPress: () => Alert.alert('Sukses', 'Data berhasil dikirim ke Staf Dinas! Menunggu validasi.') 
+                                        onPress: () => handleKirimKeStaf() // <-- PANGGIL FUNGSI DI SINI
                                     }
                                 ]
                             )

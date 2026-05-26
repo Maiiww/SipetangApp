@@ -28,7 +28,6 @@ class AuthController extends Controller
         if ($user && $this->checkPassword($request->password, $user->password)) {
             \Log::info('Password check passed', ['username' => $request->username]);
 
-            // Cegah juruRekap login ke website (hanya bisa via mobile)
             if (strtolower($user->role) === 'jururekap') {
                 \Log::warning('juruRekap attempted web login', ['username' => $request->username]);
                 return back()->withErrors([
@@ -39,17 +38,14 @@ class AuthController extends Controller
             Auth::login($user, $request->boolean('remember'));
             $request->session()->regenerate();
 
-            // Migrasi password otomatis ke Bcrypt jika masih plain text
             if (!$this->isBcryptHash($user->password)) {
                 $user->password = Hash::make($request->password);
                 $user->save();
             }
 
-            // --- BAGIAN KRUSIAL: REDIRECT BERDASARKAN ROLE ---
             $role = strtolower($user->role);
 
             if ($role === 'admin') {
-                // Pastikan nama route ini ADA di web.php
                 return redirect()->intended(route('admin.dashboard'));
             }
 

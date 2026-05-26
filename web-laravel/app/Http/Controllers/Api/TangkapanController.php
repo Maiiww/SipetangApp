@@ -37,6 +37,31 @@ class TangkapanController extends Controller
             'data' => $tangkapan
         ], 200);
     }
+
+    public function sendToStaff(Request $request)
+    {
+        $request->validate([
+            'tanggal' => 'required|date',
+            'user_id' => 'required|integer'
+        ]);
+
+        $updated = Tangkapan::whereDate('created_at', $request->tanggal)
+            ->where('user_id', $request->user_id)
+            ->where('status', 'Draft')
+            ->update(['status' => 'Menunggu Validasi']);
+
+        if ($updated > 0) {
+            return response()->json([
+                'status' => 'success',
+                'message' => "Berhasil mengirim $updated data ke Staf Dinas!"
+            ], 200);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Tidak ada data Draft pada tanggal ini yang bisa dikirim.'
+        ], 404);
+    }
     
 
     public function store(Request $request)

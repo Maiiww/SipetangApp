@@ -17,4 +17,6 @@ Route::post('/tangkapan', [TangkapanController::class, 'store']);
 Route::get('/profile/{id}', [ProfileController::class, 'show']);
 Route::post('/profile/{id}/update-foto', [ProfileController::class, 'updateFoto']);
 
+Route::post('/tangkapan/kirim', [TangkapanController::class, 'sendToStaff']);
+
 

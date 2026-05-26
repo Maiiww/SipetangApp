@@ -16,6 +16,7 @@ class Tangkapan extends Model
         'nama_nelayan',
         'jenis_ikan',
         'berat',
-        'harga_jual'
+        'harga_jual',
+        'status'
     ];
 }
