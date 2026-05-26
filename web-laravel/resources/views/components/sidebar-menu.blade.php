@@ -10,7 +10,16 @@
                 ->orderBy('sort_order')
                 ->get()
                 ->filter(function ($menu) {
-                    return $menu->title !== 'Profil';
+                    $role = strtolower(auth()->user()->role);
+                    // Exclude 'Profil' for all roles
+                    if ($menu->title === 'Profil') {
+                        return false;
+                    }
+                    // Exclude 'Beranda'/'Dashboard' for admin role
+                    if ($role === 'admin' && in_array($menu->title, ['Beranda', 'Dashboard', 'Dashboard Admin'])) {
+                        return false;
+                    }
+                    return true;
                 });
         }
 
@@ -19,7 +28,6 @@
 
             if ($role === 'admin') {
                 $sidebarMenus = collect([
-                    (object) ['title' => 'Beranda', 'route_name' => 'admin.dashboard', 'icon' => 'fa-house'],
                     (object) [
                         'title' => 'Manajemen User',
                         'route_name' => 'admin.manajemen.user',

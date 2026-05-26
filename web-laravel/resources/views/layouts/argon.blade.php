@@ -208,8 +208,10 @@
             id="sidenav-main">
             <div class="sidenav-header">
                 <a class="navbar-brand m-0" href="#">
-                    <div class="navbar-brand-box" style="background: white; border-radius: 18px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                        <img src="{{ asset('images/sipetang-logo.svg') }}" alt="SIPETANG" style="max-width: 38px; max-height: 38px; object-fit: contain;" />
+                    <div class="navbar-brand-box"
+                        style="background: white; border-radius: 18px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                        <img src="{{ asset('images/sipetang-logo.svg') }}" alt="SIPETANG"
+                            style="max-width: 38px; max-height: 38px; object-fit: contain;" />
                     </div>
                     <div>
                         <span class="ms-1 font-weight-bold">SIPETANG</span>
@@ -274,14 +276,7 @@
                         <span
                             class="nav-link-text text-white text-xs font-weight-bold text-uppercase ps-3 opacity-6">Akun</span>
                     </li>
-                    @if(auth()->check() && strtolower(auth()->user()->role) === 'admin')
-                        <li class="nav-item">
-                            <a class="{{ request()->routeIs('admin.dashboard') ? 'nav-link active' : 'nav-link' }}"
-                                href="{{ route('admin.dashboard') }}">
-                                <i class="ni ni-tv-2 text-white"></i>
-                                <span class="nav-link-text ms-1 text-white">Dashboard Admin</span>
-                            </a>
-                        </li>
+                    @if (auth()->check() && strtolower(auth()->user()->role) === 'admin')
                         <li class="nav-item">
                             <a class="{{ request()->routeIs('admin.manajemen.user') ? 'nav-link active' : 'nav-link' }}"
                                 href="{{ route('admin.manajemen.user') }}">
@@ -336,7 +331,8 @@
                     @endif
                 </ul>
                 <div class="sidebar-logout">
-                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <a href="{{ route('logout') }}"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Logout</span>
                     </a>

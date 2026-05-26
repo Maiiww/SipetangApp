@@ -282,10 +282,18 @@
             text-transform: uppercase;
         }
 
+        th:last-child {
+            text-align: center;
+        }
+
         td {
             padding: 15px 12px;
             font-size: 13px;
             border-bottom: 1px solid #eee;
+        }
+
+        td:last-child {
+            text-align: center;
         }
 
         .user-info {
@@ -312,6 +320,65 @@
             border-radius: 6px;
             font-size: 11px;
             font-weight: 600;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-aktif {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .status-nonaktif {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Action Buttons */
+        .btn-aksi {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-nonaktif {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .btn-nonaktif:hover {
+            background: #fecaca;
+            border-color: #f87171;
+        }
+
+        .btn-aktif {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .btn-aktif:hover {
+            background: #bbf7d0;
+            border-color: #6ee7b7;
         }
 
         /* Pagination */
@@ -589,6 +656,7 @@
                         <th>Jenis Kelamin</th>
                         <th>No Telepon</th>
                         <th>Alamat</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -611,10 +679,30 @@
                             <td>{{ $user->jenis_kelamin ?? '-' }}</td>
                             <td>{{ $user->no_telepon ?? '-' }}</td>
                             <td>{{ $user->alamat ?? '-' }}</td>
+                            <td>
+                                <div
+                                    style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                                    @if ($user->is_active ?? true)
+                                        <span class="status-badge status-aktif">
+                                            <i class="fas fa-circle-check"></i> Aktif
+                                        </span>
+                                        <button class="btn-aksi btn-nonaktif"
+                                            onclick="deactivateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')"><i
+                                                class="fas fa-ban"></i> Nonaktifkan</button>
+                                    @else
+                                        <span class="status-badge status-nonaktif">
+                                            <i class="fas fa-circle-xmark"></i> Nonaktif
+                                        </span>
+                                        <button class="btn-aksi btn-aktif"
+                                            onclick="activateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')"><i
+                                                class="fas fa-check-circle"></i> Aktifkan</button>
+                                    @endif
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" style="text-align: center; color: #999; padding: 30px;">Tidak ada data
+                            <td colspan="6" style="text-align: center; color: #999; padding: 30px;">Tidak ada data
                             </td>
                         </tr>
                     @endforelse
@@ -734,6 +822,26 @@
             document.getElementById('tambahUserModal').classList.remove('active');
             document.getElementById('formTambahUser').reset();
             document.getElementById('asal_tpi_field').style.display = 'none';
+        }
+
+        function deactivateUser(userId, userName) {
+            if (confirm(`Nonaktifkan akun "${userName}"?`)) {
+                // TODO: Kirim request ke backend untuk update status
+                console.log('Menonaktifkan user ID: ' + userId);
+                // Untuk sementara hanya menampilkan alert
+                alert('Proses menonaktifkan akun sedang diproses...');
+                // location.reload();
+            }
+        }
+
+        function activateUser(userId, userName) {
+            if (confirm(`Aktifkan akun "${userName}"?`)) {
+                // TODO: Kirim request ke backend untuk update status
+                console.log('Mengaktifkan user ID: ' + userId);
+                // Untuk sementara hanya menampilkan alert
+                alert('Proses mengaktifkan akun sedang diproses...');
+                // location.reload();
+            }
         }
 
         function updateRoleFields() {

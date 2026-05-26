@@ -46,7 +46,7 @@ class AuthController extends Controller
             $role = strtolower($user->role);
 
             if ($role === 'admin') {
-                return redirect()->intended(route('admin.dashboard'));
+                return redirect()->intended(route('admin.manajemen.user'));
             }
 
             return redirect()->intended(route('staff.dashboard'));
