@@ -23,7 +23,8 @@
         /* Sidebar */
         .sidebar {
             width: 200px;
-            background: linear-gradient(180deg, #0d2640 0%, #1a4d7d 100%);
+            /* Warna sudah diubah sama seperti dashboard staff */
+            background: linear-gradient(180deg, #0a3b99 0%, #1d65d0 100%); 
             color: white;
             padding: 30px 20px;
             display: flex;

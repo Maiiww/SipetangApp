@@ -15,35 +15,14 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Total Data User
-        $totalUser = User::count();
-
-        // Total Laporan dari database
-        $totalLaporan = Laporan::count();
-
-        // Validasi Tertunda (status pending)
-        $validasiTertunda = Laporan::where('status', 'pending')->count();
-
-        // Produksi bulan ini
-        $bulanIni = Carbon::now()->startOfMonth();
-        $produksiBulan = Laporan::where('tanggalInput', '>=', $bulanIni)->sum('beratTotal');
-
-        // Persentase validasi berhasil
-        $totalValidasiDone = Laporan::whereIn('status', ['validated', 'rejected'])->count();
-        $validasiSuccess = Laporan::where('status', 'validated')->count();
-        $persentaseValidasi = $totalValidasiDone > 0 ? round($validasiSuccess / $totalValidasiDone * 100) : 0;
-
-        // Anomali terdeteksi (berat > 100 ton dianggap anomali)
-        $anomaliDetected = Laporan::where('beratTotal', '>', 100)->count();
-
-        // Statistik Dashboard
+        // Statistik Dashboard - Set ke 0 menunggu data real dari mobile juru rekap
         $statistik = [
-            'totalUser' => $totalUser,
-            'produksiBulan' => number_format($produksiBulan, 2),
-            'totalLaporan' => $totalLaporan,
-            'validasiTertunda' => $validasiTertunda,
-            'persentaseValidasi' => $persentaseValidasi,
-            'anomaliDetected' => $anomaliDetected,
+            'totalUser' => 0,
+            'produksiBulan' => 0,
+            'totalLaporan' => 0,
+            'validasiTertunda' => 0,
+            'persentaseValidasi' => 0,
+            'anomaliDetected' => 0,
         ];
 
         // Data Aktivitas Terbaru (5 laporan terakhir dari database)
