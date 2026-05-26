@@ -381,6 +381,66 @@
             border-color: #6ee7b7;
         }
 
+        /* Action Menu with Ellipsis */
+        .btn-aksi-menu {
+            padding: 6px 10px;
+            border: none;
+            background: none;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .btn-aksi-menu:hover {
+            background: #f0f0f0;
+            color: #0d2640;
+        }
+
+        .action-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 200;
+            min-width: 160px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            color: #333;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+            color: #0d2640;
+        }
+
+        .dropdown-item i {
+            width: 16px;
+        }
+
         /* Pagination */
         .pagination {
             display: flex;
@@ -656,6 +716,7 @@
                         <th>Jenis Kelamin</th>
                         <th>No Telepon</th>
                         <th>Alamat</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -680,29 +741,38 @@
                             <td>{{ $user->no_telepon ?? '-' }}</td>
                             <td>{{ $user->alamat ?? '-' }}</td>
                             <td>
-                                <div
-                                    style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                                @if ($user->is_active ?? true)
+                                    <span class="status-badge status-aktif">
+                                        <i class="fas fa-circle-check"></i> Aktif
+                                    </span>
+                                @else
+                                    <span class="status-badge status-nonaktif">
+                                        <i class="fas fa-circle-xmark"></i> Nonaktif
+                                    </span>
+                                @endif
+                            </td>
+                            <td style="text-align: center; position: relative;">
+                                <button class="btn-aksi-menu" onclick="toggleMenu(event, this)">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="action-dropdown" style="display: none;">
                                     @if ($user->is_active ?? true)
-                                        <span class="status-badge status-aktif">
-                                            <i class="fas fa-circle-check"></i> Aktif
-                                        </span>
-                                        <button class="btn-aksi btn-nonaktif"
-                                            onclick="deactivateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')"><i
-                                                class="fas fa-ban"></i> Nonaktifkan</button>
+                                        <button type="button" class="dropdown-item"
+                                            onclick="deactivateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                            <i class="fas fa-ban"></i> Nonaktifkan
+                                        </button>
                                     @else
-                                        <span class="status-badge status-nonaktif">
-                                            <i class="fas fa-circle-xmark"></i> Nonaktif
-                                        </span>
-                                        <button class="btn-aksi btn-aktif"
-                                            onclick="activateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')"><i
-                                                class="fas fa-check-circle"></i> Aktifkan</button>
+                                        <button type="button" class="dropdown-item"
+                                            onclick="activateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                            <i class="fas fa-check-circle"></i> Aktifkan
+                                        </button>
                                     @endif
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="text-align: center; color: #999; padding: 30px;">Tidak ada data
+                            <td colspan="7" style="text-align: center; color: #999; padding: 30px;">Tidak ada data
                             </td>
                         </tr>
                     @endforelse
@@ -760,7 +830,8 @@
                     </div>
                     <div class="form-group-modal">
                         <label>Konfirmasi Password *</label>
-                        <input type="password" name="password_confirmation" placeholder="Konfirmasi password" required>
+                        <input type="password" name="password_confirmation" placeholder="Konfirmasi password"
+                            required>
                     </div>
                 </div>
 
@@ -861,6 +932,28 @@
                 wilayah_required.style.display = 'none';
             }
         }
+
+        function toggleMenu(event, button) {
+            event.stopPropagation();
+            const dropdown = button.nextElementSibling;
+
+            // Close all other dropdowns
+            document.querySelectorAll('.action-dropdown').forEach(menu => {
+                if (menu !== dropdown) {
+                    menu.style.display = 'none';
+                }
+            });
+
+            // Toggle current dropdown
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.action-dropdown').forEach(dropdown => {
+                dropdown.style.display = 'none';
+            });
+        });
 
         // Close modal when clicking outside of it
         window.onclick = function(event) {
