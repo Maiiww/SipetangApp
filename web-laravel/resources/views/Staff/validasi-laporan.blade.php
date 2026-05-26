@@ -763,25 +763,14 @@
                         style="width: 50px; height: 50px; object-fit: contain;">
                 </div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-content">
-                    <div class="stat-label"><i class="fas fa-exclamation-triangle"></i> Anomali Data</div>
-                    <div class="stat-value" style="color: #f44336;">{{ $stats['anomaly'] }}</div>
-                </div>
-                <div class="stat-icon-box stat-icon-anomaly">
-                    <img src="{{ asset('images/warning.png') }}" alt="Anomali"
-                        style="width: 50px; height: 50px; object-fit: contain;">
-                </div>
-            </div>
         </div>
 
         <!-- Filters Section -->
         <div class="filters-section">
             <form method="GET" action="{{ route('staff.validasi') }}" id="filterForm"
-                style="width: 100%; display: flex; gap: 15px; align-items: center;">
+                style="width: 100%; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <!-- Search Box -->
-                <div style="flex: 1; display: flex; gap: 8px;">
+                <div style="flex: 1; min-width: 250px; display: flex; gap: 8px;">
                     <input type="text" name="search" placeholder="Cari ID, TPI, atau jenis ikan..."
                         value="{{ $search }}"
                         style="flex: 1; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
@@ -794,10 +783,6 @@
                 <div class="filter-group">
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <span style="font-size: 12px; color: #999; font-weight: 600;">Filter:</span>
-                        <button type="button" class="btn-filter {{ $statusFilter === 'all' ? 'active' : '' }}"
-                            onclick="setStatusFilter('all', this)">
-                            <i class="fas fa-list"></i> Semua
-                        </button>
                         <button type="button" class="btn-filter {{ $statusFilter === 'pending' ? 'active' : '' }}"
                             onclick="setStatusFilter('pending', this)">
                             <i class="fas fa-hourglass-half"></i> Pending
@@ -813,13 +798,27 @@
                     </div>
                 </div>
 
-                <!-- Clear Filters Button -->
-                @if ($search || $statusFilter !== 'all')
-                    <a href="{{ route('staff.validasi') }}" class="btn-filter"
-                        style="background: #f5f5f5; color: #999;">
-                        <i class="fas fa-redo"></i> Reset
-                    </a>
-                @endif
+                <!-- TPI Filter -->
+                <div style="min-width: 200px;">
+                    <select name="tpi" id="tpiFilter"
+                        style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px; background-color: white; max-height: 200px; overflow-y: auto;">
+                        <option value="">Pilih Asal TPI</option>
+                        <option value="mayangan">Patimban</option>
+                        <option value="blanakan">Genteng</option>
+                        <option value="pondok-bali">Mayangan</option>
+                        <option value="patimban">Cirewang</option>
+                        <option value="pelabuhan-ratu">Muara Ciasem</option>
+                        <option value="muara-cimanuk">Blanakan</option>
+                        <option value="eretan-wetan">Rawameneng</option>
+                        <option value="panjunan">Cilamaya Girang</option>
+                    </select>
+                </div>
+
+                <!-- Date Filter -->
+                <div style="min-width: 180px;">
+                    <input type="date" name="date" id="dateFilter"
+                        style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
+                </div>
 
                 <!-- Hidden status input -->
                 <input type="hidden" name="status" id="statusInput" value="{{ $statusFilter }}">
@@ -848,66 +847,21 @@
                 Antrean Laporan
             </div>
 
-            @if ($laporans->count() > 0)
-                <table class="reports-table">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Nama TPI</th>
-                            <th>Jenis Ikan</th>
-                            <th>Volume (Kg)</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($laporans as $laporan)
-                            <tr>
-                                <td class="date-cell">{{ $laporan->tanggalInput->format('d M Y') }}</td>
-                                <td>
-                                    <div class="tpi-name">{{ $laporan->namaTPI }}</div>
-                                </td>
-                                <td><span class="fish-badge">{{ $laporan->jenisIkan }}</span></td>
-                                <td class="volume-cell">{{ number_format($laporan->beratTotal * 1000, 0, ',', '.') }}
-                                </td>
-                                <td>
-                                    @if ($laporan->status === 'pending')
-                                        <span class="status-badge status-pending">PENDING</span>
-                                    @elseif ($laporan->status === 'validated')
-                                        <span class="status-badge status-validated">TERVALIDASI</span>
-                                    @elseif ($laporan->status === 'rejected')
-                                        <span class="status-badge status-rejected">DITOLAK</span>
-                                    @endif
-                                </td>
-                                <td class="action-cell">
-                                    @if ($laporan->status === 'pending')
-                                        <form method="POST"
-                                            action="{{ route('staff.validasi.validate', $laporan->idLaporan) }}"
-                                            style="display: inline;"
-                                            onsubmit="return confirm('Anda yakin ingin memvalidasi laporan ini?')">
-                                            @csrf
-                                            <button type="submit"
-                                                class="action-btn action-validate">Validasi</button>
-                                        </form>
-                                        <button type="button" class="action-btn action-reject"
-                                            onclick="openRejectModal('{{ $laporan->idLaporan }}', '{{ addslashes($laporan->namaTPI) }}')">Tolak</button>
-                                    @else
-                                        <span style="font-size: 12px; color: #888;"><i class="fas fa-check"></i> Sudah
-                                            diproses</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                {{ $laporans->links('pagination.custom') }}
-            @else
-                <div style="text-align: center; padding: 40px; color: #888;">
-                    <i class="fas fa-inbox"
-                        style="font-size: 48px; margin-bottom: 16px; opacity: 0.5; display: block;"></i>
-                    <p>Belum Ada Antrean Laporan!</p>
-                </div>
-            @endif
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Nama TPI</th>
+                        <th>Jenis Ikan</th>
+                        <th>Volume (Kg)</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            {{ $laporans->links('pagination.custom') }}
         </div>
 
         <!-- Reject Modal -->
