@@ -28,6 +28,14 @@ class AuthController extends Controller
         if ($user && $this->checkPassword($request->password, $user->password)) {
             \Log::info('Password check passed', ['username' => $request->username]);
 
+            // Cek apakah akun aktif
+            if (!($user->is_active ?? true)) {
+                \Log::warning('Inactive account login attempt', ['username' => $request->username]);
+                return back()->withErrors([
+                    'username' => 'Akun Anda telah dinonaktifkan. Hubungi administrator.',
+                ])->onlyInput('username');
+            }
+
             if (strtolower($user->role) === 'jururekap') {
                 \Log::warning('juruRekap attempted web login', ['username' => $request->username]);
                 return back()->withErrors([

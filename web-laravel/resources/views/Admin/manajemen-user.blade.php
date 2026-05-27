@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Manajemen User - SIPETANG</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -752,22 +753,26 @@
                                 @endif
                             </td>
                             <td style="text-align: center; position: relative;">
-                                <button class="btn-aksi-menu" onclick="toggleMenu(event, this)">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                                <div class="action-dropdown" style="display: none;">
-                                    @if ($user->is_active ?? true)
-                                        <button type="button" class="dropdown-item"
-                                            onclick="deactivateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
-                                            <i class="fas fa-ban"></i> Nonaktifkan
-                                        </button>
-                                    @else
-                                        <button type="button" class="dropdown-item"
-                                            onclick="activateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
-                                            <i class="fas fa-check-circle"></i> Aktifkan
-                                        </button>
-                                    @endif
-                                </div>
+                                @if ($user->role !== 'admin')
+                                    <button class="btn-aksi-menu" onclick="toggleMenu(event, this)">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="action-dropdown" style="display: none;">
+                                        @if ($user->is_active ?? true)
+                                            <button type="button" class="dropdown-item"
+                                                onclick="deactivateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                                <i class="fas fa-ban"></i> Nonaktifkan
+                                            </button>
+                                        @else
+                                            <button type="button" class="dropdown-item"
+                                                onclick="activateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                                <i class="fas fa-check-circle"></i> Aktifkan
+                                            </button>
+                                        @endif
+                                    </div>
+                                @else
+                                    <span style="color: #999; font-size: 12px;">-</span>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -897,21 +902,61 @@
 
         function deactivateUser(userId, userName) {
             if (confirm(`Nonaktifkan akun "${userName}"?`)) {
-                // TODO: Kirim request ke backend untuk update status
-                console.log('Menonaktifkan user ID: ' + userId);
-                // Untuk sementara hanya menampilkan alert
-                alert('Proses menonaktifkan akun sedang diproses...');
-                // location.reload();
+                fetch(`{{ route('admin.user.update-status') }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            is_active: false
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Akun berhasil dinonaktifkan!');
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Gagal menonaktifkan akun!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan: ' + error);
+                    });
             }
         }
 
         function activateUser(userId, userName) {
             if (confirm(`Aktifkan akun "${userName}"?`)) {
-                // TODO: Kirim request ke backend untuk update status
-                console.log('Mengaktifkan user ID: ' + userId);
-                // Untuk sementara hanya menampilkan alert
-                alert('Proses mengaktifkan akun sedang diproses...');
-                // location.reload();
+                fetch(`{{ route('admin.user.update-status') }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            is_active: true
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Akun berhasil diaktifkan!');
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Gagal mengaktifkan akun!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan: ' + error);
+                    });
             }
         }
 

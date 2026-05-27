@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
         ->name('admin.manajemen.user');
 
     Route::post('/admin/user/store', [UserController::class, 'store'])->name('admin.user.store');
+    Route::post('/admin/user/update-status', [UserController::class, 'updateStatus'])->name('admin.user.update-status');
 });
 
 // Guest Routes

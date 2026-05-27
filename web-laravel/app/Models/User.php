@@ -34,6 +34,7 @@ class User extends Authenticatable
         'alamat',
         'role',
         'wilayah',
+        'is_active',
     ];
 
     /**
