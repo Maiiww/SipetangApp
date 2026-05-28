@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
-  StatusBar
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import API_URL from '../../config';
+
 
 const COLORS = {
   primary: '#002D62',
@@ -24,199 +27,240 @@ const COLORS = {
   badgeBg: '#F3F4F6',
 };
 
-const historyData = [
-  {
-    id: '1',
-    status: 'success',
-    title: 'Berhasil Input',
-    desc: 'Menambahkan Tuna 30 KG',
-    time: 'Baru saja',
-  },
-  {
-    id: '2',
-    status: 'error',
-    title: 'Gagal Input',
-    desc: 'Gagal menambahkan Cakalang sebesar 40KG',
-    time: '2 jam yang lalu',
-  },
-  {
-    id: '3',
-    status: 'success',
-    title: 'Berhasil Input',
-    desc: 'Menambahkan Cakalang sebesar 40KG',
-    time: 'Baru saja',
-  },
-  {
-    id: '4',
-    status: 'success',
-    title: 'Berhasil Input',
-    desc: 'Menambahkan Tongkol sebesar 20KG',
-    time: 'Baru saja',
-  },
-];
+interface RiwayatItem {
+    id: number;
+    status: string;
+    jenis_ikan: string;
+    berat: number | string; 
+    created_at: string;
+}
 
 export default function HistoryScreen() {
     const router = useRouter();
+    const [historyData, setHistoryData] = useState({ perlu_revisi: [], semua_riwayat: [] });
+    const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('semua');
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
+    const getRelativeTime = (dateString: string) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        
+        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-            
-            <View style={styles.header}>
-                {/* Tombol Back mengarah ke Beranda */}
-                <TouchableOpacity style={styles.backButton} onPress={() => router.push('/(tabs)')}>
-                <Ionicons name="arrow-back" size={24} color={COLORS.white} />
-                </TouchableOpacity>
-                <View>
-                <Text style={styles.headerTitle}>Riwayat Produksi</Text>
-                <Text style={styles.headerSubtitle}>SIPETANG</Text>
+        if (diffInSeconds < 60) return 'Baru saja';
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
+        if (diffInMinutes < 60) return `${diffInMinutes} menit yang lalu`;
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        if (diffInHours < 24) return `${diffInHours} jam yang lalu`;
+        const diffInDays = Math.floor(diffInHours / 24);
+        return `${diffInDays} hari yang lalu`;
+    };
+
+    const fetchHistory = async () => {
+        setLoading(true);
+        try {
+            const userId = await AsyncStorage.getItem('user_id');
+            const response = await fetch(`${API_URL}/tangkapan/riwayat?user_id=${userId}`);
+            const textResponse = await response.text(); // Ambil bentuk mentahnya dulu
+            console.log("ISI BALASAN DARI LARAVEL:", textResponse); // Tampilkan di terminal
+            const json = JSON.parse(textResponse); // Baru diubah ke JSON
+
+            if (json.status === 'success') {
+                setHistoryData(json.data);
+            }
+        } catch (error) {
+            console.error("Gagal mengambil riwayat:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchHistory();
+        }, [])
+    );
+
+    const renderCard = ({ item }: { item: RiwayatItem }) => {
+        const isFailed = item.status === 'Ditolak';
+
+        return (
+            <View style={[
+                styles.cardContainer, 
+                { borderLeftColor: isFailed ? COLORS.error : COLORS.success }
+            ]}>
+                <View style={[
+                    styles.iconBox, 
+                    { backgroundColor: isFailed ? COLORS.errorBg : COLORS.successBg }
+                ]}>
+                    <Ionicons 
+                        name={isFailed ? "close" : "checkmark"} 
+                        size={24} 
+                        color={isFailed ? COLORS.error : COLORS.success} 
+                    />
+                </View>
+
+                <View style={styles.textContainer}>
+                    <Text style={styles.titleText}>
+                        {isFailed ? 'Gagal Input' : 'Berhasil Input'}
+                    </Text>
+                    <Text style={styles.descText}>
+                        {isFailed 
+                            ? `Gagal menambahkan ${item.jenis_ikan} sebesar ${item.berat}KG`
+                            : `Menambahkan ${item.jenis_ikan} sebesar ${item.berat}KG`
+                        }
+                    </Text>
+                    
+                    {isFailed && (
+                        <TouchableOpacity onPress={() => router.push('/kelola')}>
+                            {/* Gunakan COLORS untuk teks perbaikan */}
+                            <Text style={styles.repairText}>Perbaiki Sekarang {'>'}</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+
+                {/* Gunakan warna abu-abu baru dari COLORS */}
+                <View style={styles.badgeContainer}>
+                   <Text style={styles.timeText}>{getRelativeTime(item.created_at)}</Text>
                 </View>
             </View>
+        );
+    };
 
-            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-                
-                
-                {historyData.map((item) => {
-                const isSuccess = item.status === 'success';
+    const displayData = activeTab === 'semua' 
+        ? historyData.semua_riwayat 
+        : historyData.perlu_revisi;
 
-                return (
-                    <View 
-                    key={item.id} 
-                    style={[
-                        styles.card, 
-                        // Dinamis: Warna border kiri berubah berdasarkan status
-                        { borderLeftColor: isSuccess ? COLORS.success : COLORS.error }
-                    ]}
-                    >
-                    
-                    <View style={[
-                        styles.iconBox, 
-                        { backgroundColor: isSuccess ? COLORS.successBg : COLORS.errorBg }
-                    ]}>
-                        <Ionicons 
-                        name={isSuccess ? "checkmark" : "close"} 
-                        size={20} 
-                        color={isSuccess ? COLORS.success : COLORS.error} 
-                        />
-                    </View>
+    return (
+        <View style={styles.container}>
+            <View style={styles.tabContainer}>
+                <TouchableOpacity 
+                    style={[styles.tabButton, activeTab === 'semua' && styles.activeTabButton]}
+                    onPress={() => setActiveTab('semua')}
+                >
+                    <Text style={[styles.tabText, activeTab === 'semua' && styles.activeTabText]}>
+                        Semua Riwayat
+                    </Text>
+                </TouchableOpacity>
 
-                    
-                    <View style={styles.cardContent}>
-                        <View style={styles.cardHeader}>
-                        <Text style={styles.cardTitle}>{item.title}</Text>
-                        
-                        
-                        <View style={styles.timeBadge}>
-                            <Text style={styles.timeText}>{item.time}</Text>
-                        </View>
-                        </View>
-                        
-                        <Text style={styles.cardDesc}>{item.desc}</Text>
-                        
-                
-                        {!isSuccess && (
-                        <TouchableOpacity onPress={() => console.log('Buka form perbaikan')}>
-                            <Text style={styles.actionText}>Perbaiki Sekarang &gt;</Text>
-                        </TouchableOpacity>
-                        )}
-                    </View>
-                    </View>
-                );
-                })}
+                <TouchableOpacity 
+                    style={[styles.tabButton, activeTab === 'revisi' && styles.activeTabButton]}
+                    onPress={() => setActiveTab('revisi')}
+                >
+                    <Text style={[styles.tabText, activeTab === 'revisi' && styles.activeTabText]}>
+                        Perlu Revisi ({historyData.perlu_revisi.length})
+                    </Text>
+                </TouchableOpacity>
+            </View>
 
-            </ScrollView>
-        </SafeAreaView>
+            {loading ? (
+                <ActivityIndicator size="large" color={COLORS.primary} style={{marginTop: 50}} />
+            ) : (
+                <FlatList
+                    data={displayData}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderCard}
+                    contentContainerStyle={{ padding: 20 }}
+                    ListEmptyComponent={
+                        <Text style={styles.emptyText}>Tidak ada riwayat saat ini.</Text>
+                    }
+                />
+            )}
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: COLORS.background,
+    container: { 
+        flex: 1, 
+        backgroundColor: COLORS.background 
     },
-    header: {
-        backgroundColor: COLORS.primary,
+    tabContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: 15,
-        paddingBottom: 20,
+        paddingTop: 20,
+        paddingBottom: 10,
+        backgroundColor: COLORS.white,
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.badgeBg,
     },
-    backButton: {
-        marginRight: 15,
+    tabButton: {
+        flex: 1,
+        paddingVertical: 10,
+        alignItems: 'center',
+        borderBottomWidth: 2,
+        borderBottomColor: 'transparent',
     },
-    headerTitle: {
-        color: COLORS.white,
-        fontSize: 16,
+    activeTabButton: {
+        borderBottomColor: COLORS.primary,
+    },
+    tabText: {
+        fontSize: 14,
         fontWeight: 'bold',
+        color: COLORS.grayText,
     },
-    headerSubtitle: {
-        color: COLORS.white,
-        fontSize: 10,
-        opacity: 0.8,
-        letterSpacing: 1,
+    activeTabText: {
+        color: COLORS.primary,
     },
-    scrollContent: {
-        padding: 20,
-        paddingBottom: 120, 
-    },
-    card: {
+    cardContainer: {
         flexDirection: 'row',
         backgroundColor: COLORS.white,
         borderRadius: 12,
         padding: 15,
         marginBottom: 15,
-        borderLeftWidth: 4, 
+        borderLeftWidth: 6,
         elevation: 2,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 4,
     },
-    iconBox: {
-        width: 40,
-        height: 40,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 15,
+    iconBox: { 
+        width: 40, 
+        height: 40, 
+        borderRadius: 8, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        marginRight: 15 
     },
-    cardContent: {
-        flex: 1,
-        justifyContent: 'center',
+    textContainer: { 
+        flex: 1, 
+        justifyContent: 'center' 
     },
-    cardHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 5,
+    titleText: { 
+        fontWeight: 'bold', 
+        fontSize: 16, 
+        color: COLORS.textDark, 
+        marginBottom: 4 
     },
-    cardTitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: COLORS.textDark,
-    },
-    timeBadge: {
-        backgroundColor: COLORS.badgeBg,
-        paddingHorizontal: 8,
-        paddingVertical: 3,
-        borderRadius: 12,
-    },
-    timeText: {
-        fontSize: 10,
-        color: COLORS.grayText,
-        fontWeight: '500',
-    },
-    cardDesc: {
-        fontSize: 12,
+    descText: { 
+        fontSize: 13, 
         color: COLORS.grayText,
         lineHeight: 18,
     },
-    actionText: {
-        fontSize: 11,
-        fontWeight: 'bold',
-        color: COLORS.error,
-        marginTop: 8,
+    repairText: { 
+        fontSize: 13, 
+        color: COLORS.error, 
+        fontWeight: 'bold', 
+        marginTop: 8 
+    },
+    badgeContainer: {
+        position: 'absolute', 
+        right: 15, 
+        top: 15,
+        backgroundColor: COLORS.badgeBg,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 12,
+    },
+    timeText: { 
+        fontSize: 11, 
+        color: COLORS.grayText, 
+        fontWeight: '500'
+    },
+    emptyText: { 
+        textAlign: 'center', 
+        marginTop: 50, 
+        color: COLORS.grayText, 
+        fontSize: 14 
     },
 });

@@ -90,4 +90,26 @@ class TangkapanController extends Controller
             'data' => $tangkapan
         ], 201);
     }
+
+    public function riwayat(Request $request)
+    {
+        $userId = $request->query('user_id');
+
+        $perluRevisi = Tangkapan::where('user_id', $userId)
+            ->where('status', 'Ditolak')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        $semuaRiwayat = Tangkapan::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'perlu_revisi' => $perluRevisi,
+                'semua_riwayat' => $semuaRiwayat
+            ]
+        ], 200);
+    }
 }

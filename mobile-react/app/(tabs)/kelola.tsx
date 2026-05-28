@@ -120,7 +120,7 @@ export default function KelolaScreen() {
         return buttons;
     };
 
-    const handleKirimKeStaf = async () => {
+    const handleSendToStaff = async () => {
         try {
             const formattedDate = selectedDate.toISOString().split('T')[0];
             const userId = await AsyncStorage.getItem('user_id');
@@ -141,7 +141,6 @@ export default function KelolaScreen() {
 
             if (response.ok && json.status === 'success') {
                 Alert.alert('Sukses', json.message);
-                // Refresh data tabel agar status terbarunya langsung terlihat
                 fetchData(currentPage, selectedDate); 
             } else {
                 Alert.alert('Peringatan', json.message || 'Gagal mengirim data.');
@@ -207,7 +206,7 @@ export default function KelolaScreen() {
                                     { text: 'Batal', style: 'cancel' },
                                     { 
                                         text: 'Kirim Sekarang', 
-                                        onPress: () => handleKirimKeStaf() // <-- PANGGIL FUNGSI DI SINI
+                                        onPress: () => handleSendToStaff()
                                     }
                                 ]
                             )
