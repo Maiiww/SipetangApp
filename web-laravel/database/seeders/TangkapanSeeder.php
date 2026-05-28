@@ -13,15 +13,6 @@ class TangkapanSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create data asli dari Budi
-        Tangkapan::create([
-            'user_id' => 1,
-            'nama_pembeli' => 'Budi',
-            'nama_nelayan' => '',
-            'jenis_ikan' => 'Tongkol',
-            'berat' => 30.0,
-            'harga_jual' => 600000,
-            'status' => 'Menunggu Validasi',
-        ]);
+        // Tidak ada data seeder untuk saat ini
     }
 }

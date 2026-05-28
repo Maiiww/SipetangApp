@@ -852,7 +852,8 @@
                 <thead>
                     <tr>
                         <th>Tanggal</th>
-                        <th>Nama TPI</th>
+                        <th>Nama Pembeli</th>
+                        <th>Nama Penjual</th>
                         <th>Jenis Ikan</th>
                         <th>Volume (Kg)</th>
                         <th>Status</th>
@@ -871,6 +872,9 @@
                                 <div class="tpi-name">{{ $laporan->nama_pembeli }}</div>
                             </td>
                             <td>
+                                <div class="tpi-name">{{ $laporan->nama_nelayan }}</div>
+                            </td>
+                            <td>
                                 <div class="fish-badge">{{ $laporan->jenis_ikan }}</div>
                             </td>
                             <td>
@@ -879,15 +883,9 @@
                             <td>
                                 <div
                                     class="status-badge status-{{ strtolower(str_replace(' ', '-', $laporan->status)) }}">
-                                    @if ($laporan->status === 'Menunggu Validasi')
-                                        <i class="fas fa-hourglass-half"
-                                            style="color: #ff9800; margin-right: 6px;"></i>
-                                        {{ $laporan->status }}
-                                    @elseif($laporan->status === 'Divalidasi')
-                                        <i class="fas fa-check-circle" style="color: #4caf50; margin-right: 6px;"></i>
-                                        {{ $laporan->status }}
-                                    @elseif($laporan->status === 'Ditolak')
-                                        <i class="fas fa-times-circle" style="color: #f44336; margin-right: 6px;"></i>
+                                    @if ($laporan->status === 'Divalidasi')
+                                        Tervalidasi
+                                    @else
                                         {{ $laporan->status }}
                                     @endif
                                 </div>
@@ -914,7 +912,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 30px; color: #999;">
+                            <td colspan="7" style="text-align: center; padding: 30px; color: #999;">
                                 <i class="fas fa-inbox"
                                     style="font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
                                 Tidak ada data untuk ditampilkan
