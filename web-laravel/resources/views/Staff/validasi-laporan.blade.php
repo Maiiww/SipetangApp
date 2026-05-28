@@ -771,7 +771,7 @@
                 style="width: 100%; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <!-- Search Box -->
                 <div style="flex: 1; min-width: 250px; display: flex; gap: 8px;">
-                    <input type="text" name="search" placeholder="Cari ID, TPI, atau jenis ikan..."
+                    <input type="text" name="search" placeholder="Cari nama pembeli, jenis ikan..."
                         value="{{ $search }}"
                         style="flex: 1; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
                     <button type="submit" class="btn-filter" style="background: #1a4d7d; color: white;">
@@ -883,11 +883,7 @@
                             <td>
                                 <div
                                     class="status-badge status-{{ strtolower(str_replace(' ', '-', $laporan->status)) }}">
-                                    @if ($laporan->status === 'Divalidasi')
-                                        Tervalidasi
-                                    @else
-                                        {{ $laporan->status }}
-                                    @endif
+                                    {{ $laporan->status === 'Divalidasi' ? 'Tervalidasi' : $laporan->status }}
                                 </div>
                             </td>
                             <td>
@@ -897,7 +893,7 @@
                                             method="POST" style="display: inline;">
                                             @csrf
                                             <button type="submit" class="action-btn action-validate">
-                                                <i class="fas fa-check"></i> Validasi
+                                                <i class="fas fa-check"></i> validasi
                                             </button>
                                         </form>
                                         <button type="button" class="action-btn action-reject"
