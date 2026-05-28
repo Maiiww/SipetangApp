@@ -869,7 +869,6 @@
                             </td>
                             <td>
                                 <div class="tpi-name">{{ $laporan->nama_pembeli }}</div>
-                                <div class="tpi-location">{{ $laporan->nama_nelayan }}</div>
                             </td>
                             <td>
                                 <div class="fish-badge">{{ $laporan->jenis_ikan }}</div>
@@ -899,7 +898,6 @@
                                         <form action="{{ route('staff.validasi.validate', $laporan->id) }}"
                                             method="POST" style="display: inline;">
                                             @csrf
-                                            @method('PUT')
                                             <button type="submit" class="action-btn action-validate">
                                                 <i class="fas fa-check"></i> Validasi
                                             </button>

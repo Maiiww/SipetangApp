@@ -13,34 +13,14 @@ class TangkapanSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test data with status "Menunggu Validasi"
+        // Create data asli dari Budi
         Tangkapan::create([
             'user_id' => 1,
-            'nama_pembeli' => 'PT Maju Jaya',
-            'nama_nelayan' => 'Nelayan Subang 1',
-            'jenis_ikan' => 'Ikan Tenggiri',
-            'berat' => 50.5,
-            'harga_jual' => 750000,
-            'status' => 'Menunggu Validasi',
-        ]);
-
-        Tangkapan::create([
-            'user_id' => 1,
-            'nama_pembeli' => 'PT Maju Jaya',
-            'nama_nelayan' => 'Nelayan Subang 2',
-            'jenis_ikan' => 'Ikan Kembung',
-            'berat' => 75.0,
-            'harga_jual' => 650000,
-            'status' => 'Menunggu Validasi',
-        ]);
-
-        Tangkapan::create([
-            'user_id' => 1,
-            'nama_pembeli' => 'PT Sejahtera',
-            'nama_nelayan' => 'Nelayan Subang 3',
-            'jenis_ikan' => 'Ikan Mackerel',
-            'berat' => 45.5,
-            'harga_jual' => 550000,
+            'nama_pembeli' => 'Budi',
+            'nama_nelayan' => '',
+            'jenis_ikan' => 'Tongkol',
+            'berat' => 30.0,
+            'harga_jual' => 600000,
             'status' => 'Menunggu Validasi',
         ]);
     }
