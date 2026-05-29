@@ -176,11 +176,8 @@ export default function ProfilScreen() {
                                 </View>
                             ) : (
                                 <Image 
-                                    source={{ 
-                                        uri: profileData?.foto_profil 
-                                            ? `${API_URL.replace('/api', '')}/storage/profil/${profileData.foto_profil}` 
-                                            : 'https://ui-avatars.com/api/?name=' + (profileData?.nama || 'User')
-                                    }} 
+                                    // CUKUP GUNAKAN foto_profil_url DARI API
+                                    source={{ uri: profileData?.foto_profil_url }} 
                                     style={styles.avatar} 
                                 />
                             )}

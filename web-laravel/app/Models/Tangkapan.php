@@ -15,7 +15,7 @@ class Tangkapan extends Model
         'nama_pembeli',
         'nama_nelayan',
         'jenis_ikan',
-        'berat',
+        'berat',    
         'harga_jual',
         'status',
         'catatan'

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import {
   Image
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import API_URL from '../../config';
+import { useNavigation } from '@react-navigation/native';
 
 const COLORS = {
   primary: '#002D62',
@@ -23,7 +25,13 @@ const COLORS = {
 };
 
 export default function HomeScreen() {
-  
+  const navigation = useNavigation();
+
+  const [cuacaData, setCuacaData] = useState({
+      peringatan: 'Memuat data cuaca...',
+      cuaca: '-',
+  });
+
   const userData = {
     nama: "Petugas",
     totalProduksi: 10,
@@ -33,6 +41,23 @@ export default function HomeScreen() {
   const handleBelumTersedia = () => {
     Alert.alert("Informasi", "Halaman ini sedang dalam tahap pengembangan.");
   };
+
+  const fetchCuaca = async () => {
+    try {
+      const response = await fetch(`${API_URL}/cuaca`);
+      const json = await response.json();
+      if (json.status === 'success') {
+        setCuacaData(json.data);
+      }
+    } catch (error) {
+      console.log('Gagal memuat cuaca', error);
+      setCuacaData({ peringatan: 'Gagal terhubung ke server', cuaca: '-' });
+    }
+  };
+
+  useEffect(() => {
+    fetchCuaca();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -99,12 +124,15 @@ export default function HomeScreen() {
               <MaterialCommunityIcons name="weather-pouring" size={28} color={COLORS.lightBlue} />
             </View>
             <View style={styles.infoCardTexts}>
-              <Text style={styles.infoCardTitle}>Peringatan Cuaca</Text>
-              <Text style={styles.infoCardDesc}>Wilayah Utara Gelombang Sedang Tinggi</Text>
+              <Text style={styles.infoCardTitle}>Cuaca: {cuacaData.cuaca}</Text>
+              <Text style={styles.infoCardDesc}>{cuacaData.peringatan}</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.lihatButton} onPress={handleBelumTersedia}>
-            <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat</Text>
+          <TouchableOpacity 
+              style={styles.lihatButton} 
+              onPress={() => (navigation as any).navigate('DetailCuaca')} 
+          >
+              <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat Detail</Text>
           </TouchableOpacity>
         </View>
 
@@ -130,15 +158,15 @@ export default function HomeScreen() {
           
           <View style={styles.footerContactRow}>
             <Ionicons name="location-outline" size={16} color={COLORS.grayText} />
-            <Text style={styles.footerContactText}>JL. IN AJA DULU</Text>
+            <Text style={styles.footerContactText}>Jl. A. Nata Sukarya No. 28, Subang, Jawa Barat, 41211</Text>
           </View>
           <View style={styles.footerContactRow}>
             <Ionicons name="call-outline" size={16} color={COLORS.grayText} />
-            <Text style={styles.footerContactText}>08432567823452335</Text>
+            <Text style={styles.footerContactText}>(0260) 411325</Text>
           </View>
           <View style={styles.footerContactRow}>
             <Ionicons name="mail-outline" size={16} color={COLORS.grayText} />
-            <Text style={styles.footerContactText}>dinasperikanan@hotmail.co.id</Text>
+            <Text style={styles.footerContactText}>kabupatensubangdinasperikanan@gmail.com</Text>
           </View>
           
           <View style={styles.footerLine} />

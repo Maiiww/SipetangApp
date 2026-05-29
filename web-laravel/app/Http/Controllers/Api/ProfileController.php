@@ -60,7 +60,7 @@ class ProfileController extends Controller
             
             $filename = 'profil_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
             
-            $file->storeAs('public/profil', $filename);
+            $file->storeAs('profil', $filename, 'public');
 
             if ($user->foto_profil && Storage::exists('public/profil/' . $user->foto_profil)) {
                 Storage::delete('public/profil/' . $user->foto_profil);

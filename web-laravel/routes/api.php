@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\TangkapanController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\CuacaController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/user', function (Request $request) {
@@ -13,6 +14,8 @@ Route::get('/user', function (Request $request) {
 Route::get('/tangkapan/riwayat', [TangkapanController::class, 'riwayat']);
 Route::get('/tangkapan', [TangkapanController::class, 'index']);
 Route::post('/tangkapan', [TangkapanController::class, 'store']);
+
+Route::get('/cuaca', [CuacaController::class, 'getCuaca']);
 
 //Foto Profile
 Route::get('/profile/{id}', [ProfileController::class, 'show']);
