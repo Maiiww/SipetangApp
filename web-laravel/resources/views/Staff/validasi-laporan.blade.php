@@ -810,7 +810,8 @@
 
         <!-- Filters Section -->
         <div class="filters-section">
-            <form method="GET" action="{{ route('staff.validasi') }}" id="filterForm"
+            <form method="GET" action="{{ route('staff.validas
+            i') }}" id="filterForm"
                 style="width: 100%; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <!-- Search Box -->
                 <div style="flex: 1; min-width: 250px; display: flex; gap: 8px;">
