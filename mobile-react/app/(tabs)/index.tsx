@@ -19,6 +19,7 @@ const COLORS = {
   lightBlue: '#749DED',
   grayText: '#6B7280',
   lightGray: '#E5E7EB',
+  green: '#0b9068'
 };
 
 export default function HomeScreen() {
@@ -75,6 +76,21 @@ export default function HomeScreen() {
             <View style={styles.progressBarFill} />
           </View>
           <Text style={styles.lastUpdateText}>Update terakhir: {userData.lastUpdate}</Text>
+        </View>
+
+        <View style={[styles.infoCard, { backgroundColor: COLORS.green }]}>
+          <View style={styles.infoCardRow}>
+            <View style={styles.iconBoxWhite}>
+              <MaterialCommunityIcons name="book-open-page-variant" size={28} color={COLORS.primary} />
+            </View>
+            <View style={styles.infoCardTexts}>
+              <Text style={styles.infoCardTitle}>Panduan</Text>
+              <Text style={styles.infoCardDesc}>Panduan penggunaan aplikasi</Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.lihatButton} onPress={handleBelumTersedia}>
+            <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={[styles.infoCard, { backgroundColor: COLORS.lightBlue }]}>

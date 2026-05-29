@@ -95,4 +95,61 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Update status user (aktif/nonaktif)
+     */
+    public function updateStatus(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'user_id' => 'required|integer|exists:users,id',
+                'is_active' => 'required|boolean'
+            ]);
+
+            $user = User::findOrFail($validated['user_id']);
+
+            // Jangan izinkan update status akun admin
+            if ($user->role === 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak dapat mengubah status akun admin'
+                ], 403);
+            }
+
+            $user->update([
+                'is_active' => $validated['is_active']
+            ]);
+
+            $statusText = $validated['is_active'] ? 'Aktif' : 'Nonaktif';
+
+            Log::info('User status updated', [
+                'user_id' => $user->id,
+                'username' => $user->username,
+                'status' => $statusText
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status akun berhasil diubah menjadi ' . $statusText,
+                'data' => [
+                    'id' => $user->id,
+                    'is_active' => $user->is_active
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation Error', $e->errors());
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Update Status Error', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

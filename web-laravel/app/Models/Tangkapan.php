@@ -8,15 +8,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Tangkapan extends Model
 {
     use HasFactory;
-    protected $table = 'hasil_tangkap'; 
+    protected $table = 'hasil_tangkap';
 
     protected $fillable = [
-        'user_id', 
+        'user_id',
         'nama_pembeli',
         'nama_nelayan',
         'jenis_ikan',
         'berat',
         'harga_jual',
-        'status'
+        'status',
+        'catatan'
     ];
+
+    /**
+     * Get the user who submitted this data
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

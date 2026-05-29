@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $request->validate([
             'username' => 'required',
             'password' => 'required'
@@ -16,13 +17,23 @@ class AuthController extends Controller
 
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $user = Auth::user();
+
+            // Cek apakah akun aktif
+            if (!($user->is_active ?? true)) {
+                Auth::logout();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Akun Anda telah dinonaktifkan. Hubungi administrator.'
+                ], 403);
+            }
+
             $cleanRole = strtolower(str_replace('_', '', $user->role));
-            
+
             if ($cleanRole !== 'jururekap') {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Akses Ditolak!'
-                ], 403); 
+                ], 403);
             }
 
             return response()->json([
@@ -37,5 +48,4 @@ class AuthController extends Controller
             'message' => 'Nama pengguna atau kata sandi Anda salah.'
         ], 401);
     }
-    
 }

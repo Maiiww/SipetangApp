@@ -24,8 +24,7 @@ return new class extends Migration
         });
 
         DB::table('menus')->insert([
-            ['title' => 'Dashboard', 'route_name' => 'admin.dashboard', 'icon' => 'fa-th-large', 'allowed_roles' => 'admin', 'sort_order' => 1, 'is_active' => true],
-            ['title' => 'Manajemen User', 'route_name' => 'admin.manajemen.user', 'icon' => 'fa-users', 'allowed_roles' => 'admin', 'sort_order' => 2, 'is_active' => true],
+            ['title' => 'Manajemen User', 'route_name' => 'admin.manajemen.user', 'icon' => 'fa-users', 'allowed_roles' => 'admin', 'sort_order' => 1, 'is_active' => true],
             ['title' => 'Dashboard', 'route_name' => 'staff.dashboard', 'icon' => 'fa-th-large', 'allowed_roles' => 'staff,juruRekap', 'sort_order' => 1, 'is_active' => true],
             ['title' => 'Validasi Laporan', 'route_name' => 'staff.validasi', 'icon' => 'fa-check-circle', 'allowed_roles' => 'staff,juruRekap', 'sort_order' => 2, 'is_active' => true],
             ['title' => 'Cetak Laporan', 'route_name' => 'staff.cetak', 'icon' => 'fa-print', 'allowed_roles' => 'staff,juruRekap', 'sort_order' => 3, 'is_active' => true],

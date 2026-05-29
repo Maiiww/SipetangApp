@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Staff;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Laporan;
+use App\Models\Tangkapan;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -15,14 +16,39 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Statistik Dashboard - Set ke 0 menunggu data real dari mobile juru rekap
+        // Get current month date range
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        // Count total Juru Rekap users
+        $totalJuruRekap = User::where('role', 'juruRekap')->orWhere('role', 'juru_rekap')->count();
+
+        // Count total Tangkapan (Laporan Masuk)
+        $totalTangkapan = Tangkapan::count();
+
+        // Count Tangkapan with status "Menunggu Validasi" (Validasi Tertunda)
+        $validasiTertunda = Tangkapan::where('status', 'Menunggu Validasi')->count();
+
+        // Sum total production (berat) for current month
+        $produksiBulan = Tangkapan::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('berat');
+
+        // Count validated records
+        $validasiSelesai = Tangkapan::where('status', 'Divalidasi')->count();
+
+        // Calculate validation percentage
+        $persentaseValidasi = $totalTangkapan > 0 ? round(($validasiSelesai / $totalTangkapan) * 100) : 0;
+
+        // Count anomalies (records with unusual weight > 100 kg or status issues)
+        $anomaliDetected = Tangkapan::where('status', 'Ditolak')->count();
+
         $statistik = [
-            'totalUser' => 0,
-            'produksiBulan' => 0,
-            'totalLaporan' => 0,
-            'validasiTertunda' => 0,
-            'persentaseValidasi' => 0,
-            'anomaliDetected' => 0,
+            'totalUser' => $totalJuruRekap,
+            'produksiBulan' => round($produksiBulan / 1000, 2), // Convert to ton
+            'totalLaporan' => $totalTangkapan,
+            'validasiTertunda' => $validasiTertunda,
+            'persentaseValidasi' => $persentaseValidasi,
+            'anomaliDetected' => $anomaliDetected,
         ];
 
         // Data Aktivitas Terbaru (5 laporan terakhir dari database)

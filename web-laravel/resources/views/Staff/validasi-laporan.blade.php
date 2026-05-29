@@ -814,7 +814,7 @@
                 style="width: 100%; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <!-- Search Box -->
                 <div style="flex: 1; min-width: 250px; display: flex; gap: 8px;">
-                    <input type="text" name="search" placeholder="Cari ID, TPI, atau jenis ikan..."
+                    <input type="text" name="search" placeholder="Cari nama pembeli, jenis ikan..."
                         value="{{ $search }}"
                         style="flex: 1; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
                     <button type="submit" class="btn-filter" style="background: #1a4d7d; color: white;">
@@ -826,17 +826,18 @@
                 <div class="filter-group">
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <span style="font-size: 12px; color: #999; font-weight: 600;">Filter:</span>
-                        <button type="button" class="btn-filter {{ $statusFilter === 'pending' ? 'active' : '' }}"
-                            onclick="setStatusFilter('pending', this)">
-                            <i class="fas fa-hourglass-half"></i> Pending
+                        <button type="button"
+                            class="btn-filter {{ $statusFilter === 'Menunggu Validasi' ? 'active' : '' }}"
+                            onclick="setStatusFilter('Menunggu Validasi', this)">
+                            <i class="fas fa-hourglass-half"></i> Menunggu
                         </button>
-                        <button type="button" class="btn-filter {{ $statusFilter === 'validated' ? 'active' : '' }}"
-                            onclick="setStatusFilter('validated', this)">
-                            <i class="fas fa-check"></i> Validasi
+                        <button type="button" class="btn-filter {{ $statusFilter === 'Divalidasi' ? 'active' : '' }}"
+                            onclick="setStatusFilter('Divalidasi', this)">
+                            <i class="fas fa-check"></i> Divalidasi
                         </button>
-                        <button type="button" class="btn-filter {{ $statusFilter === 'rejected' ? 'active' : '' }}"
-                            onclick="setStatusFilter('rejected', this)">
-                            <i class="fas fa-times"></i> Tolak
+                        <button type="button" class="btn-filter {{ $statusFilter === 'Ditolak' ? 'active' : '' }}"
+                            onclick="setStatusFilter('Ditolak', this)">
+                            <i class="fas fa-times"></i> Ditolak
                         </button>
                     </div>
                 </div>
@@ -894,7 +895,8 @@
                 <thead>
                     <tr>
                         <th>Tanggal</th>
-                        <th>Nama TPI</th>
+                        <th>Nama Pembeli</th>
+                        <th>Nama Penjual</th>
                         <th>Jenis Ikan</th>
                         <th>Volume (Kg)</th>
                         <th>Status</th>
@@ -902,6 +904,60 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @forelse($laporans as $laporan)
+                        <tr>
+                            <td>
+                                <div class="date-cell">
+                                    {{ $laporan->created_at->format('d M Y') }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tpi-name">{{ $laporan->nama_pembeli }}</div>
+                            </td>
+                            <td>
+                                <div class="tpi-name">{{ $laporan->nama_nelayan }}</div>
+                            </td>
+                            <td>
+                                <div class="fish-badge">{{ $laporan->jenis_ikan }}</div>
+                            </td>
+                            <td>
+                                <div class="volume-cell">{{ number_format($laporan->berat, 2) }} Kg</div>
+                            </td>
+                            <td>
+                                <div
+                                    class="status-badge status-{{ strtolower(str_replace(' ', '-', $laporan->status)) }}">
+                                    {{ $laporan->status === 'Divalidasi' ? 'Tervalidasi' : $laporan->status }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-cell">
+                                    @if ($laporan->status === 'Menunggu Validasi')
+                                        <form action="{{ route('staff.validasi.validate', $laporan->id) }}"
+                                            method="POST" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="action-btn action-validate">
+                                                <i class="fas fa-check"></i> validasi
+                                            </button>
+                                        </form>
+                                        <button type="button" class="action-btn action-reject"
+                                            onclick="openRejectModal({{ $laporan->id }}, '{{ $laporan->nama_pembeli }}')">
+                                            <i class="fas fa-times"></i> Tolak
+                                        </button>
+                                    @else
+                                        <span style="font-size: 12px; color: #999;">{{ $laporan->status }}</span>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 30px; color: #999;">
+                                <i class="fas fa-inbox"
+                                    style="font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
+                                Tidak ada data untuk ditampilkan
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
             {{ $laporans->links('pagination.custom') }}

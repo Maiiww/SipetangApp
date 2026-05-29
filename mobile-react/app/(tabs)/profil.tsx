@@ -176,8 +176,12 @@ export default function ProfilScreen() {
                                 </View>
                             ) : (
                                 <Image 
-                                    source={{ uri: profileData?.foto_profil_url }} 
-                                    style={styles.avatar}
+                                    source={{ 
+                                        uri: profileData?.foto_profil 
+                                            ? `${API_URL.replace('/api', '')}/storage/profil/${profileData.foto_profil}` 
+                                            : 'https://ui-avatars.com/api/?name=' + (profileData?.nama || 'User')
+                                    }} 
+                                    style={styles.avatar} 
                                 />
                             )}
                             {/* Icon Kamera Kecil sebagai petunjuk */}

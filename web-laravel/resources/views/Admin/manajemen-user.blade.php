@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Manajemen User - SIPETANG</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -282,10 +283,18 @@
             text-transform: uppercase;
         }
 
+        th:last-child {
+            text-align: center;
+        }
+
         td {
             padding: 15px 12px;
             font-size: 13px;
             border-bottom: 1px solid #eee;
+        }
+
+        td:last-child {
+            text-align: center;
         }
 
         .user-info {
@@ -312,6 +321,125 @@
             border-radius: 6px;
             font-size: 11px;
             font-weight: 600;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-aktif {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .status-nonaktif {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Action Buttons */
+        .btn-aksi {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-nonaktif {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .btn-nonaktif:hover {
+            background: #fecaca;
+            border-color: #f87171;
+        }
+
+        .btn-aktif {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .btn-aktif:hover {
+            background: #bbf7d0;
+            border-color: #6ee7b7;
+        }
+
+        /* Action Menu with Ellipsis */
+        .btn-aksi-menu {
+            padding: 6px 10px;
+            border: none;
+            background: none;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .btn-aksi-menu:hover {
+            background: #f0f0f0;
+            color: #0d2640;
+        }
+
+        .action-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 200;
+            min-width: 160px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            color: #333;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+            color: #0d2640;
+        }
+
+        .dropdown-item i {
+            width: 16px;
         }
 
         /* Pagination */
@@ -589,6 +717,8 @@
                         <th>Jenis Kelamin</th>
                         <th>No Telepon</th>
                         <th>Alamat</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -611,10 +741,43 @@
                             <td>{{ $user->jenis_kelamin ?? '-' }}</td>
                             <td>{{ $user->no_telepon ?? '-' }}</td>
                             <td>{{ $user->alamat ?? '-' }}</td>
+                            <td>
+                                @if ($user->is_active ?? true)
+                                    <span class="status-badge status-aktif">
+                                        <i class="fas fa-circle-check"></i> Aktif
+                                    </span>
+                                @else
+                                    <span class="status-badge status-nonaktif">
+                                        <i class="fas fa-circle-xmark"></i> Nonaktif
+                                    </span>
+                                @endif
+                            </td>
+                            <td style="text-align: center; position: relative;">
+                                @if ($user->role !== 'admin')
+                                    <button class="btn-aksi-menu" onclick="toggleMenu(event, this)">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="action-dropdown" style="display: none;">
+                                        @if ($user->is_active ?? true)
+                                            <button type="button" class="dropdown-item"
+                                                onclick="deactivateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                                <i class="fas fa-ban"></i> Nonaktifkan
+                                            </button>
+                                        @else
+                                            <button type="button" class="dropdown-item"
+                                                onclick="activateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                                <i class="fas fa-check-circle"></i> Aktifkan
+                                            </button>
+                                        @endif
+                                    </div>
+                                @else
+                                    <span style="color: #999; font-size: 12px;">-</span>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" style="text-align: center; color: #999; padding: 30px;">Tidak ada data
+                            <td colspan="7" style="text-align: center; color: #999; padding: 30px;">Tidak ada data
                             </td>
                         </tr>
                     @endforelse
@@ -671,8 +834,14 @@
                         <input type="password" id="password" name="password" placeholder="Masukkan password" required>
                     </div>
                     <div class="form-group-modal">
+<<<<<<< HEAD
                         <label>KONFIRMASI PASSWORD *</label>
                         <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi password" required>
+=======
+                        <label>Konfirmasi Password *</label>
+                        <input type="password" name="password_confirmation" placeholder="Konfirmasi password"
+                            required>
+>>>>>>> 45df5c8f384053039378f4b2d5ff1db588c23bed
                     </div>
                 </div>
 
@@ -736,6 +905,66 @@
             document.getElementById('asal_tpi_field').style.display = 'none';
         }
 
+        function deactivateUser(userId, userName) {
+            if (confirm(`Nonaktifkan akun "${userName}"?`)) {
+                fetch(`{{ route('admin.user.update-status') }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            is_active: false
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Akun berhasil dinonaktifkan!');
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Gagal menonaktifkan akun!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan: ' + error);
+                    });
+            }
+        }
+
+        function activateUser(userId, userName) {
+            if (confirm(`Aktifkan akun "${userName}"?`)) {
+                fetch(`{{ route('admin.user.update-status') }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            is_active: true
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Akun berhasil diaktifkan!');
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Gagal mengaktifkan akun!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan: ' + error);
+                    });
+            }
+        }
+
         function updateRoleFields() {
             const role = document.getElementById('roleSelect').value;
             const asal_tpi_field = document.getElementById('asal_tpi_field');
@@ -753,6 +982,28 @@
                 wilayah_required.style.display = 'none';
             }
         }
+
+        function toggleMenu(event, button) {
+            event.stopPropagation();
+            const dropdown = button.nextElementSibling;
+
+            // Close all other dropdowns
+            document.querySelectorAll('.action-dropdown').forEach(menu => {
+                if (menu !== dropdown) {
+                    menu.style.display = 'none';
+                }
+            });
+
+            // Toggle current dropdown
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.action-dropdown').forEach(dropdown => {
+                dropdown.style.display = 'none';
+            });
+        });
 
         // Close modal when clicking outside of it
         window.onclick = function(event) {

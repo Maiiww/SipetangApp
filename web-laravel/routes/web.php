@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
     // Logic Redirect Dashboard berdasarkan Role
     Route::get('/dashboard', function () {
         if (strtolower(auth()->user()->role) === 'admin') {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.manajemen.user');
         }
         return redirect()->route('staff.dashboard');
     })->name('dashboard');
@@ -63,11 +63,6 @@ Route::middleware('auth')->group(function () {
     });
 
     // --- DAFTAR ROUTE ADMIN ---
-    Route::get('/admin/dashboard', function () {
-        abort_if(strtolower(auth()->user()->role) !== 'admin', 403);
-        return view('Admin.dashboard-admin');
-    })->name('admin.dashboard');
-
     Route::get('/manajemen-user', function () {
         if (strtolower(auth()->user()->role) !== 'admin') {
             return redirect()->route('dashboard');
@@ -79,6 +74,7 @@ Route::middleware('auth')->group(function () {
         ->name('admin.manajemen.user');
 
     Route::post('/admin/user/store', [UserController::class, 'store'])->name('admin.user.store');
+    Route::post('/admin/user/update-status', [UserController::class, 'updateStatus'])->name('admin.user.update-status');
 });
 
 // Guest Routes
