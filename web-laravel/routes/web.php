@@ -7,6 +7,7 @@ use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
 use App\Http\Controllers\Staff\LaporanViewController;
 use App\Http\Controllers\Staff\ValidasiController;
 use App\Models\User;
+use App\Http\Controllers\Staff\LaporanDownloadController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -44,6 +45,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/cetak-laporan', function () {
             return view('Staff.cetak-laporan');
         })->name('staff.cetak');
+
+    Route::post('/laporan/preview', [LaporanDownloadController::class, 'preview'])->name('staff.laporan.preview');
+    Route::post('/laporan/download', [LaporanDownloadController::class, 'download'])->name('staff.laporan.download');
 
         Route::get('/notifikasi', function () {
             return view('Staff.notifikasi');

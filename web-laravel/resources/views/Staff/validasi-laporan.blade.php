@@ -196,10 +196,30 @@
             transition: background 0.3s;
             font-size: 16px;
             color: #1a4d7d;
+            position: relative;
         }
 
         .header-icon:hover {
             background: #e0e0e0;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            line-height: 18px;
+            border-radius: 50%;
+            color: #ffffff;
+            background: #dc3545;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 2px #ffffff;
         }
 
         /* Page Title */
@@ -713,6 +733,29 @@
         <div class="header">
             <div class="header-right">
                 <div class="header-icons">
+                    <div style="position: relative;">
+                        <button type="button" id="notificationToggle" class="header-icon" aria-expanded="false" style="cursor: pointer; border: none; background: transparent;">
+                            <i class="fas fa-bell"></i>
+                            @if(isset($stats['pending']) && $stats['pending'] > 0)
+                                <span class="notification-badge">{{ $stats['pending'] }}</span>
+                            @endif
+                        </button>
+
+                        <div id="notificationDropdown" style="display: none; position: absolute; right: 0; top: 44px; background: #ffffff; width: 300px; border-radius: 8px; box-shadow: 0 6px 30px rgba(0,0,0,0.12); z-index: 1100; overflow: hidden;">
+                            <div style="padding: 12px 14px; border-bottom: 1px solid #eee; font-weight: 700; color: #1a4d7d;">Notifikasi</div>
+                            <div style="padding: 12px; max-height: 260px; overflow: auto; color: #333;">
+                                @if(isset($stats['pending']) && $stats['pending'] > 0)
+                                    <p style="margin: 0 0 10px;">Terdapat <strong>{{ $stats['pending'] }}</strong> laporan menunggu validasi.</p>
+                                    <div style="display:flex; gap:8px;">
+                                        <button type="button" onclick="showPending()" class="btn-filter" style="background:#1a4d7d;color:white;">Tampilkan</button>
+                                        <button type="button" onclick="closeNotificationDropdown()" class="btn-filter" style="background:#e0e0e0;color:#0d2640;">Tutup</button>
+                                    </div>
+                                @else
+                                    <p style="margin:0; color:#666;">Tidak ada notifikasi baru.</p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                     <a href="{{ route('staff.profile') }}" style="text-decoration: none; color: inherit;">
                         <div class="header-icon" style="cursor: pointer;">
                             <i class="fas fa-user"></i>
@@ -931,6 +974,41 @@
                     closeRejectModal();
                 }
             });
+
+            // Notification dropdown toggle and behavior
+            function closeNotificationDropdown() {
+                const dd = document.getElementById('notificationDropdown');
+                const btn = document.getElementById('notificationToggle');
+                if (dd) dd.style.display = 'none';
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+
+            document.getElementById('notificationToggle')?.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dd = document.getElementById('notificationDropdown');
+                if (!dd) return;
+                const isOpen = dd.style.display === 'block';
+                dd.style.display = isOpen ? 'none' : 'block';
+                this.setAttribute('aria-expanded', String(!isOpen));
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                const dd = document.getElementById('notificationDropdown');
+                const btn = document.getElementById('notificationToggle');
+                if (!dd || !btn) return;
+                if (!dd.contains(e.target) && !btn.contains(e.target)) {
+                    closeNotificationDropdown();
+                }
+            });
+
+            // Show pending reports on the same page by setting filter and submitting
+            function showPending() {
+                const statusInput = document.getElementById('statusInput');
+                if (!statusInput) return;
+                statusInput.value = 'pending';
+                document.getElementById('filterForm').submit();
+            }
         </script>
 
         <div class="page-footer">

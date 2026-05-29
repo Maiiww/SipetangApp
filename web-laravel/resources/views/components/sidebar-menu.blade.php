@@ -1,8 +1,10 @@
 @php
     use Illuminate\Support\Facades\Schema;
     use App\Models\Menu;
+    use App\Models\Laporan;
 
     $sidebarMenus = collect();
+    $pendingNotificationCount = 0;
     if (auth()->check()) {
         if (Schema::hasTable('menus')) {
             $sidebarMenus = Menu::active()
@@ -12,6 +14,10 @@
                 ->filter(function ($menu) {
                     return $menu->title !== 'Profil';
                 });
+        }
+
+        if (Schema::hasTable('laporans')) {
+            $pendingNotificationCount = Laporan::where('status', 'pending')->count();
         }
 
         if ($sidebarMenus->isEmpty()) {
@@ -61,11 +67,15 @@
         @foreach ($sidebarMenus as $menu)
             <li>
                 <a href="{{ route($menu->route_name) }}"
-                    class="{{ request()->routeIs($menu->route_name) ? 'active' : '' }}">
+                    class="{{ request()->routeIs($menu->route_name) ? 'active' : '' }}"
+                    style="position: relative; display: flex; align-items: center;">
                     @if ($menu->icon)
                         <i class="fas {{ $menu->icon }}"></i>
                     @endif
                     <span>{{ $menu->title }}</span>
+                    @if ($menu->route_name === 'staff.validasi' && $pendingNotificationCount > 0)
+                        <span style="margin-left: auto; background: #dc3545; color: #fff; font-size: 0.75rem; min-width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; padding: 0 6px; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">{{ $pendingNotificationCount }}</span>
+                    @endif
                 </a>
             </li>
         @endforeach

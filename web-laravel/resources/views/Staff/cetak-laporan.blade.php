@@ -13,6 +13,7 @@
             box-sizing: border-box;
         }
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
@@ -617,34 +618,42 @@
 
         .modal-content {
             background: white;
-            border-radius: 22px;
-            padding: 40px;
+            border-radius: 16px;
             max-width: 600px;
             width: 90%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease;
+            overflow: hidden;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #e9eef5;
+            background: linear-gradient(135deg, #1d5aa5 0%, #2b6ab8 100%);
+            padding: 20px 24px;
+            margin: 0;
+            border: none;
         }
 
         .modal-header h2 {
-            font-size: 24px;
-            color: #102a43;
+            font-size: 18px;
+            color: #ffffff;
             margin: 0;
+            font-weight: 700;
+        }
+
+        .modal-header .detail-id {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 4px;
         }
 
         .modal-close {
             background: none;
             border: none;
             font-size: 28px;
-            color: #64748b;
+            color: #ffffff;
             cursor: pointer;
             padding: 0;
             width: 32px;
@@ -652,64 +661,170 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 0.2s ease;
         }
 
         .modal-close:hover {
-            color: #102a43;
+            transform: scale(1.2);
         }
 
         .modal-body {
+            padding: 28px 24px;
+            margin-bottom: 0;
+        }
+
+        .detail-section {
             margin-bottom: 24px;
         }
 
-        .detail-row {
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #7a869a;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .detail-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-item {
             display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f4f8;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .detail-label {
-            font-weight: 700;
+            font-weight: 600;
             color: #7a869a;
-            font-size: 13px;
+            font-size: 12px;
             text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
 
         .detail-value {
             color: #102a43;
             font-weight: 600;
+            font-size: 15px;
+        }
+
+        .detail-value.large {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0d2640;
+        }
+
+        .detail-badge {
+            display: inline-block;
+            background: #fff3cd;
+            color: #856404;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        .detail-notes {
+            background: #f8fafc;
+            border: 1px solid #e6ecf6;
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .detail-notes p {
+            font-size: 13px;
+            color: #556a82;
+            line-height: 1.6;
+            margin: 0;
         }
 
         .modal-footer {
             display: flex;
             gap: 12px;
             justify-content: flex-end;
+            padding: 20px 24px;
+            background: #f8fafc;
+            border-top: 1px solid #e6ecf6;
         }
 
         .modal-button {
-            border: 1px solid #dce1e9;
-            border-radius: 12px;
+            border: none;
+            border-radius: 10px;
             background: #fff;
             color: #102a43;
-            padding: 10px 18px;
+            padding: 11px 20px;
             font-weight: 700;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .modal-button:hover {
-            background: #f8fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .modal-button.primary {
-            background: #0d2640;
+        .modal-button.close-btn {
+            background: #e6ecf6;
+            color: #0d2640;
+            border: 1px solid #e6ecf6;
+        }
+
+        .modal-button.close-btn:hover {
+            background: #dce1e9;
+            border-color: #dce1e9;
+        }
+
+        .modal-button.pdf-btn {
+            background: #dc2626;
             color: #fff;
-            border-color: #0d2640;
+            border: 1px solid #dc2626;
         }
 
-        .modal-button.primary:hover {
-            background: #0a2d35;
+        .modal-button.pdf-btn:hover {
+            background: #b91c1c;
+            border-color: #b91c1c;
+        }
+
+        .modal-button.excel-btn {
+            background: #059669;
+            color: #fff;
+            border: 1px solid #059669;
+        }
+
+        .modal-button.excel-btn:hover {
+            background: #047857;
+            border-color: #047857;
+        }
+
+        .modal-button.word-btn {
+            background: #0d47a1;
+            color: #fff;
+            border: 1px solid #0d47a1;
+        }
+
+        .modal-button.word-btn:hover {
+            background: #0a3d91;
+            border-color: #0a3d91;
         }
 
         @keyframes fadeIn {
@@ -875,6 +990,8 @@
                             </div>
                         </div>
                         <i class="fas fa-calendar" style="color:#0d2640"></i>
+
+                                    <input type="hidden" id="laporan-type-value" value="">
                     </label>
                 </div>
 
@@ -968,7 +1085,8 @@
                         <td>TPI Pondok Bali</td>
                         <td><a href="#" class="action-link detail-link" data-id="#MAR-2601-092"
                                 data-date="24 Jan 2026, 09:12" data-range="01 JAN - 23 JAN"
-                                data-tpi="TPI Pondok Bali">Lihat Detail</a></td>
+                                data-tpi="TPI Pondok Bali" data-records="150 Records"
+                                data-weight="2,500 kg">Lihat Detail</a></td>
                     </tr>
                     <tr>
                         <td><strong>#MAR-2601-088</strong></td>
@@ -977,7 +1095,8 @@
                         <td>TPI Blanakan</td>
                         <td><a href="#" class="action-link detail-link" data-id="#MAR-2601-088"
                                 data-date="22 Jan 2026, 15:45" data-range="TPI Patimban Only"
-                                data-tpi="TPI Blanakan">Lihat Detail</a></td>
+                                data-tpi="TPI Blanakan" data-records="98 Records"
+                                data-weight="1,850 kg">Lihat Detail</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -995,30 +1114,68 @@
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Detail Laporan</h2>
+                <div>
+                    <h2>Detail Laporan</h2>
+                    <div class="detail-id" id="modal-header-id"></div>
+                </div>
                 <button class="modal-close" onclick="closeDetailModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="detail-row">
-                    <span class="detail-label">ID Laporan</span>
-                    <span class="detail-value" id="modal-id"></span>
+                <!-- Informasi Laporan -->
+                <div class="detail-section">
+                    <span class="detail-section-title">Informasi Laporan</span>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Tanggal Dibuat</span>
+                            <span class="detail-value" id="modal-date"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Dibuat Oleh</span>
+                            <span class="detail-value" id="modal-tpi"></span>
+                        </div>
+                    </div>
+                    <div class="detail-grid full">
+                        <div class="detail-item">
+                            <span class="detail-label">Cakupan Data</span>
+                            <span class="detail-badge" id="modal-range"></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <span class="detail-label">Tanggal Dibuat</span>
-                    <span class="detail-value" id="modal-date"></span>
+
+                <!-- Data Laporan -->
+                <div class="detail-section">
+                    <span class="detail-section-title">Data Laporan</span>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Total Records</span>
+                            <span class="detail-value" id="modal-records">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Total Berat</span>
+                            <span class="detail-value" id="modal-total-weight">-</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <span class="detail-label">Cakupan Data</span>
-                    <span class="detail-value" id="modal-range"></span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Dibuat Oleh</span>
-                    <span class="detail-value" id="modal-tpi"></span>
+
+                <!-- Status -->
+                <div class="detail-section">
+                    <div class="detail-item">
+                        <span class="detail-label">Status Laporan</span>
+                        <span class="detail-value" id="modal-status">Siap Download</span>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="modal-button" onclick="closeDetailModal()">Tutup</button>
-                <button class="modal-button primary" id="modal-download">Download Laporan</button>
+                <button class="modal-button close-btn" onclick="closeDetailModal()">Tutup</button>
+                <button class="modal-button pdf-btn" id="modal-download-pdf" onclick="downloadLaporan('pdf')">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                <button class="modal-button excel-btn" id="modal-download-excel" onclick="downloadLaporan('excel')">
+                    <i class="fas fa-file-excel"></i> EXCEL
+                </button>
+                <button class="modal-button word-btn" id="modal-download-word" onclick="downloadLaporan('word')">
+                    <i class="fas fa-file-word"></i> WORD
+                </button>
             </div>
         </div>
     </div>
@@ -1058,37 +1215,49 @@
                 id: '#MAR-2601-092',
                 date: '24 Jan 2026, 09:12',
                 range: '01 JAN - 23 JAN',
-                tpi: 'TPI Pondok Bali'
+                tpi: 'TPI Pondok Bali',
+                records: '150 Records',
+                weight: '2,500 kg'
             },
             {
                 id: '#MAR-2601-088',
                 date: '22 Jan 2026, 15:45',
                 range: 'TPI Patimban Only',
-                tpi: 'TPI Blanakan'
+                tpi: 'TPI Blanakan',
+                records: '98 Records',
+                weight: '1,850 kg'
             },
             {
                 id: '#MAR-2601-085',
                 date: '20 Jan 2026, 11:30',
                 range: '01 JAN - 19 JAN',
-                tpi: 'TPI Genteng'
+                tpi: 'TPI Genteng',
+                records: '120 Records',
+                weight: '2,100 kg'
             },
             {
                 id: '#MAR-2601-082',
                 date: '18 Jan 2026, 14:20',
                 range: 'TPI Mayangan Only',
-                tpi: 'TPI Mayangan'
+                tpi: 'TPI Mayangan',
+                records: '75 Records',
+                weight: '1,450 kg'
             },
             {
                 id: '#MAR-2601-079',
                 date: '16 Jan 2026, 10:00',
                 range: '01 JAN - 15 JAN',
-                tpi: 'TPI Blanakan'
+                tpi: 'TPI Blanakan',
+                records: '200 Records',
+                weight: '3,200 kg'
             },
             {
                 id: '#MAR-2601-075',
                 date: '14 Jan 2026, 13:40',
                 range: 'TPI Patimban Only',
-                tpi: 'TPI Patimban'
+                tpi: 'TPI Patimban',
+                records: '110 Records',
+                weight: '1,950 kg'
             }
         ];
 
@@ -1109,7 +1278,8 @@
                     <td>${item.tpi}</td>
                     <td><a href="#" class="action-link detail-link" data-id="${item.id}"
                             data-date="${item.date}" data-range="${item.range}"
-                            data-tpi="${item.tpi}">Lihat Detail</a></td>
+                            data-tpi="${item.tpi}" data-records="${item.records}"
+                            data-weight="${item.weight}">Lihat Detail</a></td>
                 </tr>
             `).join('');
 
@@ -1187,12 +1357,18 @@
                     const date = this.dataset.date;
                     const range = this.dataset.range;
                     const tpi = this.dataset.tpi;
+                    const records = this.dataset.records || '-';
+                    const weight = this.dataset.weight || '-';
 
-                    // Populate modal with data
-                    document.getElementById('modal-id').textContent = id;
+                    // Populate modal header with ID
+                    document.getElementById('modal-header-id').textContent = id;
+
+                    // Populate modal body with data
                     document.getElementById('modal-date').textContent = date;
                     document.getElementById('modal-range').textContent = range;
                     document.getElementById('modal-tpi').textContent = tpi;
+                    document.getElementById('modal-records').textContent = records;
+                    document.getElementById('modal-total-weight').textContent = weight;
 
                     // Show modal
                     document.getElementById('detailModal').classList.add('show');
@@ -1200,57 +1376,123 @@
             });
         }
 
+        // Download laporan function
+        function downloadLaporan(format) {
+            const laporanId = document.getElementById('modal-header-id').textContent.trim();
+            const requestData = {
+                format: format
+            };
+
+            if (laporanId) {
+                requestData.laporan_id = laporanId;
+            } else {
+                const laporanType = document.querySelector('input[name="laporan_type"]:checked')?.value;
+
+                if (!laporanType) {
+                    alert('Silakan pilih jenis laporan atau buka detail laporan terlebih dahulu');
+                    return;
+                }
+
+                requestData.laporan_type = mapLaporanType(laporanType);
+
+                // Add TPI filter if selected
+                const tpiValue = document.getElementById('asal-tpi').value;
+                if (tpiValue) {
+                    requestData.tpi_id = tpiValue;
+                }
+
+                // Add date range for custom type
+                if (requestData.laporan_type === 'custom') {
+                    const startDate = document.getElementById('mulai-dari').value;
+                    const endDate = document.getElementById('sampai-dengan').value;
+                    if (startDate && endDate) {
+                        requestData.start_date = startDate;
+                        requestData.end_date = endDate;
+                    }
+                }
+            }
+
+            // Create form untuk download
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route("staff.laporan.download") }}';
+
+            // Add CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+            form.appendChild(csrfToken);
+
+            // Add form data
+            Object.keys(requestData).forEach(key => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = requestData[key];
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+
+            closeDetailModal();
+        }
+
         // Initialize detail link listeners
         attachDetailLinkListeners();
 
         // Preview button
         document.getElementById('btn-preview').addEventListener('click', function() {
-            const asalTpi = document.getElementById('asal-tpi').value;
-            const mulaiDari = document.getElementById('mulai-dari').value;
-            const sampaiDengan = document.getElementById('sampai-dengan').value;
             const laporanType = document.querySelector('input[name="laporan_type"]:checked')?.value;
-
-            // Validasi input
-            if (!asalTpi) {
-                alert('Silakan pilih Asal TPI');
-                return;
-            }
-            if (!mulaiDari) {
-                alert('Silakan masukkan tanggal mulai');
-                return;
-            }
-            if (!sampaiDengan) {
-                alert('Silakan masukkan tanggal akhir');
-                return;
-            }
+            
             if (!laporanType) {
                 alert('Silakan pilih jenis laporan');
                 return;
             }
-
-            // Generate preview/download
-            const params = new URLSearchParams({
-                tpi: asalTpi,
-                tanggal_mulai: mulaiDari,
-                tanggal_akhir: sampaiDengan,
-                jenis_laporan: laporanType,
-                format: selectedFormat
-            });
-
-            const url = `/laporan/generate?${params.toString()}`;
-
-            if (selectedFormat === 'pdf') {
-                // Buka preview PDF di tab baru
-                window.open(url, '_blank');
-            } else if (selectedFormat === 'excel') {
-                // Download Excel
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `Laporan_${asalTpi}_${mulaiDari}.xlsx`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+            
+            let requestData = {
+                laporan_type: mapLaporanType(laporanType)
+            };
+            
+            // Add TPI filter if selected
+            const tpiValue = document.getElementById('asal-tpi').value;
+            if (tpiValue) {
+                requestData.tpi_id = tpiValue;
             }
+            
+            // Add date range for custom type
+            if (requestData.laporan_type === 'custom') {
+                const startDate = document.getElementById('mulai-dari').value;
+                const endDate = document.getElementById('sampai-dengan').value;
+                if (startDate && endDate) {
+                    requestData.start_date = startDate;
+                    requestData.end_date = endDate;
+                }
+            }
+            
+            // Call preview API
+            fetch('{{ route("staff.laporan.preview") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const preview = data.data;
+                    alert(`Data Preview:\nTotal Record: ${preview.total_records}\nTotal Berat: ${preview.total_berat} kg`);
+                } else {
+                    alert(data.message || 'Gagal memuat preview');
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+            });
         });
 
         // Close modal function
@@ -1265,13 +1507,17 @@
             }
         });
 
-        // Download button handler
-        document.getElementById('modal-download').addEventListener('click', function() {
-            const id = document.getElementById('modal-id').textContent;
-            // Trigger download dengan ID laporan
-            const downloadUrl = `/laporan/download?id=${encodeURIComponent(id)}`;
-            window.location.href = downloadUrl;
-        });
+        
+
+        // Helper function to map laporan type
+        function mapLaporanType(type) {
+            const mapping = {
+                'harian': 'daily',
+                'bulanan': 'monthly',
+                'tahunan': 'custom'
+            };
+            return mapping[type] || 'daily';
+        }
 
         // View all history functionality
         document.getElementById('view-all-history').addEventListener('click', function(e) {

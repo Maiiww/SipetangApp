@@ -649,45 +649,45 @@
                 @csrf
                 <div class="form-row">
                     <div class="form-group-modal">
-                        <label>Nama Petugas *</label>
+                        <label>NAMA PETUGAS *</label>
                         <input type="text" name="nama" placeholder="Masukkan nama lengkap" required>
                     </div>
                     <div class="form-group-modal">
-                        <label>No. Id *</label>
+                        <label>NO. ID *</label>
                         <input type="text" name="no_induk" placeholder="Contoh: JR-001" required>
                     </div>
                 </div>
 
                 <div class="form-row full">
                     <div class="form-group-modal">
-                        <label>Username *</label>
+                        <label>USERNAME *</label>
                         <input type="text" name="username" placeholder="Masukkan username" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group-modal">
-                        <label>Password *</label>
-                        <input type="password" name="password" placeholder="Masukkan password" required>
+                        <label>PASSWORD *</label>
+                        <input type="password" id="password" name="password" placeholder="Masukkan password" required>
                     </div>
                     <div class="form-group-modal">
-                        <label>Konfirmasi Password *</label>
-                        <input type="password" name="password_confirmation" placeholder="Konfirmasi password" required>
+                        <label>KONFIRMASI PASSWORD *</label>
+                        <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi password" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group-modal">
-                        <label>Role *</label>
+                        <label>ROLE *</label>
                         <select name="role" id="roleSelect" required onchange="updateRoleFields()">
                             <option value="">Pilih Role</option>
                             <option value="staff">Staff</option>
                             <option value="juruRekap">Juru Rekap</option>
-                            <option value="Admin">Admin</option>
+                            <option value="admin">Admin</option>
                         </select>
                     </div>
                     <div class="form-group-modal">
-                        <label>Jenis Kelamin *</label>
+                        <label>JENIS KELAMIN *</label>
                         <select name="jenis_kelamin" required>
                             <option value="">Pilih Jenis Kelamin</option>
                             <option value="Laki-laki">Laki-laki</option>
@@ -698,28 +698,28 @@
 
                 <div class="form-row full" id="asal_tpi_field" style="display: none;">
                     <div class="form-group-modal">
-                        <label>Asal TPI (Wilayah) <span id="wilayah_required" style="display: none;">*</span></label>
+                        <label>ASAL TPI (WILAYAH) <span id="wilayah_required" style="display: none;">*</span></label>
                         <input type="text" name="wilayah" id="wilayah_input" placeholder="Contoh: TPI Blanakan">
                     </div>
                 </div>
 
                 <div class="form-row full">
                     <div class="form-group-modal">
-                        <label>No. Telepon *</label>
+                        <label>NO. TELEPON *</label>
                         <input type="tel" name="no_telepon" placeholder="Contoh: +62 812-3456-7890" required>
                     </div>
                 </div>
 
                 <div class="form-row full">
                     <div class="form-group-modal">
-                        <label>Alamat *</label>
+                        <label>ALAMAT *</label>
                         <textarea name="alamat" placeholder="Masukkan alamat lengkap" required></textarea>
                     </div>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel" onclick="closeModal()">Batal</button>
-                    <button type="submit" class="btn-submit">Tambah User</button>
+                    <button type="submit" id="submitTambahUser" class="btn-submit">Tambah User</button>
                 </div>
             </form>
         </div>
@@ -762,17 +762,24 @@
             }
         }
 
-        // Handle form submission
+        // Handle form submission with client-side validation
         document.getElementById('formTambahUser').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const formData = new FormData(this);
+            const pwd = document.getElementById('password')?.value || '';
+            const pwdConfirm = document.getElementById('password_confirmation')?.value || '';
 
-            // Log data untuk debugging
-            console.log('Form Data:');
-            for (let [key, value] of formData.entries()) {
-                console.log(key + ': ' + value);
+            if (pwd !== pwdConfirm) {
+                alert('Password dan konfirmasi password tidak cocok.');
+                document.getElementById('password_confirmation').focus();
+                return;
             }
+
+            const submitBtn = document.getElementById('submitTambahUser');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Menyimpan...';
+
+            const formData = new FormData(this);
 
             fetch(this.action, {
                     method: 'POST',
@@ -783,15 +790,14 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Response:', data);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Tambah User';
 
                     if (data.success) {
                         alert('User berhasil ditambahkan!');
                         closeModal();
-                        // Reload halaman untuk melihat data terbaru
                         location.reload();
                     } else {
-                        // Tampilkan error messages detail
                         let errorMsg = data.message || 'Gagal menambahkan user';
                         if (data.errors) {
                             errorMsg += '\n\nDetail Error:\n';
@@ -806,6 +812,8 @@
                     }
                 })
                 .catch(error => {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Tambah User';
                     console.error('Error:', error);
                     alert('Terjadi kesalahan: ' + error);
                 });
