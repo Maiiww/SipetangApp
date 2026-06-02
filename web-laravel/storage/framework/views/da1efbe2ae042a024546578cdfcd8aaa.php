@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>Cetak Laporan - SIPETANG</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -13,7 +14,6 @@
             box-sizing: border-box;
         }
 
-    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
@@ -923,499 +923,174 @@
 
         <section class="page-title">
             <h1>Cetak Laporan</h1>
-            <p>Hasilkan dan ekspor laporan data maritim yang komprehensif. Pilih parameter Anda di bawah ini untuk
-                membuat dokumentasi editorial resmi.</p>
+            <p>Ekspor laporan hasil tangkap yang sudah divalidasi dalam format PDF, Excel, atau Word untuk dokumentasi
+                resmi.</p>
         </section>
 
-        <div class="layout-grid">
-            <section class="card">
-                <div class="section-title">
-                    <h2>Konfigurasi Laporan</h2>
-                    <span>Atur sumber, periode, dan format output</span>
-                </div>
+        <!-- Stats Grid -->
+        <div class="stats-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div class="stat-card"
+                style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div
+                        style="font-size: 11px; text-transform: uppercase; color: #999; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">
+                        Total Laporan Tervalidasi</div>
+                    <div style="font-size: 32px; font-weight: 700; color: #1a4d7d;"><?php echo e($stats['total_validated']); ?>
 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label" for="asal-tpi">Asal TPI</label>
-                        <select id="asal-tpi" class="form-select">
-                            <option value="" disabled selected style="color: #7a869a;">Pilih Asal TPI</option>
-                            <option>Blanakan</option>
-                            <option>Patimban</option>
-                            <option>Genteng</option>
-                            <option>Mayangan</option>
-                            <option>Cirewang</option>
-                            <option>Muara Ciasem</option>
-                            <option>Rawameneng</option>
-                            <option>Cilamaya Girang</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="mulai-dari">Mulai Dari</label>
-                        <input id="mulai-dari" type="date" class="form-input" placeholder="mm/dd">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="sampai-dengan">Sampai Dengan</label>
-                        <input id="sampai-dengan" type="date" class="form-input" placeholder="mm/dd">
                     </div>
                 </div>
-
-                <div class="frequency-card">
-                    <label class="form-label">Jenis Laporan Berkala</label>
-                    <label class="frequency-option" data-laporan="harian">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <input type="radio" name="laporan_type" value="harian">
-                            <div class="option-body">
-                                <span class="option-title">Laporan Harian</span>
-                                <span class="option-desc">Rekapitulasi harian hasil tangkap</span>
-                            </div>
-                        </div>
-                        <i class="fas fa-calendar-day" style="color:#0d2640"></i>
-                    </label>
-                    <label class="frequency-option" data-laporan="bulanan">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <input type="radio" name="laporan_type" value="bulanan">
-                            <div class="option-body">
-                                <span class="option-title">Laporan Bulanan</span>
-                                <span class="option-desc">Statistik dan produksi</span>
-                            </div>
-                        </div>
-                        <i class="fas fa-calendar-alt" style="color:#0d2640"></i>
-                    </label>
-                    <label class="frequency-option" data-laporan="tahunan">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <input type="radio" name="laporan_type" value="tahunan">
-                            <div class="option-body">
-                                <span class="option-title">Laporan Tahunan</span>
-                                <span class="option-desc">Statistik tren produksi tahunan</span>
-                            </div>
-                        </div>
-                        <i class="fas fa-calendar" style="color:#0d2640"></i>
-
-                                    <input type="hidden" id="laporan-type-value" value="">
-                    </label>
+                <div
+                    style="width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #4caf50;">
+                    <i class="fas fa-check-circle"></i>
                 </div>
+            </div>
 
-                <div class="output-actions">
-                    <div class="output-label">Format Output:</div>
-                    <div class="format-buttons">
-                        <button type="button" class="format-button" id="format-pdf" data-format="pdf">PDF</button>
-                        <button type="button" class="format-button" id="format-excel"
-                            data-format="excel">EXCEL</button>
-                    </div>
-                    <button type="button" class="button-primary" id="btn-preview">Lihat Pratinjau</button>
+            <div class="stat-card"
+                style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div
+                        style="font-size: 11px; text-transform: uppercase; color: #999; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">
+                        Total Berat (kg)</div>
+                    <div style="font-size: 32px; font-weight: 700; color: #1a4d7d;">
+                        <?php echo e(number_format($stats['total_weight'], 0, ',', '.')); ?></div>
                 </div>
-            </section>
+                <div
+                    style="width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #2196f3;">
+                    <i class="fas fa-weight"></i>
+                </div>
+            </div>
 
-            <section>
-                <div class="metric-card">
-                    <div class="metric-top">
-                        <div>
-                            <h3>Total Laporan</h3>
-                            <p class="metric-note">Semua dokumen cetak dan ekspor</p>
-                        </div>
-                        <div class="metric-value">1,284</div>
-                    </div>
+            <div class="stat-card"
+                style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div
+                        style="font-size: 11px; text-transform: uppercase; color: #999; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">
+                        Rata-rata Berat</div>
+                    <div style="font-size: 32px; font-weight: 700; color: #1a4d7d;">
+                        <?php echo e(number_format($stats['avg_weight'], 2, ',', '.')); ?></div>
                 </div>
+                <div
+                    style="width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ff9800;">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+            </div>
+        </div>
 
-                <div class="metric-card">
-                    <div class="section-title" style="margin-bottom: 18px;">
-                        <h2>Laporan Terkini</h2>
+        <!-- Filters Section -->
+        <div
+            style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); margin-bottom: 25px;">
+            <form method="GET" action="<?php echo e(route('staff.cetak')); ?>" style="width: 100%;">
+                <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label
+                            style="font-size: 12px; text-transform: uppercase; color: #7a869a; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; display: block;">Cari
+                            Data</label>
+                        <input type="text" name="search" value="<?php echo e($search); ?>"
+                            placeholder="Cari nama nelayan, pembeli, atau jenis ikan..."
+                            style="width: 100%; border: 1px solid #dce1e9; border-radius: 6px; padding: 10px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none;">
                     </div>
-                    <ul class="report-list">
-                        <li class="report-item">
-                            <div class="report-info">
-                                <div class="report-icon"><i class="fas fa-file-pdf"></i></div>
-                                <div class="report-text">
-                                    <span class="report-name">Rekap_Blanakan_Jan.pdf</span>
-                                    <span class="report-meta">12 menit yang lalu</span>
-                                </div>
-                            </div>
-                            <span class="report-size">4.2 MB</span>
-                        </li>
-                        <li class="report-item">
-                            <div class="report-info">
-                                <div class="report-icon" style="background:#0c8f6b;"><i
-                                        class="fas fa-file-excel"></i></div>
-                                <div class="report-text">
-                                    <span class="report-name">Rekap_Pondok_Bali.xlsx</span>
-                                    <span class="report-meta">2 jam yang lalu</span>
-                                </div>
-                            </div>
-                            <span class="report-size">12.8 MB</span>
-                        </li>
-                        <li class="report-item">
-                            <div class="report-info">
-                                <div class="report-icon" style="background:#0d2640;"><i class="fas fa-file-pdf"></i>
-                                </div>
-                                <div class="report-text">
-                                    <span class="report-name">Rekap_Mayangan_April.pdf</span>
-                                    <span class="report-meta">Kemarin</span>
-                                </div>
-                            </div>
-                            <span class="report-size">11 MB</span>
-                        </li>
-                    </ul>
-                    <div style="margin-top: 18px; text-align: right;">
-                        <a href="#" class="action-link" id="view-all-history">Lihat Semua Riwayat</a>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label
+                            style="font-size: 12px; text-transform: uppercase; color: #7a869a; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; display: block;">Dari
+                            Tanggal</label>
+                        <input type="date" name="start_date" value="<?php echo e($startDate); ?>"
+                            style="width: 100%; border: 1px solid #dce1e9; border-radius: 6px; padding: 10px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none;">
                     </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label
+                            style="font-size: 12px; text-transform: uppercase; color: #7a869a; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; display: block;">Sampai
+                            Tanggal</label>
+                        <input type="date" name="end_date" value="<?php echo e($endDate); ?>"
+                            style="width: 100%; border: 1px solid #dce1e9; border-radius: 6px; padding: 10px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none;">
+                    </div>
+                    <button type="submit"
+                        style="background: #0d2640; color: white; border: 1px solid #0d2640; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
                 </div>
-            </section>
+            </form>
         </div>
 
         <div class="table-card">
             <div class="table-header">
-                <h2>Tabel Arsip Laporan Cetak</h2>
-                <span class="info-text">Menampilkan 2 dari 1,284 entri</span>
+                <h2>Data Laporan Tervalidasi</h2>
+                <span class="info-text">Total: <?php echo e($laporans->total()); ?> data</span>
             </div>
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>ID Laporan</th>
-                        <th>Tanggal Dibuat</th>
-                        <th>Cakupan Data</th>
-                        <th>Dibuat Oleh</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>#MAR-2601-092</strong></td>
-                        <td>24 Jan 2026, 09:12</td>
-                        <td><span class="badge">01 JAN - 23 JAN</span></td>
-                        <td>TPI Pondok Bali</td>
-                        <td><a href="#" class="action-link detail-link" data-id="#MAR-2601-092"
-                                data-date="24 Jan 2026, 09:12" data-range="01 JAN - 23 JAN"
-                                data-tpi="TPI Pondok Bali" data-records="150 Records"
-                                data-weight="2,500 kg">Lihat Detail</a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>#MAR-2601-088</strong></td>
-                        <td>22 Jan 2026, 15:45</td>
-                        <td><span class="badge">TPI Patimban Only</span></td>
-                        <td>TPI Blanakan</td>
-                        <td><a href="#" class="action-link detail-link" data-id="#MAR-2601-088"
-                                data-date="22 Jan 2026, 15:45" data-range="TPI Patimban Only"
-                                data-tpi="TPI Blanakan" data-records="98 Records"
-                                data-weight="1,850 kg">Lihat Detail</a></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="pagination">
-                <button class="pagination-prev" data-action="prev">&lt;</button>
-                <button class="pagination-page active" data-page="1">1</button>
-                <button class="pagination-page" data-page="2">2</button>
-                <button class="pagination-page" data-page="3">3</button>
-                <button class="pagination-next" data-action="next">&gt;</button>
-            </div>
+
+            <?php if($laporans->count() > 0): ?>
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Nelayan</th>
+                            <th>Nama Pembeli</th>
+                            <th>Jenis Ikan</th>
+                            <th>Berat (kg)</th>
+                            <th>Harga Jual</th>
+                            <th>Tanggal</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $__currentLoopData = $laporans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $laporan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <tr>
+                                <td>#<?php echo e($laporan->id); ?></td>
+                                <td><strong><?php echo e($laporan->nama_nelayan); ?></strong></td>
+                                <td><?php echo e($laporan->nama_pembeli); ?></td>
+                                <td><?php echo e($laporan->jenis_ikan); ?></td>
+                                <td><strong><?php echo e(number_format($laporan->berat, 2)); ?></strong></td>
+                                <td>Rp <?php echo e(number_format($laporan->harga_jual, 0, ',', '.')); ?></td>
+                                <td><?php echo e($laporan->created_at->format('d/m/Y H:i')); ?></td>
+                                <td>
+                                    <button type="button" class="action-btn btn-download"
+                                        data-id="<?php echo e($laporan->id); ?>"
+                                        style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="pagination" style="margin-top: 20px;">
+                    <?php echo e($laporans->links('pagination.custom')); ?>
+
+                </div>
+            <?php else: ?>
+                <div style="text-align: center; padding: 40px 20px; color: #999;">
+                    <i class="fas fa-inbox"
+                        style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                    <p style="font-size: 14px;">Belum ada data laporan yang tervalidasi</p>
+                </div>
+            <?php endif; ?>
+        </div>
+        </tbody>
+        </table>
+        <div class="pagination">
+            <button class="pagination-prev" data-action="prev">&lt;</button>
+            <button class="pagination-page active" data-page="1">1</button>
+            <button class="pagination-page" data-page="2">2</button>
+            <button class="pagination-page" data-page="3">3</button>
+            <button class="pagination-next" data-action="next">&gt;</button>
+        </div>
         </div>
     </main>
 
-    <!-- Detail Modal -->
-    <div id="detailModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div>
-                    <h2>Detail Laporan</h2>
-                    <div class="detail-id" id="modal-header-id"></div>
-                </div>
-                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <!-- Informasi Laporan -->
-                <div class="detail-section">
-                    <span class="detail-section-title">Informasi Laporan</span>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <span class="detail-label">Tanggal Dibuat</span>
-                            <span class="detail-value" id="modal-date"></span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Dibuat Oleh</span>
-                            <span class="detail-value" id="modal-tpi"></span>
-                        </div>
-                    </div>
-                    <div class="detail-grid full">
-                        <div class="detail-item">
-                            <span class="detail-label">Cakupan Data</span>
-                            <span class="detail-badge" id="modal-range"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Data Laporan -->
-                <div class="detail-section">
-                    <span class="detail-section-title">Data Laporan</span>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <span class="detail-label">Total Records</span>
-                            <span class="detail-value" id="modal-records">-</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Total Berat</span>
-                            <span class="detail-value" id="modal-total-weight">-</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Status -->
-                <div class="detail-section">
-                    <div class="detail-item">
-                        <span class="detail-label">Status Laporan</span>
-                        <span class="detail-value" id="modal-status">Siap Download</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-button close-btn" onclick="closeDetailModal()">Tutup</button>
-                <button class="modal-button pdf-btn" id="modal-download-pdf" onclick="downloadLaporan('pdf')">
-                    <i class="fas fa-file-pdf"></i> PDF
-                </button>
-                <button class="modal-button excel-btn" id="modal-download-excel" onclick="downloadLaporan('excel')">
-                    <i class="fas fa-file-excel"></i> EXCEL
-                </button>
-                <button class="modal-button word-btn" id="modal-download-word" onclick="downloadLaporan('word')">
-                    <i class="fas fa-file-word"></i> WORD
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        let selectedFormat = 'pdf';
-
-        // Laporan type selection toggle
-        document.querySelectorAll('input[name="laporan_type"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                // Hapus class active dari semua frequency-option
-                document.querySelectorAll('.frequency-option').forEach(opt => {
-                    opt.classList.remove('active-laporan');
-                });
-                // Tambah class active ke label yang berisi radio yang dipilih
-                this.closest('.frequency-option').classList.add('active-laporan');
-            });
-        });
-
-        // Format button toggle
-        document.getElementById('format-pdf').addEventListener('click', function() {
-            selectedFormat = 'pdf';
-            document.querySelectorAll('.format-button').forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-        });
-
-        document.getElementById('format-excel').addEventListener('click', function() {
-            selectedFormat = 'excel';
-            document.querySelectorAll('.format-button').forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-        });
-
-        // Pagination functionality
-        let currentPage = 1;
-        const itemsPerPage = 2;
-        const allReportData = [{
-                id: '#MAR-2601-092',
-                date: '24 Jan 2026, 09:12',
-                range: '01 JAN - 23 JAN',
-                tpi: 'TPI Pondok Bali',
-                records: '150 Records',
-                weight: '2,500 kg'
-            },
-            {
-                id: '#MAR-2601-088',
-                date: '22 Jan 2026, 15:45',
-                range: 'TPI Patimban Only',
-                tpi: 'TPI Blanakan',
-                records: '98 Records',
-                weight: '1,850 kg'
-            },
-            {
-                id: '#MAR-2601-085',
-                date: '20 Jan 2026, 11:30',
-                range: '01 JAN - 19 JAN',
-                tpi: 'TPI Genteng',
-                records: '120 Records',
-                weight: '2,100 kg'
-            },
-            {
-                id: '#MAR-2601-082',
-                date: '18 Jan 2026, 14:20',
-                range: 'TPI Mayangan Only',
-                tpi: 'TPI Mayangan',
-                records: '75 Records',
-                weight: '1,450 kg'
-            },
-            {
-                id: '#MAR-2601-079',
-                date: '16 Jan 2026, 10:00',
-                range: '01 JAN - 15 JAN',
-                tpi: 'TPI Blanakan',
-                records: '200 Records',
-                weight: '3,200 kg'
-            },
-            {
-                id: '#MAR-2601-075',
-                date: '14 Jan 2026, 13:40',
-                range: 'TPI Patimban Only',
-                tpi: 'TPI Patimban',
-                records: '110 Records',
-                weight: '1,950 kg'
-            }
-        ];
-
-        const totalPages = Math.ceil(allReportData.length / itemsPerPage);
-
-        function updatePaginationTable(page) {
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageData = allReportData.slice(start, end);
-
-            // Update table content
-            const tableBody = document.querySelector('.report-table tbody');
-            tableBody.innerHTML = pageData.map(item => `
-                <tr>
-                    <td><strong>${item.id}</strong></td>
-                    <td>${item.date}</td>
-                    <td><span class="badge">${item.range}</span></td>
-                    <td>${item.tpi}</td>
-                    <td><a href="#" class="action-link detail-link" data-id="${item.id}"
-                            data-date="${item.date}" data-range="${item.range}"
-                            data-tpi="${item.tpi}" data-records="${item.records}"
-                            data-weight="${item.weight}">Lihat Detail</a></td>
-                </tr>
-            `).join('');
-
-            // Attach event listeners to new detail links
-            attachDetailLinkListeners();
-
-            // Update info text
-            const startNum = start + 1;
-            const endNum = Math.min(end, allReportData.length);
-            document.querySelector('.table-header .info-text').textContent =
-                `Menampilkan ${startNum} - ${endNum} dari ${allReportData.length} entri`;
-
-            // Update pagination buttons
-            updatePaginationButtons(page);
-
-            currentPage = page;
-        }
-
-        function updatePaginationButtons(page) {
-            // Update prev button
-            const prevBtn = document.querySelector('.pagination-prev');
-            prevBtn.disabled = page === 1;
-
-            // Update next button
-            const nextBtn = document.querySelector('.pagination-next');
-            nextBtn.disabled = page === totalPages;
-
-            // Update page buttons
-            document.querySelectorAll('.pagination-page').forEach(btn => {
-                const pageNum = parseInt(btn.getAttribute('data-page'));
-                btn.classList.toggle('active', pageNum === page);
-            });
-        }
-
-        // Pagination button click handlers
-        function attachPaginationListeners() {
-            // Previous button
-            const prevBtn = document.querySelector('.pagination-prev');
-            if (prevBtn) {
-                prevBtn.addEventListener('click', function() {
-                    if (currentPage > 1) {
-                        updatePaginationTable(currentPage - 1);
-                    }
-                });
-            }
-
-            // Next button
-            const nextBtn = document.querySelector('.pagination-next');
-            if (nextBtn) {
-                nextBtn.addEventListener('click', function() {
-                    if (currentPage < totalPages) {
-                        updatePaginationTable(currentPage + 1);
-                    }
-                });
-            }
-
-            // Page number buttons
-            document.querySelectorAll('.pagination-page').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const pageNum = parseInt(this.getAttribute('data-page'));
-                    if (pageNum <= totalPages) {
-                        updatePaginationTable(pageNum);
-                    }
-                });
-            });
-        }
-
-        attachPaginationListeners();
-
-        function attachDetailLinkListeners() {
-            document.querySelectorAll('.detail-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const id = this.dataset.id;
-                    const date = this.dataset.date;
-                    const range = this.dataset.range;
-                    const tpi = this.dataset.tpi;
-                    const records = this.dataset.records || '-';
-                    const weight = this.dataset.weight || '-';
-
-                    // Populate modal header with ID
-                    document.getElementById('modal-header-id').textContent = id;
-
-                    // Populate modal body with data
-                    document.getElementById('modal-date').textContent = date;
-                    document.getElementById('modal-range').textContent = range;
-                    document.getElementById('modal-tpi').textContent = tpi;
-                    document.getElementById('modal-records').textContent = records;
-                    document.getElementById('modal-total-weight').textContent = weight;
-
-                    // Show modal
-                    document.getElementById('detailModal').classList.add('show');
-                });
-            });
-        }
-
         // Download laporan function
-        function downloadLaporan(format) {
-            const laporanId = document.getElementById('modal-header-id').textContent.trim();
+        function downloadLaporan(format, laporanId = null) {
             const requestData = {
-                format: format
+                format: format,
+                laporan_id: laporanId
             };
-
-            if (laporanId) {
-                requestData.laporan_id = laporanId;
-            } else {
-                const laporanType = document.querySelector('input[name="laporan_type"]:checked')?.value;
-
-                if (!laporanType) {
-                    alert('Silakan pilih jenis laporan atau buka detail laporan terlebih dahulu');
-                    return;
-                }
-
-                requestData.laporan_type = mapLaporanType(laporanType);
-
-                // Add TPI filter if selected
-                const tpiValue = document.getElementById('asal-tpi').value;
-                if (tpiValue) {
-                    requestData.tpi_id = tpiValue;
-                }
-
-                // Add date range for custom type
-                if (requestData.laporan_type === 'custom') {
-                    const startDate = document.getElementById('mulai-dari').value;
-                    const endDate = document.getElementById('sampai-dengan').value;
-                    if (startDate && endDate) {
-                        requestData.start_date = startDate;
-                        requestData.end_date = endDate;
-                    }
-                }
-            }
 
             // Create form untuk download
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '<?php echo e(route("staff.laporan.download")); ?>';
+            form.action = '<?php echo e(route('staff.cetak.download')); ?>';
 
             // Add CSRF token
             const csrfToken = document.createElement('input');
@@ -1426,189 +1101,35 @@
 
             // Add form data
             Object.keys(requestData).forEach(key => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = requestData[key];
-                form.appendChild(input);
+                if (requestData[key] !== null) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = requestData[key];
+                    form.appendChild(input);
+                }
             });
 
             document.body.appendChild(form);
             form.submit();
             document.body.removeChild(form);
-
-            closeDetailModal();
         }
 
-        // Initialize detail link listeners
-        attachDetailLinkListeners();
+        // Event listener untuk tombol download di table
+        document.querySelectorAll('.btn-download').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const laporanId = this.dataset.id;
 
-        // Preview button
-        document.getElementById('btn-preview').addEventListener('click', function() {
-            const laporanType = document.querySelector('input[name="laporan_type"]:checked')?.value;
-            
-            if (!laporanType) {
-                alert('Silakan pilih jenis laporan');
-                return;
-            }
-            
-            let requestData = {
-                laporan_type: mapLaporanType(laporanType)
-            };
-            
-            // Add TPI filter if selected
-            const tpiValue = document.getElementById('asal-tpi').value;
-            if (tpiValue) {
-                requestData.tpi_id = tpiValue;
-            }
-            
-            // Add date range for custom type
-            if (requestData.laporan_type === 'custom') {
-                const startDate = document.getElementById('mulai-dari').value;
-                const endDate = document.getElementById('sampai-dengan').value;
-                if (startDate && endDate) {
-                    requestData.start_date = startDate;
-                    requestData.end_date = endDate;
-                }
-            }
-            
-            // Call preview API
-            fetch('<?php echo e(route("staff.laporan.preview")); ?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '<?php echo e(csrf_token()); ?>'
-                },
-                body: JSON.stringify(requestData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const preview = data.data;
-                    alert(`Data Preview:\nTotal Record: ${preview.total_records}\nTotal Berat: ${preview.total_berat} kg`);
-                } else {
-                    alert(data.message || 'Gagal memuat preview');
-                }
-            })
-            .catch(error => {
-                alert('Error: ' + error.message);
+                // Show format selection
+                const format = confirm('Pilih format:\nOK = PDF\nCancel = Excel') ? 'pdf' : 'excel';
+                downloadLaporan(format, laporanId);
             });
         });
 
-        // Close modal function
-        function closeDetailModal() {
-            document.getElementById('detailModal').classList.remove('show');
+        // Download all data
+        function downloadAllData(format = 'pdf') {
+            downloadLaporan(format);
         }
-
-        // Close modal when clicking outside content
-        document.getElementById('detailModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeDetailModal();
-            }
-        });
-
-        
-
-        // Helper function to map laporan type
-        function mapLaporanType(type) {
-            const mapping = {
-                'harian': 'daily',
-                'bulanan': 'monthly',
-                'tahunan': 'custom'
-            };
-            return mapping[type] || 'daily';
-        }
-
-        // View all history functionality
-        document.getElementById('view-all-history').addEventListener('click', function(e) {
-            e.preventDefault();
-
-            // Get the report list container
-            const reportList = document.querySelector('.report-list');
-            const viewAllLink = document.getElementById('view-all-history').parentElement;
-
-            // Define all history data
-            const allHistoryData = [{
-                    name: 'Rekap_Blanakan_Jan.pdf',
-                    meta: '12 menit yang lalu',
-                    size: '4.2 MB',
-                    icon: 'fa-file-pdf',
-                    bgColor: '#0d2640'
-                },
-                {
-                    name: 'Rekap_Pondok_Bali.xlsx',
-                    meta: '2 jam yang lalu',
-                    size: '12.8 MB',
-                    icon: 'fa-file-excel',
-                    bgColor: '#0c8f6b'
-                },
-                {
-                    name: 'Rekap_Mayangan_April.pdf',
-                    meta: 'Kemarin',
-                    size: '11 MB',
-                    icon: 'fa-file-pdf',
-                    bgColor: '#0d2640'
-                },
-                {
-                    name: 'Laporan_Genteng_Mei.pdf',
-                    meta: '3 hari yang lalu',
-                    size: '8.5 MB',
-                    icon: 'fa-file-pdf',
-                    bgColor: '#0d2640'
-                },
-                {
-                    name: 'Rekap_Cirewang_Feb.xlsx',
-                    meta: '1 minggu yang lalu',
-                    size: '15.3 MB',
-                    icon: 'fa-file-excel',
-                    bgColor: '#0c8f6b'
-                },
-                {
-                    name: 'Laporan_Patimban_Mar.pdf',
-                    meta: '2 minggu yang lalu',
-                    size: '9.2 MB',
-                    icon: 'fa-file-pdf',
-                    bgColor: '#0d2640'
-                }
-            ];
-
-            // Check if already showing all
-            if (reportList.dataset.showAll === 'true') {
-                // Toggle back to showing 3 items
-                reportList.innerHTML = allHistoryData.slice(0, 3).map(item => `
-                    <li class="report-item">
-                        <div class="report-info">
-                            <div class="report-icon" style="background:${item.bgColor};"><i class="fas ${item.icon}"></i></div>
-                            <div class="report-text">
-                                <span class="report-name">${item.name}</span>
-                                <span class="report-meta">${item.meta}</span>
-                            </div>
-                        </div>
-                        <span class="report-size">${item.size}</span>
-                    </li>
-                `).join('');
-
-                reportList.dataset.showAll = 'false';
-                document.getElementById('view-all-history').textContent = 'Lihat Semua Riwayat';
-            } else {
-                // Show all items
-                reportList.innerHTML = allHistoryData.map(item => `
-                    <li class="report-item">
-                        <div class="report-info">
-                            <div class="report-icon" style="background:${item.bgColor};"><i class="fas ${item.icon}"></i></div>
-                            <div class="report-text">
-                                <span class="report-name">${item.name}</span>
-                                <span class="report-meta">${item.meta}</span>
-                            </div>
-                        </div>
-                        <span class="report-size">${item.size}</span>
-                    </li>
-                `).join('');
-
-                reportList.dataset.showAll = 'true';
-                document.getElementById('view-all-history').textContent = 'Sembunyikan';
-            }
-        });
     </script>
 </body>
 

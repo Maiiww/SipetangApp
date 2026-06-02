@@ -17,6 +17,10 @@
                     if ($menu->title === 'Profil') {
                         return false;
                     }
+                    // Exclude 'Notifikasi' for all roles
+                    if ($menu->title === 'Notifikasi') {
+                        return false;
+                    }
                     // Exclude 'Beranda'/'Dashboard' for admin role
                     if ($role === 'admin' && in_array($menu->title, ['Beranda', 'Dashboard', 'Dashboard Admin'])) {
                         return false;
@@ -50,7 +54,6 @@
                     ],
                     (object) ['title' => 'Cetak Laporan', 'route_name' => 'staff.cetak', 'icon' => 'fa-print'],
                     (object) ['title' => 'Data Statistik', 'route_name' => 'staff.statistik', 'icon' => 'fa-chart-bar'],
-                    (object) ['title' => 'Notifikasi', 'route_name' => 'staff.notifikasi', 'icon' => 'fa-bell'],
                 ])->filter(function ($menu) {
                     return $menu->title !== 'Profil';
                 });
@@ -82,7 +85,8 @@
                     @endif
                     <span>{{ $menu->title }}</span>
                     @if ($menu->route_name === 'staff.validasi' && $pendingNotificationCount > 0)
-                        <span style="margin-left: auto; background: #dc3545; color: #fff; font-size: 0.75rem; min-width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; padding: 0 6px; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">{{ $pendingNotificationCount }}</span>
+                        <span
+                            style="margin-left: auto; background: #dc3545; color: #fff; font-size: 0.75rem; min-width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; padding: 0 6px; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">{{ $pendingNotificationCount }}</span>
                     @endif
                 </a>
             </li>
