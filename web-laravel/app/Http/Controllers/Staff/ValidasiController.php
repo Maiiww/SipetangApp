@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tangkapan;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,8 +23,8 @@ class ValidasiController extends Controller
         // Build query
         $query = Tangkapan::query();
 
-        // Filter by validation status - show records for validation (all statuses for staff review)
-        $validStatuses = ['Menunggu Validasi', 'Divalidasi', 'Ditolak'];
+        // Filter by validation status - show records for validation (includes Draft as pending)
+        $validStatuses = ['Draft', 'Menunggu Validasi', 'Divalidasi', 'Ditolak'];
         $query->whereIn('status', $validStatuses);
 
         // If specific status filter selected, apply it
@@ -45,15 +46,15 @@ class ValidasiController extends Controller
         $laporans = $query->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Count stats
+        // Count stats (count Draft as pending for validation)
         $stats = [
-            'pending' => Tangkapan::where('status', 'Menunggu Validasi')->count(),
+            'pending' => Tangkapan::whereIn('status', ['Draft', 'Menunggu Validasi'])->count(),
             'validated' => Tangkapan::where('status', 'Divalidasi')
-                ->whereDate('updated_at', today())
+                ->whereDate('updated_at', '=', today())
                 ->count(),
             'totalVolume' => Tangkapan::where('status', 'Divalidasi')
                 ->sum('berat'),
-            'anomaly' => Tangkapan::where('status', 'Menunggu Validasi')
+            'anomaly' => Tangkapan::whereIn('status', ['Draft', 'Menunggu Validasi'])
                 ->where('berat', '>', 5)
                 ->count(),
         ];
@@ -77,7 +78,7 @@ class ValidasiController extends Controller
     {
         $tangkapan = Tangkapan::findOrFail($id);
 
-        if ($tangkapan->status !== 'Menunggu Validasi') {
+        if (!in_array($tangkapan->status, ['Draft', 'Menunggu Validasi'])) {
             return redirect()->route('staff.validasi')->with('error', 'Data sudah diproses sebelumnya');
         }
 
@@ -99,15 +100,28 @@ class ValidasiController extends Controller
 
         $tangkapan = Tangkapan::findOrFail($id);
 
-        if ($tangkapan->status !== 'Menunggu Validasi') {
+        if (!in_array($tangkapan->status, ['Draft', 'Menunggu Validasi', 'Revisi'])) {
             return redirect()->route('staff.validasi')->with('error', 'Data sudah diproses sebelumnya');
         }
 
+        // Update tangkapan dengan status Revisi dan tracking info
         $tangkapan->update([
-            'status' => 'Ditolak',
+            'status' => 'Revisi',
             'catatan' => $request->catatan,
+            'rejected_by' => Auth::id(),
+            'rejected_at' => now(),
+            'revision_needed' => true,
         ]);
 
-        return redirect()->route('staff.validasi')->with('success', 'Data berhasil ditolak');
+        // Create notification untuk juru rekap (pembuat data)
+        Notification::create([
+            'user_id' => $tangkapan->user_id,
+            'tangkapan_id' => $tangkapan->id,
+            'type' => 'rejection',
+            'message' => 'Data hasil tangkap Anda untuk ' . $tangkapan->jenis_ikan . ' (' . $tangkapan->berat . ' kg) ditolak oleh staff validasi. Alasan: ' . $request->catatan . '. Silakan lakukan revisi.',
+            'read' => false,
+        ]);
+
+        return redirect()->route('staff.validasi')->with('success', 'Data berhasil ditolak dan notifikasi telah dikirim ke juru rekap');
     }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>Manajemen User - SIPETANG</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -654,7 +654,7 @@
 </head>
 
 <body>
-    @include('components.sidebar-menu')
+    <?php echo $__env->make('components.sidebar-menu', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <div class="main-content">
         <div class="header">
@@ -679,7 +679,7 @@
         <div class="filter-row">
             <div class="total-card">
                 <small>TOTAL DATA USER</small>
-                <h2>{{ count($users) }}</h2>
+                <h2><?php echo e(count($users)); ?></h2>
             </div>
             <div class="filter-form">
                 <div class="form-group">
@@ -722,73 +722,74 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($users as $user)
-                        <tr data-username="{{ strtolower($user->nama ?? $user->username) }}"
-                            data-id="{{ strtolower($user->no_induk ?? '') }}" data-role="{{ $user->role ?? '' }}"
-                            data-gender="{{ $user->jenis_kelamin ?? '' }}">
+                    <?php $__empty_1 = true; $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr data-username="<?php echo e(strtolower($user->nama ?? $user->username)); ?>"
+                            data-id="<?php echo e(strtolower($user->no_induk ?? '')); ?>" data-role="<?php echo e($user->role ?? ''); ?>"
+                            data-gender="<?php echo e($user->jenis_kelamin ?? ''); ?>">
                             <td>
                                 <div class="user-info">
                                     <div class="avatar"
                                         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                                        {{ strtoupper(substr($user->nama ?? $user->username, 0, 2)) }}
+                                        <?php echo e(strtoupper(substr($user->nama ?? $user->username, 0, 2))); ?>
+
                                     </div>
                                     <div>
-                                        <strong>{{ $user->nama ?? $user->username }}</strong>
+                                        <strong><?php echo e($user->nama ?? $user->username); ?></strong>
                                         <br>
-                                        <small style="color: #999;">{{ $user->no_induk ?? '-' }}</small>
+                                        <small style="color: #999;"><?php echo e($user->no_induk ?? '-'); ?></small>
                                     </div>
                                 </div>
                             </td>
-                            <td><span class="tpi-badge">{{ $user->wilayah ?? 'Umum' }}</span></td>
-                            <td>{{ $user->jenis_kelamin ?? '-' }}</td>
-                            <td>{{ $user->no_telepon ?? '-' }}</td>
-                            <td>{{ $user->alamat ?? '-' }}</td>
+                            <td><span class="tpi-badge"><?php echo e($user->wilayah ?? 'Umum'); ?></span></td>
+                            <td><?php echo e($user->jenis_kelamin ?? '-'); ?></td>
+                            <td><?php echo e($user->no_telepon ?? '-'); ?></td>
+                            <td><?php echo e($user->alamat ?? '-'); ?></td>
                             <td>
-                                @if ($user->is_active ?? true)
+                                <?php if($user->is_active ?? true): ?>
                                     <span class="status-badge status-aktif">
                                         <i class="fas fa-circle-check"></i> Aktif
                                     </span>
-                                @else
+                                <?php else: ?>
                                     <span class="status-badge status-nonaktif">
                                         <i class="fas fa-circle-xmark"></i> Nonaktif
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </td>
                             <td style="text-align: center; position: relative;">
-                                @if ($user->role !== 'admin')
+                                <?php if($user->role !== 'admin'): ?>
                                     <button class="btn-aksi-menu" onclick="toggleMenu(event, this)">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <div class="action-dropdown" style="display: none;">
-                                        @if ($user->is_active ?? true)
+                                        <?php if($user->is_active ?? true): ?>
                                             <button type="button" class="dropdown-item"
-                                                onclick="deactivateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                                onclick="deactivateUser(<?php echo e($user->id); ?>, '<?php echo e($user->nama ?? $user->username); ?>')">
                                                 <i class="fas fa-ban"></i> Nonaktifkan
                                             </button>
-                                        @else
+                                        <?php else: ?>
                                             <button type="button" class="dropdown-item"
-                                                onclick="activateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                                onclick="activateUser(<?php echo e($user->id); ?>, '<?php echo e($user->nama ?? $user->username); ?>')">
                                                 <i class="fas fa-check-circle"></i> Aktifkan
                                             </button>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
-                                @else
+                                <?php else: ?>
                                     <span style="color: #999; font-size: 12px;">-</span>
-                                @endif
+                                <?php endif; ?>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="7" style="text-align: center; color: #999; padding: 30px;">Tidak ada data
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
 
             <div class="pagination">
                 <p class="page-info">
-                    {{ count($users) > 0 ? 'Menampilkan ' . count($users) . ' data' : 'Tidak ada data' }}</p>
+                    <?php echo e(count($users) > 0 ? 'Menampilkan ' . count($users) . ' data' : 'Tidak ada data'); ?></p>
                 <div class="page-nav">
                     <a href="#" class="page-link"><i class="fas fa-chevron-left"></i></a>
                     <a href="#" class="page-link active">1</a>
@@ -806,8 +807,8 @@
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
 
-            <form id="formTambahUser" action="{{ route('admin.user.store') }}" method="POST">
-                @csrf
+            <form id="formTambahUser" action="<?php echo e(route('admin.user.store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <div class="form-row">
                     <div class="form-group-modal">
                         <label>NAMA PETUGAS *</label>
@@ -973,7 +974,7 @@
 
         function deactivateUser(userId, userName) {
             if (confirm(`Nonaktifkan akun "${userName}"?`)) {
-                fetch(`{{ route('admin.user.update-status') }}`, {
+                fetch(`<?php echo e(route('admin.user.update-status')); ?>`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1003,7 +1004,7 @@
 
         function activateUser(userId, userName) {
             if (confirm(`Aktifkan akun "${userName}"?`)) {
-                fetch(`{{ route('admin.user.update-status') }}`, {
+                fetch(`<?php echo e(route('admin.user.update-status')); ?>`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1139,3 +1140,4 @@
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/Admin/manajemen-user.blade.php ENDPATH**/ ?>

@@ -15,10 +15,13 @@ class Tangkapan extends Model
         'nama_pembeli',
         'nama_nelayan',
         'jenis_ikan',
-        'berat',    
+        'berat',
         'harga_jual',
         'status',
-        'catatan'
+        'catatan',
+        'rejected_by',
+        'rejected_at',
+        'revision_needed'
     ];
 
     /**
@@ -27,5 +30,21 @@ class Tangkapan extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get the user who rejected this data
+     */
+    public function rejectedBy()
+    {
+        return $this->belongsTo(User::class, 'rejected_by', 'id');
+    }
+
+    /**
+     * Get all notifications for this tangkapan
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'tangkapan_id', 'id');
     }
 }

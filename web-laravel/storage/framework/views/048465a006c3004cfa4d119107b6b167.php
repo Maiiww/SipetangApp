@@ -654,7 +654,13 @@
             <div class="content-header-right">
                 <div class="date-selector">
                     <i class="fas fa-calendar"></i>
-                    <span>Mei 2026</span>
+                    <span id="currentMonth">
+                        <?php
+                        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                        $now = \Carbon\Carbon::now();
+                        echo $bulan[$now->month - 1] . ' ' . $now->year;
+                        ?>
+                    </span>
                 </div>
                 <a href="<?php echo e(route('staff.validasi')); ?>" class="btn-input"
                     style="text-decoration: none; display: inline-flex; align-items: center;"><i class="fas fa-eye"></i>

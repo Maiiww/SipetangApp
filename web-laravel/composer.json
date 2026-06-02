@@ -6,19 +6,12 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-<<<<<<< HEAD
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "*",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "*"
-=======
-        "php": "^8.1.0",
-        "laravel/framework": "^11.0",
-        "laravel/sanctum": "^3.0|^4.0",
-        "laravel/tinker": "^2.10.1"
->>>>>>> 45df5c8f384053039378f4b2d5ff1db588c23bed
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
 use App\Http\Controllers\Staff\LaporanViewController;
 use App\Http\Controllers\Staff\ValidasiController;
+use App\Http\Controllers\Staff\RekamanViewController;
 use App\Models\User;
 use App\Http\Controllers\Staff\LaporanDownloadController;
 
@@ -38,6 +39,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/validasi-laporan/{id}/reject', [ValidasiController::class, 'reject'])->name('staff.validasi.reject');
         Route::get('/validasi-laporan/{id}', [ValidasiController::class, 'show'])->name('staff.validasi.show');
 
+        // Routes untuk juru rekap - data yang perlu revisi
+        Route::get('/rekaman-revisi', [RekamanViewController::class, 'revisiData'])->name('staff.rekaman.revisi');
+        Route::post('/rekaman-revisi/{id}', [RekamanViewController::class, 'submitRevisi'])->name('staff.rekaman.submit');
+        Route::get('/notifikasi-revisi', [RekamanViewController::class, 'getNotifications'])->name('staff.notifikasi.revisi');
+
         Route::get('/statistik', function () {
             return view('Staff.statistik');
         })->name('staff.statistik');
@@ -46,8 +52,8 @@ Route::middleware('auth')->group(function () {
             return view('Staff.cetak-laporan');
         })->name('staff.cetak');
 
-    Route::post('/laporan/preview', [LaporanDownloadController::class, 'preview'])->name('staff.laporan.preview');
-    Route::post('/laporan/download', [LaporanDownloadController::class, 'download'])->name('staff.laporan.download');
+        Route::post('/laporan/preview', [LaporanDownloadController::class, 'preview'])->name('staff.laporan.preview');
+        Route::post('/laporan/download', [LaporanDownloadController::class, 'download'])->name('staff.laporan.download');
 
         Route::get('/notifikasi', function () {
             return view('Staff.notifikasi');
