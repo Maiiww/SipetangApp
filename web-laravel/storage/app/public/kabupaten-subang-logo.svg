@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 260" aria-label="Logo Kabupaten Subang">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b7b1a" />
+      <stop offset="100%" stop-color="#1d4f0f" />
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7d146" />
+      <stop offset="100%" stop-color="#e8b82a" />
+    </linearGradient>
+  </defs>
+  <path d="M40 24h160c14 0 26 12 26 26v180c0 14-12 26-26 26H40c-14 0-26-12-26-26V50c0-14 12-26 26-26z" fill="url(#g1)" stroke="#000" stroke-width="6" />
+  <path d="M56 40h128v44H56z" fill="#21491d" />
+  <path d="M120 56l24 32h-48z" fill="#f9f3e9" />
+  <path d="M84 108h72v20H84z" fill="#f7d146" />
+  <path d="M62 132h116v20H62z" fill="#21491d" opacity="0.8" />
+  <path d="M90 168h60v20H90z" fill="#f7d146" />
+  <text x="120" y="225" font-family="Arial, sans-serif" font-size="24" fill="#fff" text-anchor="middle" font-weight="700">SUBANG</text>
+</svg>

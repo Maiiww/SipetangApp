@@ -25,7 +25,6 @@ export default function DetailCuacaScreen() {
     prakiraan_hourly: [] as any[]
   });
 
-  // Sesuaikan IP dengan API Laravel kamu
 
   useEffect(() => {
     const fetchDetailCuaca = async () => {
@@ -54,7 +53,7 @@ export default function DetailCuacaScreen() {
           <Ionicons name="arrow-back" size={24} color={COLORS.white} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Detail Cuaca & Angin Laut</Text>
-        <View style={{ width: 24 }} /> {/* Spacer agar text di tengah */}
+        <View style={{ width: 24 }} />
       </View>
 
       {loading ? (

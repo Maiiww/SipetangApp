@@ -6,7 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform,
+  StatusBar
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
@@ -160,7 +162,10 @@ export default function HistoryScreen() {
                     data={displayData}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderCard}
-                    contentContainerStyle={{ padding: 20 }}
+                    contentContainerStyle={{ 
+                        padding: 20,
+                        paddingBottom: 100,
+                    }}
                     ListEmptyComponent={
                         <Text style={styles.emptyText}>Tidak ada riwayat saat ini.</Text>
                     }
@@ -173,7 +178,7 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
     container: { 
         flex: 1, 
-        backgroundColor: COLORS.background 
+        backgroundColor: COLORS.background,
     },
     tabContainer: {
         flexDirection: 'row',

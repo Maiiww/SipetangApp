@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Tangkapan;
+use Carbon\Carbon;
 
 class TangkapanController extends Controller
 {
@@ -36,6 +37,32 @@ class TangkapanController extends Controller
             ],
             'data' => $tangkapan
         ], 200);
+    }
+
+    public function totalProduksi()
+    {
+        $bulanIni = Carbon::now()->month;
+        $tahunIni = Carbon::now()->year;
+
+        $totalKg = Tangkapan::whereMonth('created_at', $bulanIni)
+                        ->whereYear('created_at', $tahunIni)
+                        ->sum('berat');
+
+        $totalTon = $totalKg / 1000;
+
+        $lastUpdate = Tangkapan::whereMonth('created_at', $bulanIni)
+                           ->whereYear('created_at', $tahunIni)
+                           ->max('created_at');
+
+        $formattedDate = $lastUpdate ? Carbon::parse($lastUpdate)->translatedFormat('d F Y') : 'Belum ada data bulan ini';
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_ton' => round($totalTon, 1),
+                'last_update' => $formattedDate
+            ]
+        ]);                   
     }
 
     public function sendToStaff(Request $request)

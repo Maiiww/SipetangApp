@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import API_URL from '../../config';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 
 const COLORS = {
   primary: '#002D62',
@@ -25,22 +26,23 @@ const COLORS = {
 };
 
 export default function HomeScreen() {
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const [cuacaData, setCuacaData] = useState({
       peringatan: 'Memuat data cuaca...',
       cuaca: '-',
   });
 
-  const userData = {
-    nama: "Petugas",
-    totalProduksi: 10,
-    lastUpdate: "26 April 2026",
-  };
+  const [produksiData, setProduksiData] = useState({
+    total: 0,
+    lastUpdate: 'Memuat...',
+    persentase: 0,
+  });
 
   const handleBelumTersedia = () => {
     Alert.alert("Informasi", "Halaman ini sedang dalam tahap pengembangan.");
   };
+
 
   const fetchCuaca = async () => {
     try {
@@ -55,9 +57,36 @@ export default function HomeScreen() {
     }
   };
 
-  useEffect(() => {
+    const fetchTotalProduksi = async () => {
+    try { 
+      const response = await fetch(`${API_URL}/total-produksi`);
+      const json = await response.json();
+
+      if (json.status === 'success') {
+        const TARGET_PRODUKSI = 200; 
+
+        let hitungPersen = (json.data.total_ton / TARGET_PRODUKSI) * 100;
+        
+        if (hitungPersen > 100) hitungPersen = 100;
+
+        setProduksiData({
+          total: json.data.total_ton,
+          lastUpdate: json.data.last_update,
+          persentase: hitungPersen
+        });
+      }
+    } catch (error) { 
+      console.log('Gagal memuat total produksi', error);
+      setProduksiData((prev) => ({ ...prev, lastUpdate: 'Gagal memuat' }));
+    }
+  };
+
+  useFocusEffect(
+  useCallback(() => {
     fetchCuaca();
-  }, []);
+    fetchTotalProduksi();
+  }, [])
+);
 
   return (
     <View style={styles.container}>
@@ -89,18 +118,18 @@ export default function HomeScreen() {
               <Ionicons name="bar-chart" size={24} color={COLORS.primary} />
             </View>
             <View style={styles.produksiInfo}>
-              <Text style={styles.produksiLabel}>TOTAL PRODUKSI IKAN</Text>
+              <Text style={styles.produksiLabel}>PRODUKSI IKAN BULAN INI</Text>
               <View style={styles.produksiValueRow}>
-                <Text style={styles.produksiValue}>{userData.totalProduksi}</Text>
+                <Text style={styles.produksiValue}>{produksiData.total}</Text>
                 <Text style={styles.produksiUnit}>TON</Text>
               </View>
             </View>
           </View>
 
           <View style={styles.progressBarBg}>
-            <View style={styles.progressBarFill} />
+            <View style={[styles.progressBarFill, { width: `${produksiData.persentase}%` }]} />
           </View>
-          <Text style={styles.lastUpdateText}>Update terakhir: {userData.lastUpdate}</Text>
+          <Text style={styles.lastUpdateText}>Update terakhir: {produksiData.lastUpdate}</Text>
         </View>
 
         <View style={[styles.infoCard, { backgroundColor: COLORS.green }]}>
@@ -130,7 +159,7 @@ export default function HomeScreen() {
           </View>
           <TouchableOpacity 
               style={styles.lihatButton} 
-              onPress={() => (navigation as any).navigate('DetailCuaca')} 
+              onPress={() => router.push('../detail-cuaca')} 
           >
               <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat Detail</Text>
           </TouchableOpacity>
@@ -146,8 +175,11 @@ export default function HomeScreen() {
               <Text style={styles.infoCardDesc}>Produksi cakalang naik sekitar 12%</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.lihatButton} onPress={handleBelumTersedia}>
-            <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat</Text>
+          <TouchableOpacity 
+              style={styles.lihatButton} 
+              onPress={() => router.push('../TrenProduksi')} 
+          >
+              <Text style={[styles.lihatButtonText, { color: COLORS.orange }]}>Lihat</Text>
           </TouchableOpacity>
         </View>
 
@@ -289,7 +321,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    width: '80%', 
+    // width: '80%', 
     backgroundColor: COLORS.orange,
     borderRadius: 3,
   },

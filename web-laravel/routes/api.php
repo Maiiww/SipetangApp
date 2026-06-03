@@ -15,6 +15,8 @@ Route::get('/tangkapan/riwayat', [TangkapanController::class, 'riwayat']);
 Route::get('/tangkapan', [TangkapanController::class, 'index']);
 Route::post('/tangkapan', [TangkapanController::class, 'store']);
 
+Route::get('/total-produksi', [TangkapanController::class, 'totalProduksi']);
+
 Route::get('/cuaca', [CuacaController::class, 'getCuaca']);
 
 //Foto Profile
