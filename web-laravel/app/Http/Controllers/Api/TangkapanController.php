@@ -89,6 +89,22 @@ class TangkapanController extends Controller
             'message' => 'Tidak ada data Draft pada tanggal ini yang bisa dikirim.'
         ], 404);
     }
+
+    public function countRevisi(Request $request)
+    {
+        $userId = $request->query('user_id');
+
+        $jumlah = Tangkapan::where('user_id', $userId)
+                           ->where('status', 'Ditolak')
+                           ->count();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'jumlah_revisi' => $jumlah
+            ]
+        ], 200);
+    }
     
 
     public function store(Request $request)

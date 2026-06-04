@@ -13,6 +13,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import API_URL from '../../config';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const COLORS = {
   primary: '#002D62',
@@ -27,6 +28,21 @@ const COLORS = {
 
 export default function HomeScreen() {
   const router = useRouter();
+
+  const [jumlahRevisi, setJumlahRevisi] = useState(0);
+
+  const fetchNotifikasiRevisi = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('user_id');
+      const response = await fetch(`${API_URL}/tangkapan/count-revisi?user_id=${userId}`);
+      const json = await response.json();
+      if (json.status === 'success') {
+        setJumlahRevisi(json.data.jumlah_revisi);
+      }
+    } catch (error) {
+      console.log('Gagal memuat notifikasi', error);
+    }
+  };
 
   const [cuacaData, setCuacaData] = useState({
       peringatan: 'Memuat data cuaca...',
@@ -85,6 +101,7 @@ export default function HomeScreen() {
   useCallback(() => {
     fetchCuaca();
     fetchTotalProduksi();
+    fetchNotifikasiRevisi();
   }, [])
 );
 
@@ -96,12 +113,28 @@ export default function HomeScreen() {
         
         <View style={styles.headerBackground}>
           <View style={styles.headerTop}>
-            <Image
-              source={require('../../assets/images/sipetangLogo.jpg')}
-              style={styles.logoImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.logoText}>SIPETANG</Text>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../../assets/images/sipetangLogo.jpg')}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.logoText}>SIPETANG</Text>
+            </View>
+
+            <TouchableOpacity 
+              style={styles.notificationBtn} 
+              onPress={() => router.push('/history')} // Pastikan path ini sesuai dengan rute History Anda
+            >
+              <Ionicons name="notifications-outline" size={24} color={COLORS.primary} />
+
+              {jumlahRevisi > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{jumlahRevisi}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
           </View>
           
           <Text style={styles.welcomeText}>Selamat Datang,,,</Text>
@@ -223,7 +256,7 @@ const styles = StyleSheet.create({
   },
   headerBackground: {
     backgroundColor: COLORS.primary,
-    paddingTop: 50,
+    paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 70, 
     borderBottomLeftRadius: 30,
@@ -232,24 +265,57 @@ const styles = StyleSheet.create({
   headerTop: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 30,
-    backgroundColor: COLORS.white,
     alignSelf: 'flex-start',
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 20,
+    width: '100%',
   },
   logoImage: {
     width: 35,         
     height: 35,        
     borderRadius: 18,  
   },
-  
+
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
   logoText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.primary,
     marginLeft: 10,
+  },
+  notificationBtn: {
+    backgroundColor: COLORS.white,
+    padding: 10,
+    borderRadius: 20,
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    right: -2,
+    top: -2,
+    backgroundColor: COLORS.orange,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: COLORS.primary,
+  },
+  badgeText: {
+    color: COLORS.white,
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   welcomeText: {
     fontSize: 24,

@@ -11,7 +11,7 @@ import {
   StatusBar
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_URL from '../../config';
 
@@ -43,6 +43,13 @@ export default function HistoryScreen() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('semua');
 
+    const params = useLocalSearchParams();
+    React.useEffect(() => {
+        if (params.tab === 'revisi') {
+            setActiveTab('revisi');
+        }
+    }, [params]);
+
     const getRelativeTime = (dateString: string) => {
         const date = new Date(dateString);
         const now = new Date();
@@ -63,9 +70,9 @@ export default function HistoryScreen() {
         try {
             const userId = await AsyncStorage.getItem('user_id');
             const response = await fetch(`${API_URL}/tangkapan/riwayat?user_id=${userId}`);
-            const textResponse = await response.text(); // Ambil bentuk mentahnya dulu
-            console.log("ISI BALASAN DARI LARAVEL:", textResponse); // Tampilkan di terminal
-            const json = JSON.parse(textResponse); // Baru diubah ke JSON
+            const textResponse = await response.text();
+            console.log("ISI BALASAN DARI LARAVEL:", textResponse);
+            const json = JSON.parse(textResponse);
 
             if (json.status === 'success') {
                 setHistoryData(json.data);

@@ -17,12 +17,14 @@ Route::post('/tangkapan', [TangkapanController::class, 'store']);
 
 Route::get('/total-produksi', [TangkapanController::class, 'totalProduksi']);
 
+Route::post('/tangkapan/kirim', [TangkapanController::class, 'sendToStaff']);
+Route::get('/tangkapan/count-revisi', [TangkapanController::class, 'countRevisi']);
+
 Route::get('/cuaca', [CuacaController::class, 'getCuaca']);
 
 //Foto Profile
 Route::get('/profile/{id}', [ProfileController::class, 'show']);
 Route::post('/profile/{id}/update-foto', [ProfileController::class, 'updateFoto']);
 
-Route::post('/tangkapan/kirim', [TangkapanController::class, 'sendToStaff']);
 
 
