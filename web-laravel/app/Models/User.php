@@ -70,4 +70,12 @@ class User extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the tangkapan records for this user
+     */
+    public function tangkapans()
+    {
+        return $this->hasMany(Tangkapan::class, 'user_id', 'id');
+    }
 }

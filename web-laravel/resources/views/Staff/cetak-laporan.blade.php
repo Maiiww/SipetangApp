@@ -854,6 +854,10 @@
                 grid-template-columns: 1fr;
             }
 
+            main>div:nth-child(3) {
+                grid-template-columns: 1fr !important;
+            }
+
             .main-content {
                 margin-left: 0;
                 width: 100%;
@@ -923,129 +927,161 @@
 
         <section class="page-title">
             <h1>Cetak Laporan</h1>
-            <p>Ekspor laporan hasil tangkap yang sudah divalidasi dalam format PDF, Excel, atau Word untuk dokumentasi
-                resmi.</p>
+            <p>Hasilkan dan ekspor laporan hasil tangkap yang komprehensif. Pilih parameter Anda di bawah ini untuk
+                menciptakan laporan</p>
         </section>
 
-        <!-- Stats Grid -->
-        <div class="stats-grid"
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
-            <div class="stat-card"
-                style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div
-                        style="font-size: 11px; text-transform: uppercase; color: #999; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">
-                        Total Laporan Tervalidasi</div>
-                    <div style="font-size: 32px; font-weight: 700; color: #1a4d7d;">{{ $stats['total_validated'] }}
-                    </div>
-                </div>
-                <div
-                    style="width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #4caf50;">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-            </div>
+        <!-- Main Content Grid -->
+        <div style="display: grid; grid-template-columns: 1fr; gap: 30px; margin-bottom: 30px;">
+            <!-- Form Laporan -->
+            <div
+                style="background: white; padding: 28px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); height: fit-content;">
 
-            <div class="stat-card"
-                style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div
-                        style="font-size: 11px; text-transform: uppercase; color: #999; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">
-                        Total Berat (kg)</div>
-                    <div style="font-size: 32px; font-weight: 700; color: #1a4d7d;">
-                        {{ number_format($stats['total_weight'], 0, ',', '.') }}</div>
-                </div>
-                <div
-                    style="width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #2196f3;">
-                    <i class="fas fa-weight"></i>
-                </div>
-            </div>
+                <form method="GET" action="{{ route('staff.cetak') }}">
+                    <!-- Asal TPI -->
+                    <div style="margin-bottom: 20px;">
+                        <label
+                            style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Asal
+                            TPI</label>
+                        <select name="tpi"
+                            style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
+                            <option value="">Semua TPI</option>
+                            @foreach ($tpiList as $tpi)
+                                <option value="{{ $tpi->id }}" @if ($tpiFilter == $tpi->id) selected @endif>
+                                    {{ $tpi->nama }} {{ $tpi->wilayah ? '(' . $tpi->wilayah . ')' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-            <div class="stat-card"
-                style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div
-                        style="font-size: 11px; text-transform: uppercase; color: #999; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">
-                        Rata-rata Berat</div>
-                    <div style="font-size: 32px; font-weight: 700; color: #1a4d7d;">
-                        {{ number_format($stats['avg_weight'], 2, ',', '.') }}</div>
-                </div>
-                <div
-                    style="width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ff9800;">
-                    <i class="fas fa-chart-bar"></i>
-                </div>
-            </div>
-        </div>
+                    <!-- Date Range -->
+                    <div style="margin-bottom: 20px;">
+                        <label
+                            style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Mulai
+                            Dari</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div>
+                                <input type="date" name="start_date" value="{{ $startDate }}"
+                                    style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 12px; font-size: 12px; background: #f8fafc; color: #102a43; outline: none;">
+                                <div style="font-size: 11px; color: #999; margin-top: 4px;">mm/dd</div>
+                            </div>
+                            <div>
+                                <label
+                                    style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Sampai
+                                    Dengan</label>
+                                <input type="date" name="end_date" value="{{ $endDate }}"
+                                    style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 12px; font-size: 12px; background: #f8fafc; color: #102a43; outline: none;">
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Filters Section -->
-        <div
-            style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); margin-bottom: 25px;">
-            <form method="GET" action="{{ route('staff.cetak') }}" style="width: 100%;">
-                <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px;">
+                    <!-- Jenis Laporan -->
+                    <div style="margin-bottom: 22px;">
                         <label
-                            style="font-size: 12px; text-transform: uppercase; color: #7a869a; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; display: block;">Cari
-                            Data</label>
-                        <input type="text" name="search" value="{{ $search }}"
-                            placeholder="Cari nama nelayan, pembeli, atau jenis ikan..."
-                            style="width: 100%; border: 1px solid #dce1e9; border-radius: 6px; padding: 10px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none;">
+                            style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 12px;">Jenis
+                            Laporan Berkala</label>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <label
+                                style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border: 1px solid #dce1e9; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                <input type="radio" name="jenis_laporan" value="harian" style="cursor: pointer;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Harian</div>
+                                    <div style="font-size: 11px; color: #999; margin-top: 2px;">Nadi harian</div>
+                                </div>
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fff; border: 2px solid #0d2640; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                <input type="radio" name="jenis_laporan" value="bulanan" checked
+                                    style="cursor: pointer;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Bulanan
+                                    </div>
+                                    <div style="font-size: 11px; color: #999; margin-top: 2px;">Cakup per produk</div>
+                                </div>
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border: 1px solid #dce1e9; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                <input type="radio" name="jenis_laporan" value="tahunan" style="cursor: pointer;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Tahunan
+                                    </div>
+                                    <div style="font-size: 11px; color: #999; margin-top: 2px;">Ikhtisar tahunan</div>
+                                </div>
+                            </label>
+                        </div>
                     </div>
-                    <div style="flex: 1; min-width: 150px;">
+
+                    <!-- Format Output -->
+                    <div style="margin-bottom: 22px;">
                         <label
-                            style="font-size: 12px; text-transform: uppercase; color: #7a869a; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; display: block;">Dari
-                            Tanggal</label>
-                        <input type="date" name="start_date" value="{{ $startDate }}"
-                            style="width: 100%; border: 1px solid #dce1e9; border-radius: 6px; padding: 10px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none;">
+                            style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 12px;">Format
+                            Output</label>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" onclick="downloadLaporan('pdf')"
+                                style="flex: 1; padding: 10px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s;"
+                                onmouseover="this.style.background='#fee'; this.style.borderColor='#dc2626';"
+                                onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </button>
+                            <button type="button" onclick="downloadLaporan('excel')"
+                                style="flex: 1; padding: 10px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s;"
+                                onmouseover="this.style.background='#f0fdf4'; this.style.borderColor='#16a34a';"
+                                onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
+                                <i class="fas fa-file-excel"></i> EXCEL
+                            </button>
+                        </div>
                     </div>
-                    <div style="flex: 1; min-width: 150px;">
-                        <label
-                            style="font-size: 12px; text-transform: uppercase; color: #7a869a; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; display: block;">Sampai
-                            Tanggal</label>
-                        <input type="date" name="end_date" value="{{ $endDate }}"
-                            style="width: 100%; border: 1px solid #dce1e9; border-radius: 6px; padding: 10px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none;">
-                    </div>
+
+                    <!-- Preview Button -->
                     <button type="submit"
-                        style="background: #0d2640; color: white; border: 1px solid #0d2640; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">
-                        <i class="fas fa-search"></i> Cari
+                        style="width: 100%; padding: 12px; background: #0a1f3b; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='#132d4f';" onmouseout="this.style.background='#0a1f3b';">
+                        <i class="fas fa-eye"></i> Lihat Pratinjau
                     </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
 
-        <div class="table-card">
+        <!-- Table Section -->
+        <div class="table-card" id="laporan-tabel">
             <div class="table-header">
-                <h2>Data Laporan Tervalidasi</h2>
-                <span class="info-text">Total: {{ $laporans->total() }} data</span>
+                <h2 style="font-size: 18px; font-weight: 700; color: #102a43;">Tabel Arsip Laporan Cetak</h2>
             </div>
 
             @if ($laporans->count() > 0)
                 <table class="report-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nama Nelayan</th>
-                            <th>Nama Pembeli</th>
-                            <th>Jenis Ikan</th>
-                            <th>Berat (kg)</th>
-                            <th>Harga Jual</th>
-                            <th>Tanggal</th>
-                            <th>Aksi</th>
+                            <th>ID LAPORAN</th>
+                            <th>TANGGAL DIBUAT</th>
+                            <th>CAKUPAN DATA</th>
+                            <th>DIBUAT OLEH</th>
+                            <th>AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($laporans as $laporan)
                             <tr>
-                                <td>#{{ $laporan->id }}</td>
-                                <td><strong>{{ $laporan->nama_nelayan }}</strong></td>
-                                <td>{{ $laporan->nama_pembeli }}</td>
-                                <td>{{ $laporan->jenis_ikan }}</td>
-                                <td><strong>{{ number_format($laporan->berat, 2) }}</strong></td>
-                                <td>Rp {{ number_format($laporan->harga_jual, 0, ',', '.') }}</td>
-                                <td>{{ $laporan->created_at->format('d/m/Y H:i') }}</td>
+                                <td><strong>#LAP-{{ str_pad($laporan->id, 4, '0', STR_PAD_LEFT) }}</strong></td>
+                                <td>{{ $laporan->created_at->format('d M Y, H:i') }}</td>
+                                <td>
+                                    <span
+                                        style="background: #e3f2fd; color: #0d2640; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">
+                                        @if ($laporan->user)
+                                            TPI {{ $laporan->user->wilayah ?: $laporan->user->nama }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </span>
+                                </td>
+                                <td>{{ $laporan->user ? $laporan->user->nama : 'N/A' }}</td>
                                 <td>
                                     <button type="button" class="action-btn btn-download"
                                         data-id="{{ $laporan->id }}"
-                                        style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
-                                        <i class="fas fa-download"></i> Download
+                                        style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#0d2640'; this.style.color='white';"
+                                        onmouseout="this.style.background='#e3f2fd'; this.style.color='#0d2640';">
+                                        <i class="fas fa-download"></i> Lihat Detail
                                     </button>
                                 </td>
                             </tr>
@@ -1054,26 +1090,16 @@
                 </table>
 
                 <!-- Pagination -->
-                <div class="pagination" style="margin-top: 20px;">
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
                     {{ $laporans->links('pagination.custom') }}
                 </div>
             @else
-                <div style="text-align: center; padding: 40px 20px; color: #999;">
+                <div style="text-align: center; padding: 60px 20px; color: #999;">
                     <i class="fas fa-inbox"
                         style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
                     <p style="font-size: 14px;">Belum ada data laporan yang tervalidasi</p>
                 </div>
             @endif
-        </div>
-        </tbody>
-        </table>
-        <div class="pagination">
-            <button class="pagination-prev" data-action="prev">&lt;</button>
-            <button class="pagination-page active" data-page="1">1</button>
-            <button class="pagination-page" data-page="2">2</button>
-            <button class="pagination-page" data-page="3">3</button>
-            <button class="pagination-next" data-action="next">&gt;</button>
-        </div>
         </div>
     </main>
 
@@ -1084,6 +1110,26 @@
                 format: format,
                 laporan_id: laporanId
             };
+
+            // Get filter values dari form
+            const tpiFilter = document.querySelector('select[name="tpi"]')?.value;
+            const startDate = document.querySelector('input[name="start_date"]')?.value;
+            const endDate = document.querySelector('input[name="end_date"]')?.value;
+            const jenisLaporan = document.querySelector('input[name="jenis_laporan"]:checked')?.value || 'bulanan';
+
+            // Add filter data jika ada
+            if (tpiFilter) {
+                requestData.tpi = tpiFilter;
+            }
+            if (startDate && !laporanId) {
+                requestData.start_date = startDate;
+            }
+            if (endDate && !laporanId) {
+                requestData.end_date = endDate;
+            }
+            if (!laporanId) {
+                requestData.jenis_laporan = jenisLaporan;
+            }
 
             // Create form untuk download
             const form = document.createElement('form');
@@ -1117,9 +1163,7 @@
         document.querySelectorAll('.btn-download').forEach(btn => {
             btn.addEventListener('click', function() {
                 const laporanId = this.dataset.id;
-
-                // Show format selection
-                const format = confirm('Pilih format:\nOK = PDF\nCancel = Excel') ? 'pdf' : 'excel';
+                const format = confirm('Format:\nOK = PDF\nCancel = Excel') ? 'pdf' : 'excel';
                 downloadLaporan(format, laporanId);
             });
         });

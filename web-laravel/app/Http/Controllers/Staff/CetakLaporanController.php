@@ -20,6 +20,7 @@ class CetakLaporanController extends Controller
         $statusFilter = $request->input('status', 'Divalidasi');
         $startDate = $request->input('start_date', null);
         $endDate = $request->input('end_date', null);
+        $tpiFilter = $request->input('tpi', null);
 
         // Build query untuk laporan yang sudah divalidasi
         $query = Tangkapan::where('status', 'Divalidasi');
@@ -32,6 +33,11 @@ class CetakLaporanController extends Controller
                     ->orWhere('nama_nelayan', 'like', '%' . $search . '%')
                     ->orWhere('jenis_ikan', 'like', '%' . $search . '%');
             });
+        }
+
+        // Apply TPI filter (berdasarkan user_id yang memasukkan data)
+        if (!empty($tpiFilter)) {
+            $query->where('user_id', $tpiFilter);
         }
 
         // Apply date range filter
@@ -50,6 +56,15 @@ class CetakLaporanController extends Controller
         $laporans = $query->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        // Get list of TPI (users with role 'juruRekap') that have validated data
+        $tpiList = \App\Models\User::whereIn('role', ['juruRekap', 'juru_rekap'])
+            ->whereHas('tangkapans', function ($q) {
+                $q->where('status', 'Divalidasi');
+            })
+            ->orderBy('wilayah', 'asc')
+            ->select('id', 'nama', 'wilayah')
+            ->get();
+
         // Calculate statistics
         $stats = [
             'total_validated' => Tangkapan::where('status', 'Divalidasi')->count(),
@@ -57,7 +72,7 @@ class CetakLaporanController extends Controller
             'avg_weight' => Tangkapan::where('status', 'Divalidasi')->avg('berat'),
         ];
 
-        return view('Staff.cetak-laporan', compact('laporans', 'stats', 'search', 'startDate', 'endDate'));
+        return view('Staff.cetak-laporan', compact('laporans', 'stats', 'search', 'startDate', 'endDate', 'tpiList', 'tpiFilter'));
     }
 
     /**
@@ -90,6 +105,7 @@ class CetakLaporanController extends Controller
                 'laporan_id' => 'nullable|integer',
                 'start_date' => 'nullable|date',
                 'end_date' => 'nullable|date',
+                'tpi' => 'nullable|integer',
             ]);
 
             $laporan = collect();
@@ -103,6 +119,11 @@ class CetakLaporanController extends Controller
             } else {
                 // Multiple laporan download
                 $query = Tangkapan::where('status', 'Divalidasi');
+
+                // Apply TPI filter
+                if (!empty($validated['tpi'])) {
+                    $query->where('user_id', $validated['tpi']);
+                }
 
                 if ($request->has('start_date') && $request->has('end_date')) {
                     $query->whereBetween('created_at', [

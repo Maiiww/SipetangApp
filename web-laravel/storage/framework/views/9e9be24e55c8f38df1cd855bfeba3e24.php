@@ -660,8 +660,6 @@
         <div class="header">
             <div style="flex: 1;"></div>
             <div class="header-right">
-                <i class="fas fa-bell" style="color: #64748b;"></i>
-                <i class="fas fa-cog" style="color: #64748b;"></i>
                 <div class="user-profile">
                     <div>
                         <p style="font-size: 14px; font-weight: bold;">Admin</p>
