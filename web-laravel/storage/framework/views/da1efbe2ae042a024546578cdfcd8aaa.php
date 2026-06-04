@@ -957,14 +957,13 @@
 
                     <!-- Date Range -->
                     <div style="margin-bottom: 20px;">
-                        <label
-                            style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Mulai
-                            Dari</label>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             <div>
+                                <label
+                                    style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Mulai
+                                    Dari</label>
                                 <input type="date" name="start_date" value="<?php echo e($startDate); ?>"
                                     style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 12px; font-size: 12px; background: #f8fafc; color: #102a43; outline: none;">
-                                <div style="font-size: 11px; color: #999; margin-top: 4px;">mm/dd</div>
                             </div>
                             <div>
                                 <label
@@ -987,17 +986,14 @@
                                 <input type="radio" name="jenis_laporan" value="harian" style="cursor: pointer;">
                                 <div style="flex: 1;">
                                     <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Harian</div>
-                                    <div style="font-size: 11px; color: #999; margin-top: 2px;">Nadi harian</div>
                                 </div>
                             </label>
                             <label
-                                style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fff; border: 2px solid #0d2640; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                                <input type="radio" name="jenis_laporan" value="bulanan" checked
-                                    style="cursor: pointer;">
+                                style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border: 1px solid #dce1e9; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                <input type="radio" name="jenis_laporan" value="bulanan" style="cursor: pointer;">
                                 <div style="flex: 1;">
                                     <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Bulanan
                                     </div>
-                                    <div style="font-size: 11px; color: #999; margin-top: 2px;">Cakup per produk</div>
                                 </div>
                             </label>
                             <label
@@ -1006,9 +1002,50 @@
                                 <div style="flex: 1;">
                                     <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Tahunan
                                     </div>
-                                    <div style="font-size: 11px; color: #999; margin-top: 2px;">Ikhtisar tahunan</div>
                                 </div>
                             </label>
+                        </div>
+                    </div>
+
+                    <!-- Pilih Bulan (hanya untuk Laporan Bulanan) -->
+                    <div id="bulanan-section" style="margin-bottom: 22px; display: none;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div>
+                                <label
+                                    style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Pilih
+                                    Bulan</label>
+                                <select name="bulan"
+                                    style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
+                                    <option value="">-- Pilih Bulan --</option>
+                                    <option value="1">Januari</option>
+                                    <option value="2">Februari</option>
+                                    <option value="3">Maret</option>
+                                    <option value="4">April</option>
+                                    <option value="5">Mei</option>
+                                    <option value="6">Juni</option>
+                                    <option value="7">Juli</option>
+                                    <option value="8">Agustus</option>
+                                    <option value="9">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Pilih
+                                    Tahun</label>
+                                <select name="tahun"
+                                    style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
+                                    <option value="">-- Pilih Tahun --</option>
+                                    <?php
+                                        $currentYear = date('Y');
+                                        for ($year = $currentYear; $year >= $currentYear - 5; $year--) {
+                                            echo '<option value="' . $year . '">' . $year . '</option>';
+                                        }
+                                    ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -1107,6 +1144,52 @@
     </main>
 
     <script>
+        // Handle jenis laporan radio button styling dan tampilkan/sembunyikan field
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('input[name="jenis_laporan"]');
+            const bulananSection = document.getElementById('bulanan-section');
+            let lastSelected = null;
+
+            radioButtons.forEach(radio => {
+                const label = radio.closest('label');
+
+                radio.addEventListener('change', function() {
+                    // Reset all labels to default style
+                    radioButtons.forEach(rb => {
+                        const lbl = rb.closest('label');
+                        lbl.style.background = '#f8fafc';
+                        lbl.style.border = '1px solid #dce1e9';
+                    });
+
+                    // Style the selected label
+                    if (this.checked) {
+                        label.style.background = '#edf2ff';
+                        label.style.border = '2px solid #0d2640';
+                        lastSelected = this.value;
+
+                        // Tampilkan/sembunyikan section bulan
+                        if (this.value === 'bulanan') {
+                            bulananSection.style.display = 'block';
+                        } else {
+                            bulananSection.style.display = 'none';
+                        }
+                    }
+                });
+
+                // Add click handler for toggle behavior
+                radio.addEventListener('click', function(e) {
+                    if (lastSelected === this.value && this.checked) {
+                        // If clicking the same option, uncheck it
+                        this.checked = false;
+                        label.style.background = '#f8fafc';
+                        label.style.border = '1px solid #dce1e9';
+                        lastSelected = null;
+                        bulananSection.style.display = 'none';
+                    }
+                });
+            });
+        });
+
         // Download laporan function
         function downloadLaporan(format, laporanId = null) {
             const requestData = {
@@ -1119,17 +1202,35 @@
             const startDate = document.querySelector('input[name="start_date"]')?.value;
             const endDate = document.querySelector('input[name="end_date"]')?.value;
             const jenisLaporan = document.querySelector('input[name="jenis_laporan"]:checked')?.value || 'bulanan';
+            const bulan = document.querySelector('select[name="bulan"]')?.value;
+            const tahun = document.querySelector('select[name="tahun"]')?.value;
+
+            // Validasi untuk laporan bulanan
+            if (jenisLaporan === 'bulanan' && !laporanId) {
+                if (!bulan || !tahun) {
+                    alert('Silakan pilih bulan dan tahun untuk laporan bulanan!');
+                    return;
+                }
+            }
 
             // Add filter data jika ada
             if (tpiFilter) {
                 requestData.tpi = tpiFilter;
             }
-            if (startDate && !laporanId) {
-                requestData.start_date = startDate;
+
+            // Untuk laporan bulanan, kirim bulan dan tahun; untuk yang lain kirim date range
+            if (jenisLaporan === 'bulanan' && !laporanId) {
+                requestData.bulan = bulan;
+                requestData.tahun = tahun;
+            } else {
+                if (startDate && !laporanId) {
+                    requestData.start_date = startDate;
+                }
+                if (endDate && !laporanId) {
+                    requestData.end_date = endDate;
+                }
             }
-            if (endDate && !laporanId) {
-                requestData.end_date = endDate;
-            }
+
             if (!laporanId) {
                 requestData.jenis_laporan = jenisLaporan;
             }
@@ -1148,7 +1249,7 @@
 
             // Add form data
             Object.keys(requestData).forEach(key => {
-                if (requestData[key] !== null) {
+                if (requestData[key] !== null && requestData[key] !== '') {
                     const input = document.createElement('input');
                     input.type = 'hidden';
                     input.name = key;

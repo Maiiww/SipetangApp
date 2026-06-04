@@ -21,6 +21,8 @@ class CetakLaporanController extends Controller
         $startDate = $request->input('start_date', null);
         $endDate = $request->input('end_date', null);
         $tpiFilter = $request->input('tpi', null);
+        $bulan = $request->input('bulan', null);
+        $tahun = $request->input('tahun', null);
 
         // Build query untuk laporan yang sudah divalidasi
         $query = Tangkapan::where('status', 'Divalidasi');
@@ -40,27 +42,31 @@ class CetakLaporanController extends Controller
             $query->where('user_id', $tpiFilter);
         }
 
-        // Apply date range filter
-        if (!empty($startDate) && !empty($endDate)) {
-            $query->whereBetween('created_at', [
-                $startDate . ' 00:00:00',
-                $endDate . ' 23:59:59'
-            ]);
-        } elseif (!empty($startDate)) {
-            $query->whereDate('created_at', '>=', $startDate);
-        } elseif (!empty($endDate)) {
-            $query->whereDate('created_at', '<=', $endDate);
+        // Apply date range filter atau filter bulan/tahun
+        if (!empty($bulan) && !empty($tahun)) {
+            // Filter berdasarkan bulan dan tahun
+            $query->whereMonth('created_at', $bulan)
+                ->whereYear('created_at', $tahun);
+        } else {
+            // Filter berdasarkan date range
+            if (!empty($startDate) && !empty($endDate)) {
+                $query->whereBetween('created_at', [
+                    $startDate . ' 00:00:00',
+                    $endDate . ' 23:59:59'
+                ]);
+            } elseif (!empty($startDate)) {
+                $query->whereDate('created_at', '>=', $startDate);
+            } elseif (!empty($endDate)) {
+                $query->whereDate('created_at', '<=', $endDate);
+            }
         }
 
         // Get data with pagination
         $laporans = $query->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Get list of TPI (users with role 'juruRekap') that have validated data
+        // Get list of TPI (users with role 'juruRekap') - show all available TPIs
         $tpiList = \App\Models\User::whereIn('role', ['juruRekap', 'juru_rekap'])
-            ->whereHas('tangkapans', function ($q) {
-                $q->where('status', 'Divalidasi');
-            })
             ->orderBy('wilayah', 'asc')
             ->select('id', 'nama', 'wilayah')
             ->get();
@@ -72,7 +78,7 @@ class CetakLaporanController extends Controller
             'avg_weight' => Tangkapan::where('status', 'Divalidasi')->avg('berat'),
         ];
 
-        return view('Staff.cetak-laporan', compact('laporans', 'stats', 'search', 'startDate', 'endDate', 'tpiList', 'tpiFilter'));
+        return view('Staff.cetak-laporan', compact('laporans', 'stats', 'search', 'startDate', 'endDate', 'tpiList', 'tpiFilter', 'bulan', 'tahun'));
     }
 
     /**
