@@ -1008,7 +1008,7 @@
 
                     <!-- Pilih Bulan (hanya untuk Laporan Bulanan) -->
                     <div id="bulanan-section" style="margin-bottom: 22px; display: none;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                             <div>
                                 <label
                                     style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Pilih
@@ -1030,6 +1030,12 @@
                                     <option value="12">Desember</option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Pilih Tahun (hanya untuk Laporan Tahunan) -->
+                    <div id="tahunan-section" style="margin-bottom: 22px; display: none;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                             <div>
                                 <label
                                     style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Pilih
@@ -1145,6 +1151,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const radioButtons = document.querySelectorAll('input[name="jenis_laporan"]');
             const bulananSection = document.getElementById('bulanan-section');
+            const tahunanSection = document.getElementById('tahunan-section');
             let lastSelected = null;
 
             radioButtons.forEach(radio => {
@@ -1164,11 +1171,16 @@
                         label.style.border = '2px solid #0d2640';
                         lastSelected = this.value;
 
-                        // Tampilkan/sembunyikan section bulan
+                        // Tampilkan/sembunyikan section berdasarkan jenis laporan
                         if (this.value === 'bulanan') {
                             bulananSection.style.display = 'block';
+                            tahunanSection.style.display = 'none';
+                        } else if (this.value === 'tahunan') {
+                            bulananSection.style.display = 'none';
+                            tahunanSection.style.display = 'block';
                         } else {
                             bulananSection.style.display = 'none';
+                            tahunanSection.style.display = 'none';
                         }
                     }
                 });
@@ -1182,6 +1194,7 @@
                         label.style.border = '1px solid #dce1e9';
                         lastSelected = null;
                         bulananSection.style.display = 'none';
+                        tahunanSection.style.display = 'none';
                     }
                 });
             });
@@ -1204,8 +1217,16 @@
 
             // Validasi untuk laporan bulanan
             if (jenisLaporan === 'bulanan' && !laporanId) {
-                if (!bulan || !tahun) {
-                    alert('Silakan pilih bulan dan tahun untuk laporan bulanan!');
+                if (!bulan) {
+                    alert('Silakan pilih bulan untuk laporan bulanan!');
+                    return;
+                }
+            }
+
+            // Validasi untuk laporan tahunan
+            if (jenisLaporan === 'tahunan' && !laporanId) {
+                if (!tahun) {
+                    alert('Silakan pilih tahun untuk laporan tahunan!');
                     return;
                 }
             }
@@ -1215,9 +1236,10 @@
                 requestData.tpi = tpiFilter;
             }
 
-            // Untuk laporan bulanan, kirim bulan dan tahun; untuk yang lain kirim date range
+            // Untuk laporan bulanan, kirim bulan; untuk tahunan kirim tahun; untuk yang lain kirim date range
             if (jenisLaporan === 'bulanan' && !laporanId) {
                 requestData.bulan = bulan;
+            } else if (jenisLaporan === 'tahunan' && !laporanId) {
                 requestData.tahun = tahun;
             } else {
                 if (startDate && !laporanId) {
