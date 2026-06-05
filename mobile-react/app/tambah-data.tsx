@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,8 @@ import {
   ScrollView,
   Modal,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  FlatList
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -28,8 +29,6 @@ const COLORS = {
     infoText: '#0284C7',
 };
 
-const JENIS_IKAN_LIST = ['Tongkol', 'Udang', 'Cumi', 'Kembung', 'Tuna', 'Cakalang'];
-
 export default function TambahDataScreen() {
     const router = useRouter();
 
@@ -39,6 +38,28 @@ export default function TambahDataScreen() {
     const [jenisIkan, setJenisIkan] = useState('');
     const [harga, setHarga] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    const [daftarIkanDinamis, setDaftarIkanDinamis] = useState([]);
+
+    useEffect(() => {
+        const fetchDaftarIkan = async () => {
+            try {
+                const response = await fetch(`${API_URL}/ikan`); 
+                const json = await response.json();
+                
+                console.log("Data Ikan dari DB:", json.data);
+                
+                if (json.status === 'success') {
+                    setDaftarIkanDinamis(json.data);
+                }
+            } catch (error) {
+                console.log("Gagal memuat daftar ikan:", error);
+            }
+        };
+
+        fetchDaftarIkan();
+    }, []);
+
 
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -89,6 +110,7 @@ export default function TambahDataScreen() {
             setIsLoading(false);
         }
     };
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -146,8 +168,8 @@ export default function TambahDataScreen() {
             <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>JENIS IKAN</Text>
                 <TouchableOpacity 
-                style={styles.dropdownButton}
-                onPress={() => setIsDropdownVisible(true)}
+                    style={styles.dropdownButton}
+                    onPress={() => setIsDropdownVisible(true)}
                 >
                 <Text style={[styles.dropdownButtonText, !jenisIkan && { color: '#9CA3AF' }]}>
                     {jenisIkan || 'Pilih jenis ikan'}
@@ -157,7 +179,7 @@ export default function TambahDataScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>HARGA JUAL</Text>
+                <Text style={styles.inputLabel}>HARGA TERJUAL</Text>
                 <View style={styles.inputWithPrefix}>
                 <Text style={styles.prefixText}>Rp</Text>
                 <TextInput
@@ -209,23 +231,34 @@ export default function TambahDataScreen() {
             >
             <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Pilih Jenis Ikan</Text>
-                <ScrollView>
-                {JENIS_IKAN_LIST.map((item, index) => (
-                    <TouchableOpacity
-                    key={index}
-                    style={styles.modalItem}
-                    onPress={() => {
-                        setJenisIkan(item);
-                        setIsDropdownVisible(false);
-                    }}
-                    >
-                    <Text style={styles.modalItemText}>{item}</Text>
-                    {jenisIkan === item && (
-                        <Ionicons name="checkmark" size={20} color={COLORS.primary} />
-                    )}
-                    </TouchableOpacity>
-                ))}
-                </ScrollView>
+                <FlatList
+                data={daftarIkanDinamis}
+                keyExtractor={(item, index) => index.toString()}
+                style={{ flex: 1 }}
+                showsVerticalScrollIndicator={true}
+                contentContainerStyle={{ paddingBottom: 30 }}
+                renderItem={({ item }) => {
+                    
+                    const namaIkan = item;
+
+                    return (
+                        <TouchableOpacity
+                            style={styles.modalItem}
+                            onPress={() => {
+                                setJenisIkan(namaIkan);
+                                setIsDropdownVisible(false);
+                            }}
+                        >
+                            <Text style={styles.modalItemText}>{namaIkan}</Text>
+                            
+                            {jenisIkan === namaIkan && (
+                                <Ionicons name="checkmark-circle" size={22} color="#002D62" />
+                            )}
+                        </TouchableOpacity>
+                    );
+                }}
+            />
+
             </View>
             </TouchableOpacity>
         </Modal>
@@ -381,7 +414,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.white,
         borderRadius: 12,
         padding: 20,
-        maxHeight: '60%', // Agar bisa di-scroll jika datanya banyak
+        height: '70%',
     },
     modalTitle: {
         fontSize: 16,

@@ -15,6 +15,11 @@ Route::get('/tangkapan/riwayat', [TangkapanController::class, 'riwayat']);
 Route::get('/tangkapan', [TangkapanController::class, 'index']);
 Route::post('/tangkapan', [TangkapanController::class, 'store']);
 
+Route::get('/ikan', [TangkapanController::class, 'getIkan']);
+
+Route::get('/tangkapan/{id}', [TangkapanController::class, 'show']);
+Route::put('/tangkapan/{id}', [TangkapanController::class, 'update']);
+
 Route::get('/total-produksi', [TangkapanController::class, 'totalProduksi']);
 
 Route::post('/tangkapan/kirim', [TangkapanController::class, 'sendToStaff']);

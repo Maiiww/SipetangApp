@@ -106,7 +106,7 @@ class ValidasiController extends Controller
 
         // Update tangkapan dengan status Revisi dan tracking info
         $tangkapan->update([
-            'status' => 'Revisi',
+            'status' => 'Ditolak',
             'catatan' => $request->catatan,
             'rejected_by' => Auth::id(),
             'rejected_at' => now(),

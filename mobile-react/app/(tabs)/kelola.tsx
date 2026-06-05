@@ -50,7 +50,10 @@ export default function KelolaScreen() {
     const fetchData = async (page = 1, dateObj = selectedDate) => {
         setIsLoading(true);
         try {
-            const formattedDate = dateObj.toISOString().split('T')[0];
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
 
             const userId = await AsyncStorage.getItem('user_id');
 
@@ -259,11 +262,14 @@ export default function KelolaScreen() {
                                         <Text style={[styles.tdText, { width: 120, fontWeight: 'bold', color: COLORS.success }]}>{formatRupiah(row.harga_jual)}</Text>
                                         
                                         <View style={[styles.tdAction, { width: 80 }]}>
-                                            <TouchableOpacity style={styles.actionBtn}>
+                                            <TouchableOpacity 
+                                                style={styles.actionBtn}
+                                                onPress={() => router.push({ 
+                                                    pathname: '../EditData',
+                                                    params: { id_tangkapan: row.id }
+                                                })}
+                                            >
                                                 <MaterialCommunityIcons name="pencil-outline" size={20} color={COLORS.actionEdit} />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity style={styles.actionBtn}>
-                                                <MaterialCommunityIcons name="trash-can-outline" size={20} color={COLORS.actionDelete} />
                                             </TouchableOpacity>
                                         </View>
                                     </View>

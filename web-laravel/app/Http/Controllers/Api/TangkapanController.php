@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Tangkapan;
 use Carbon\Carbon;
+use App\Models\Ikan;
 
 class TangkapanController extends Controller
 {
@@ -153,6 +154,55 @@ class TangkapanController extends Controller
                 'perlu_revisi' => $perluRevisi,
                 'semua_riwayat' => $semuaRiwayat
             ]
+        ], 200);
+
+    }
+
+    public function show($id)
+    {
+        $tangkapan = Tangkapan::find($id);
+        
+        if (!$tangkapan) {
+            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $tangkapan
+        ], 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $tangkapan = Tangkapan::find($id);
+
+        if (!$tangkapan) {
+            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
+        }
+
+        $tangkapan->update([
+            'nama_pembeli' => $request->nama_pembeli,
+            'nama_nelayan' => $request->nama_nelayan,
+            'jenis_ikan' => $request->jenis_ikan,
+            'berat' => $request->berat,
+            'harga_jual' => $request->harga_jual,
+            'status' => 'Menunggu Validasi', 
+            'revision_needed' => 0
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data berhasil direvisi dan dikirim ke Staf!'
+        ], 200);
+    }
+
+    public function getIkan()
+    {
+        $ikan = Ikan::pluck('nama_ikan');
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $ikan
         ], 200);
     }
 }
