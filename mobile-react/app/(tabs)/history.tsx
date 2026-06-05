@@ -121,14 +121,17 @@ export default function HistoryScreen() {
                     </Text>
                     
                     {isFailed && (
-                        <TouchableOpacity onPress={() => router.push('/kelola')}>
-                            {/* Gunakan COLORS untuk teks perbaikan */}
+                        <TouchableOpacity 
+                            onPress={() => router.push({ 
+                                pathname: '../EditData', 
+                                params: { id_tangkapan: item.id } 
+                            })}
+                        >
                             <Text style={styles.repairText}>Perbaiki Sekarang {'>'}</Text>
                         </TouchableOpacity>
                     )}
                 </View>
 
-                {/* Gunakan warna abu-abu baru dari COLORS */}
                 <View style={styles.badgeContainer}>
                    <Text style={styles.timeText}>{getRelativeTime(item.created_at)}</Text>
                 </View>

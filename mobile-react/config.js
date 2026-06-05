@@ -1,2 +1,2 @@
-const API_URL = 'https://sqpb5myv99.sharedwithexpose.com/api';
+const API_URL = 'https://litvsczouj.sharedwithexpose.com/api';
 export default API_URL;
