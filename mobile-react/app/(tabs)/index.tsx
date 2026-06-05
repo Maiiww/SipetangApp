@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  StatusBar,
-  Image
-} from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import API_URL from '../../config';
-import { useRouter } from 'expo-router';
-import { useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import API_URL from '../../config';
 
 const COLORS = {
   primary: '#002D62',
@@ -192,7 +191,7 @@ export default function HomeScreen() {
           </View>
           <TouchableOpacity 
               style={styles.lihatButton} 
-              onPress={() => router.push('../detail-cuaca')} 
+              onPress={() => router.push('../DetailCuaca')} 
           >
               <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat Detail</Text>
           </TouchableOpacity>

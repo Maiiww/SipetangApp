@@ -775,7 +775,7 @@
         <!-- Page Title -->
         <div class="page-title">
             <h1>Validasi Laporan</h1>
-            <p>Otorisiasi dan verifikasi data hasil tangkapan laut dari seluruh Tempat Pelelangan Ikan (TPI) wilayah
+            <p>Otorisasi dan verifikasi data hasil tangkapan laut dari seluruh Tempat Pelelangan Ikan (TPI) wilayah
                 Subang.</p>
         </div>
 
@@ -806,7 +806,8 @@
             <div class="stat-card">
                 <div class="stat-content">
                     <div class="stat-label"><i class="fas fa-weight"></i> Total Volume (Ton)</div>
-                    <div class="stat-value"><?php echo e(number_format($stats['totalVolume'], 1)); ?></div>
+                    <div class="stat-value"><?php echo e(number_format($stats['totalVolume'] / 1000, 1)); ?></div>
+                    <!-- Dibagi 1000 agar jadi Ton -->
                 </div>
                 <div class="stat-icon-box stat-icon-validated">
                     <img src="<?php echo e(asset('images/bar-graph.png')); ?>" alt="Volume"
@@ -822,7 +823,7 @@
                 <!-- Search Box -->
                 <div style="flex: 1; min-width: 250px; display: flex; gap: 8px;">
                     <input type="text" name="search" placeholder="Cari nama pembeli, jenis ikan..."
-                        value="<?php echo e($search); ?>"
+                        value="<?php echo e(request('search')); ?>"
                         style="flex: 1; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
                     <button type="submit" class="btn-filter" style="background: #1a4d7d; color: white;">
                         <i class="fas fa-search"></i> Cari
@@ -853,25 +854,24 @@
                     </div>
                 </div>
 
-                <!-- TPI Filter -->
+                <!-- TPI Filter - Untuk semua user -->
                 <div style="min-width: 200px;">
-                    <select name="tpi" id="tpiFilter"
-                        style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px; background-color: white; max-height: 200px; overflow-y: auto;">
-                        <option value="">Pilih Asal TPI</option>
-                        <option value="mayangan">Patimban</option>
-                        <option value="blanakan">Genteng</option>
-                        <option value="pondok-bali">Mayangan</option>
-                        <option value="patimban">Cirewang</option>
-                        <option value="pelabuhan-ratu">Muara Ciasem</option>
-                        <option value="muara-cimanuk">Blanakan</option>
-                        <option value="eretan-wetan">Rawameneng</option>
-                        <option value="panjunan">Cilamaya Girang</option>
+                    <select name="tpi" id="tpiFilter" onchange="document.getElementById('filterForm').submit()"
+                        style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px; background-color: white;">
+                        <option value="">Pilih TPI</option>
+                        <?php $__currentLoopData = $tpiOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tpi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($tpi); ?>" <?php echo e($tpiFilter === $tpi ? 'selected' : ''); ?>>
+                                <?php echo e($tpi); ?>
+
+                            </option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
 
                 <!-- Date Filter -->
                 <div style="min-width: 180px;">
-                    <input type="date" name="date" id="dateFilter"
+                    <input type="date" name="date" id="dateFilter" value="<?php echo e(request('date')); ?>"
+                        onchange="document.getElementById('filterForm').submit()"
                         style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
                 </div>
 
@@ -898,15 +898,31 @@
 
         <!-- Table Section -->
         <div class="table-section">
-            <div class="table-title">
-                Antrean Laporan
+            <div class="table-title"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <span>Antrean Laporan (<?php echo e($laporans->total()); ?> data)</span>
+
+                <!-- Tombol Validasi Massal -->
+                <?php if($stats['pending'] > 0): ?>
+                    <button type="button" class="btn-filter"
+                        style="background: #28a745; color: white; cursor: pointer; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.3s;"
+                        onmouseover="this.style.background='#218838'" onmouseout="this.style.background='#28a745'"
+                        onclick="confirmBulkValidation()">
+                        <i class="fas fa-check-double"></i> Validasi Semua Terpilih
+                    </button>
+                <?php endif; ?>
             </div>
 
             <table class="reports-table">
                 <thead>
                     <tr>
+                        <!-- Checkbox Header -->
+                        <th style="width: 40px; text-align: center;">
+                            <input type="checkbox" id="checkAll">
+                        </th>
                         <th>Tanggal</th>
-                        <th>Nama Pembeli</th>
+                        <th>Asal TPI</th>
+                        <th></th>Nama Pembeli</th>
                         <th>Nama Penjual</th>
                         <th>Jenis Ikan</th>
                         <th>Volume (Kg)</th>
@@ -917,10 +933,25 @@
                 <tbody>
                     <?php $__empty_1 = true; $__currentLoopData = $laporans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $laporan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
+                            <!-- Checkbox per Baris -->
+                            <td style="text-align: center;">
+                                <?php if(in_array($laporan->status, ['Draft', 'Menunggu Validasi'])): ?>
+                                    <input type="checkbox" value="<?php echo e($laporan->id); ?>" class="check-item">
+                                <?php endif; ?>
+                            </td>
                             <td>
                                 <div class="date-cell">
                                     <?php echo e($laporan->created_at->format('d M Y')); ?>
 
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span
+                                        style="font-weight: 600; color: #1a4d7d; background: #e8f4f8; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                                        <?php echo e($laporan->user->wilayah ?? '-'); ?>
+
+                                    </span>
                                 </div>
                             </td>
                             <td>
@@ -964,7 +995,7 @@
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 30px; color: #999;">
+                            <td colspan="9" style="text-align: center; padding: 30px; color: #999;">
                                 <i class="fas fa-inbox"
                                     style="font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
                                 Tidak ada data untuk ditampilkan
@@ -973,7 +1004,7 @@
                     <?php endif; ?>
                 </tbody>
             </table>
-            <?php echo e($laporans->links('pagination.custom')); ?>
+            <?php echo e($laporans->appends(request()->query())->links('pagination.custom')); ?>
 
         </div>
 
@@ -1000,85 +1031,110 @@
             </div>
         </div>
 
+        <!-- HIDDEN FORM UNTUK VALIDASI MASSAL (Agar tidak menabrak form satuan) -->
+        <form id="hiddenBulkForm" action="<?php echo e(route('staff.validasi.bulk')); ?>" method="POST"
+            style="display: none;">
+            <?php echo csrf_field(); ?>
+        </form>
+
         <script>
-            // Filter function
-            function setStatusFilter(status, button) {
-                // Update hidden input
-                document.getElementById('statusInput').value = status;
+            // === LOGIC VALIDASI MASSAL ===
+            document.getElementById('checkAll')?.addEventListener('change', function(e) {
+                const checkboxes = document.querySelectorAll('.check-item');
+                checkboxes.forEach(cb => cb.checked = e.target.checked);
+            });
 
-                // Update button states
-                const filterButtons = document.querySelectorAll('.filter-group .btn-filter');
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                // Submit form
-                document.getElementById('filterForm').submit();
-            }
-
-            function openRejectModal(id, name) {
-                document.getElementById('rejectModal').style.display = 'flex';
-                document.getElementById('rejectModalText').textContent = 'Isi alasan penolakan untuk laporan dari ' + name;
-                document.getElementById('rejectForm').action = '/staff/validasi-laporan/' + id + '/reject';
-                document.getElementById('rejectForm').reset();
-                document.getElementById('rejectTextarea').focus();
-            }
-
-            function closeRejectModal() {
-                document.getElementById('rejectModal').style.display = 'none';
-                document.getElementById('rejectForm').reset();
-            }
-
-            function submitReject() {
-                const textarea = document.getElementById('rejectTextarea');
-                if (!textarea.value.trim()) {
-                    alert('Alasan penolakan harus diisi!');
-                    textarea.focus();
+            function confirmBulkValidation() {
+                const checkedItems = document.querySelectorAll('.check-item:checked');
+                if (checkedItems.length === 0) {
+                    alert('Silakan centang minimal satu data laporan terlebih dahulu!');
                     return;
                 }
-                document.getElementById('rejectForm').submit();
-            }
 
-            // Close modal when clicking outside
-            document.getElementById('rejectModal')?.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeRejectModal();
+                if (confirm('Apakah Anda yakin ingin memvalidasi ' + checkedItems.length + ' data sekaligus?')) {
+                    const form = document.getElementById('hiddenBulkForm');
+
+                    // Clear previous inputs except CSRF token
+                    const inputs = form.querySelectorAll('input[type="hidden"]');
+                    inputs.forEach(input => {
+                        if (input.name !== '_token') {
+                            input.remove();
+                        }
+                    });
+
+                    // Add selected IDs to form
+                    checkedItems.forEach(cb => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'tangkapan_ids[]';
+                        input.value = cb.value;
+                        form.appendChild(input);
+                    });
+
+                    // Submit form
+                    document.getElementById('filterForm').submit();
                 }
-            });
 
-            // Notification dropdown toggle and behavior
-            function closeNotificationDropdown() {
-                const dd = document.getElementById('notificationDropdown');
-                const btn = document.getElementById('notificationToggle');
-                if (dd) dd.style.display = 'none';
-                if (btn) btn.setAttribute('aria-expanded', 'false');
-            }
-
-            document.getElementById('notificationToggle')?.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const dd = document.getElementById('notificationDropdown');
-                if (!dd) return;
-                const isOpen = dd.style.display === 'block';
-                dd.style.display = isOpen ? 'none' : 'block';
-                this.setAttribute('aria-expanded', String(!isOpen));
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                const dd = document.getElementById('notificationDropdown');
-                const btn = document.getElementById('notificationToggle');
-                if (!dd || !btn) return;
-                if (!dd.contains(e.target) && !btn.contains(e.target)) {
-                    closeNotificationDropdown();
+                function openRejectModal(id, name) {
+                    document.getElementById('rejectModal').style.display = 'flex';
+                    document.getElementById('rejectModalText').textContent = 'Isi alasan penolakan untuk laporan dari ' + name;
+                    document.getElementById('rejectForm').action = '/staff/validasi-laporan/' + id + '/reject';
+                    document.getElementById('rejectForm').reset();
+                    document.getElementById('rejectTextarea').focus();
                 }
-            });
 
-            // Show pending reports on the same page by setting filter and submitting
-            function showPending() {
-                const statusInput = document.getElementById('statusInput');
-                if (!statusInput) return;
-                statusInput.value = 'pending';
-                document.getElementById('filterForm').submit();
-            }
+                function closeRejectModal() {
+                    document.getElementById('rejectModal').style.display = 'none';
+                    document.getElementById('rejectForm').reset();
+                }
+
+                function submitReject() {
+                    const textarea = document.getElementById('rejectTextarea');
+                    if (!textarea.value.trim()) {
+                        alert('Alasan penolakan harus diisi!');
+                        textarea.focus();
+                        return;
+                    }
+                    document.getElementById('rejectForm').submit();
+                }
+
+                document.getElementById('rejectModal')?.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeRejectModal();
+                    }
+                });
+
+                function closeNotificationDropdown() {
+                    const dd = document.getElementById('notificationDropdown');
+                    const btn = document.getElementById('notificationToggle');
+                    if (dd) dd.style.display = 'none';
+                    if (btn) btn.setAttribute('aria-expanded', 'false');
+                }
+
+                document.getElementById('notificationToggle')?.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const dd = document.getElementById('notificationDropdown');
+                    if (!dd) return;
+                    const isOpen = dd.style.display === 'block';
+                    dd.style.display = isOpen ? 'none' : 'block';
+                    this.setAttribute('aria-expanded', String(!isOpen));
+                });
+
+                document.addEventListener('click', function(e) {
+                    const dd = document.getElementById('notificationDropdown');
+                    const btn = document.getElementById('notificationToggle');
+                    if (!dd || !btn) return;
+                    if (!dd.contains(e.target) && !btn.contains(e.target)) {
+                        closeNotificationDropdown();
+                    }
+                });
+
+                function showPending() {
+                    const statusInput = document.getElementById('statusInput');
+                    if (!statusInput) return;
+                    statusInput.value = 'pending';
+                    document.getElementById('filterForm').submit();
+                }
         </script>
 
         <div class="page-footer">

@@ -10,8 +10,9 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'username'      => 'imamarifin',
+        User::updateOrCreate([
+            'username' => 'imamarifin'
+        ], [
             'password'      => Hash::make('rahasia123'),
             'role'          => 'juruRekap',
             'nama'          => 'IMAM ARIFIN',
@@ -24,8 +25,9 @@ class UserSeeder extends Seeder
             'foto_profil'   => null, 
         ]);
 
-        User::create([
-            'username'      => 'budidoremi',
+        User::updateOrCreate([
+            'username' => 'budidoremi'
+        ], [
             'password'      => Hash::make('12345678'),
             'role'          => 'juruRekap',
             'nama'          => 'BUDI DOREMI',
@@ -33,13 +35,14 @@ class UserSeeder extends Seeder
             'jenis_kelamin' => 'Laki-laki',
             'no_telepon'    => '081234567890',
             'alamat'        => 'Pamanukan, Subang',
-            'wilayah'       => 'TPI Pamanukan',
+            'wilayah'       => 'TPI Patimban',
             'status_akun'   => 'Aktif',
             'foto_profil'   => null,
         ]);
 
-        User::create([
-            'username'      => 'admin_pusat',
+        User::firstOrCreate([
+            'username' => 'admin_pusat'
+        ], [
             'password'      => Hash::make('rahasia123'),
             'role'          => 'admin',
             'nama'          => 'ADMIN PUSAT',
@@ -52,8 +55,9 @@ class UserSeeder extends Seeder
             'foto_profil'   => null,
         ]);
         
-        User::create([
+        User::firstOrCreate([
             'username'      => 'staff_tpi',
+        ], [
             'password'      => Hash::make('rahasia123'),
             'role'          => 'staff',
             'nama'          => 'STAFF VALIDASI TPI',
@@ -65,5 +69,6 @@ class UserSeeder extends Seeder
             'status_akun'   => 'Aktif',
             'foto_profil'   => null,
         ]);
+        //User::truncate();
     }
 }

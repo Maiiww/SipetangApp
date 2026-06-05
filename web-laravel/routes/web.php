@@ -36,6 +36,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('staff.dashboard');
 
         Route::get('/validasi-laporan', [ValidasiController::class, 'index'])->name('staff.validasi');
+
+        Route::post('/validasi-laporan/bulk', [ValidasiController::class, 'bulkValidate'])->name('staff.validasi.bulk');
+        
         Route::post('/validasi-laporan/{id}/validate', [ValidasiController::class, 'validate'])->name('staff.validasi.validate');
         Route::post('/validasi-laporan/{id}/reject', [ValidasiController::class, 'reject'])->name('staff.validasi.reject');
         Route::get('/validasi-laporan/{id}', [ValidasiController::class, 'show'])->name('staff.validasi.show');

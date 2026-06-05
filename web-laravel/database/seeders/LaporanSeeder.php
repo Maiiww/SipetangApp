@@ -24,20 +24,24 @@ class LaporanSeeder extends Seeder
         $ikan = ['Kembung', 'Tongkol', 'Cumi-cumi', 'Tenggiri', 'Cakalang'];
         $status = ['pending', 'validated', 'rejected'];
 
-
         for ($i = 1; $i <= 30; $i++) {
-            Laporan::create([
-                'idLaporan' => 'LPR' . str_pad($i, 4, '0', STR_PAD_LEFT),
-                'user_id' => $users->random()->id,
-                'namaTPI' => $tpi[array_rand($tpi)],
-                'jenisIkan' => $ikan[array_rand($ikan)],
-                'beratTotal' => rand(50, 500) / 10,
-                'status' => $status[array_rand($status)],
-                'tanggalInput' => now()->subDays(rand(0, 30)),
-                'tanggalValidasi' => rand(0, 1) ? now()->subDays(rand(0, 20)) : null,
-                'validasiOleh' => rand(0, 1) ? $users->random()->username : null,
-                'catatan' => rand(0, 3) === 0 ? 'Data perlu verifikasi lebih lanjut' : null,
-            ]);
+            $idLaporan = 'LPR' . str_pad($i, 4, '0', STR_PAD_LEFT);
+            
+            Laporan::updateOrCreate(
+                ['idLaporan' => $idLaporan], 
+
+                [
+                    'user_id' => $users->random()->id,
+                    'namaTPI' => $tpi[array_rand($tpi)],
+                    'jenisIkan' => $ikan[array_rand($ikan)],
+                    'beratTotal' => rand(50, 500) / 10,
+                    'status' => $status[array_rand($status)],
+                    'tanggalInput' => now()->subDays(rand(0, 30)),
+                    'tanggalValidasi' => rand(0, 1) ? now()->subDays(rand(0, 20)) : null,
+                    'validasiOleh' => rand(0, 1) ? $users->random()->username : null,
+                    'catatan' => rand(0, 3) === 0 ? 'Data perlu verifikasi lebih lanjut' : null,
+                ]
+            );
         }
     }
 }
