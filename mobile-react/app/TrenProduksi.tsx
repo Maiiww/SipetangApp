@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Dimensions, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import API_URL from '../config';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -11,16 +12,41 @@ const COLORS = {
   background: '#F5F7FA',
   white: '#FFFFFF',
   orange: '#FF6F20',
+  grayText: '#6B7280',
 };
 
 export default function TrenProduksiScreen() {
   const router = useRouter();
 
+  const [labels, setLabels] = useState(["", "", "", "", "", ""]);
+  const [dataPoints, setDataPoints] = useState([0, 0, 0, 0, 0, 0]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTrenProduksi = async () => {
+      try {
+        const response = await fetch(`${API_URL}/tangkapan/tren`);
+        const json = await response.json();
+
+        if (json.status === 'success') {
+            setLabels(json.data.labels);
+            setDataPoints(json.data.values);
+        }
+      } catch (error) {
+        console.log('Gagal memuat tren:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrenProduksi();
+  }, []);
+
   const chartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun"],
+    labels: labels.length > 0 ? labels : ["-"],
     datasets: [
       {
-        data: [15, 25, 40, 35, 55, 70],
+        data: dataPoints.length > 0 ? dataPoints : [0],
         color: (opacity = 1) => `rgba(255, 111, 32, ${opacity})`,
         strokeWidth: 3
       }
@@ -43,33 +69,40 @@ export default function TrenProduksiScreen() {
       <View style={styles.chartContainer}>
         <Text style={styles.chartTitle}>Statistik 6 Bulan Terakhir</Text>
         
-        <LineChart
-          data={chartData}
-          width={screenWidth - 40}
-          height={220}
-          yAxisSuffix=" T" 
-          chartConfig={{
-            backgroundColor: COLORS.white,
-            backgroundGradientFrom: COLORS.white,
-            backgroundGradientTo: COLORS.white,
-            decimalPlaces: 0, 
-            color: (opacity = 1) => `rgba(0, 45, 98, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(107, 114, 128, ${opacity})`,
-            style: {
-              borderRadius: 16
-            },
-            propsForDots: {
-              r: "5",
-              strokeWidth: "2",
-              stroke: COLORS.primary
-            }
-          }}
-          bezier
-          style={{
-            marginVertical: 10,
-            borderRadius: 16
-          }}
-        />
+        {loading ? (
+            <View style={{ height: 220, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+                <Text style={{ marginTop: 10, color: COLORS.grayText }}>Memuat grafik...</Text>
+            </View>
+        ) : (
+            <LineChart
+              data={chartData}
+              width={screenWidth - 40}
+              height={220}
+              yAxisSuffix=" T" 
+              chartConfig={{
+                backgroundColor: COLORS.white,
+                backgroundGradientFrom: COLORS.white,
+                backgroundGradientTo: COLORS.white,
+                decimalPlaces: 0, 
+                color: (opacity = 1) => `rgba(0, 45, 98, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(107, 114, 128, ${opacity})`,
+                style: {
+                  borderRadius: 16
+                },
+                propsForDots: {
+                  r: "5",
+                  strokeWidth: "2",
+                  stroke: COLORS.primary
+                }
+              }}
+              bezier
+              style={{
+                marginVertical: 10,
+                borderRadius: 16
+              }}
+            />
+        )}
       </View>
     </ScrollView>
   );

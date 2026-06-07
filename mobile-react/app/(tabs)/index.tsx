@@ -123,7 +123,7 @@ export default function HomeScreen() {
 
             <TouchableOpacity 
               style={styles.notificationBtn} 
-              onPress={() => router.push('/history')} // Pastikan path ini sesuai dengan rute History Anda
+              onPress={() => router.push('/history')}
             >
               <Ionicons name="notifications-outline" size={24} color={COLORS.primary} />
 
@@ -174,8 +174,11 @@ export default function HomeScreen() {
               <Text style={styles.infoCardDesc}>Panduan penggunaan aplikasi</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.lihatButton} onPress={handleBelumTersedia}>
-            <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat</Text>
+          <TouchableOpacity 
+              style={styles.lihatButton} 
+              onPress={() => router.push('../Panduan')} 
+          >
+              <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat</Text>
           </TouchableOpacity>
         </View>
 
