@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
-use App\Models\Laporan;
+use App\Models\Tangkapan;
 use App\Models\Ikan;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -57,10 +57,10 @@ class StatistikController extends Controller
         }
 
         foreach ($months as $month) {
-            $total = Laporan::whereYear('tanggalTangkap', substr($month['full'], 0, 4))
-                ->whereMonth('tanggalTangkap', substr($month['full'], 5, 2))
-                ->where('status', 'tervalidasi')
-                ->sum('beratTotal');
+            $total = Tangkapan::whereYear('created_at', substr($month['full'], 0, 4))
+                ->whereMonth('created_at', substr($month['full'], 5, 2))
+                ->where('status', 'Divalidasi')
+                ->sum('berat');
 
             $data[] = [
                 'month' => $month['month'],
@@ -76,18 +76,18 @@ class StatistikController extends Controller
      */
     private function getTotalProduksi()
     {
-        $total = Laporan::where('status', 'tervalidasi')->sum('beratTotal');
+        $total = Tangkapan::where('status', 'Divalidasi')->sum('berat');
 
         // Hitung pertumbuhan dibanding bulan lalu
-        $thisMonthTotal = Laporan::whereYear('tanggalTangkap', Carbon::now()->year)
-            ->whereMonth('tanggalTangkap', Carbon::now()->month)
-            ->where('status', 'tervalidasi')
-            ->sum('beratTotal');
+        $thisMonthTotal = Tangkapan::whereYear('created_at', Carbon::now()->year)
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->where('status', 'Divalidasi')
+            ->sum('berat');
 
-        $lastMonthTotal = Laporan::whereYear('tanggalTangkap', Carbon::now()->subMonth()->year)
-            ->whereMonth('tanggalTangkap', Carbon::now()->subMonth()->month)
-            ->where('status', 'tervalidasi')
-            ->sum('beratTotal');
+        $lastMonthTotal = Tangkapan::whereYear('created_at', Carbon::now()->subMonth()->year)
+            ->whereMonth('created_at', Carbon::now()->subMonth()->month)
+            ->where('status', 'Divalidasi')
+            ->sum('berat');
 
         $growth = $lastMonthTotal > 0 ? round((($thisMonthTotal - $lastMonthTotal) / $lastMonthTotal) * 100) : 0;
 
@@ -106,9 +106,10 @@ class StatistikController extends Controller
      */
     private function getTpiTeraktif()
     {
-        $tpi = Laporan::select('namaTPI', DB::raw('COUNT(*) as total_laporan'), DB::raw('SUM(beratTotal) as total_berat'))
-            ->where('status', 'tervalidasi')
-            ->groupBy('namaTPI')
+        $tpi = Tangkapan::select(DB::raw('users.wilayah as tpi_name'), DB::raw('COUNT(*) as total_laporan'), DB::raw('SUM(berat) as total_berat'))
+            ->join('users', 'hasil_tangkap.user_id', '=', 'users.id')
+            ->where('hasil_tangkap.status', 'Divalidasi')
+            ->groupBy('users.wilayah')
             ->orderBy('total_laporan', 'desc')
             ->first();
 
@@ -121,7 +122,7 @@ class StatistikController extends Controller
         }
 
         return [
-            'nama' => $tpi->namaTPI,
+            'nama' => $tpi->tpi_name,
             'totalLaporan' => $tpi->total_laporan,
             'totalBerat' => round($tpi->total_berat, 2),
         ];
@@ -132,9 +133,9 @@ class StatistikController extends Controller
      */
     private function getKomoditasTop()
     {
-        $komoditas = Laporan::select('jenisIkan', DB::raw('SUM(beratTotal) as total_berat'), DB::raw('COUNT(*) as jumlah'))
-            ->where('status', 'tervalidasi')
-            ->groupBy('jenisIkan')
+        $komoditas = Tangkapan::select('jenis_ikan', DB::raw('SUM(berat) as total_berat'), DB::raw('COUNT(*) as jumlah'))
+            ->where('status', 'Divalidasi')
+            ->groupBy('jenis_ikan')
             ->orderBy('total_berat', 'desc')
             ->limit(5)
             ->get();
@@ -146,7 +147,7 @@ class StatistikController extends Controller
         foreach ($komoditas as $item) {
             $percentage = $totalKeseluruhan > 0 ? round(($item->total_berat / $totalKeseluruhan) * 100) : 0;
             $result[] = [
-                'nama' => $item->jenisIkan,
+                'nama' => $item->jenis_ikan,
                 'berat' => round($item->total_berat, 2),
                 'persentase' => $percentage,
                 'jumlah' => $item->jumlah,
@@ -161,15 +162,16 @@ class StatistikController extends Controller
      */
     private function getStatistikTpi()
     {
-        $tpiList = Laporan::select('namaTPI', DB::raw('COUNT(*) as total_laporan'), DB::raw('SUM(beratTotal) as total_berat'))
-            ->where('status', 'tervalidasi')
-            ->groupBy('namaTPI')
+        $tpiList = Tangkapan::select(DB::raw('users.wilayah as tpi_name'), DB::raw('COUNT(*) as total_laporan'), DB::raw('SUM(berat) as total_berat'))
+            ->join('users', 'hasil_tangkap.user_id', '=', 'users.id')
+            ->where('hasil_tangkap.status', 'Divalidasi')
+            ->groupBy('users.wilayah')
             ->orderBy('total_laporan', 'desc')
             ->get();
 
         return $tpiList->map(function ($item) {
             return [
-                'nama' => $item->namaTPI,
+                'nama' => $item->tpi_name,
                 'laporan' => $item->total_laporan,
                 'berat' => round($item->total_berat, 2),
             ];

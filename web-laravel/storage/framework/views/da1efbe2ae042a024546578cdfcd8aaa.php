@@ -1092,17 +1092,17 @@
             <div
                 style="background: white; padding: 28px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); height: fit-content;">
 
-                <form method="GET" action="<?php echo e(route('staff.cetak')); ?>">
+                <form id="filterForm" method="GET" action="<?php echo e(route('staff.cetak')); ?>">
                     <!-- Asal TPI -->
                     <div style="margin-bottom: 20px;">
                         <label
                             style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Asal
                             TPI</label>
-                        <select name="tpi"
+                        <select id="filterTpi" name="tpi" onchange="triggerFilter()"
                             style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
                             <option value="">Semua TPI</option>
                             <?php $__currentLoopData = $tpiList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tpi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($tpi->wilayah); ?>" <?php if($tpiFilter == $tpi->wilayah): ?> selected <?php endif; ?>>
+                                <option value="<?php echo e($tpi->id); ?>" <?php if($tpiFilter == $tpi->id): ?> selected <?php endif; ?>>
                                     <?php echo e($tpi->wilayah); ?>
 
                                 </option>
@@ -1117,14 +1117,16 @@
                                 <label
                                     style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Mulai
                                     Dari</label>
-                                <input type="date" name="start_date" value="<?php echo e($startDate); ?>"
+                                <input type="date" id="filterStartDate" name="start_date" onchange="triggerFilter()"
+                                    value="<?php echo e($startDate); ?>"
                                     style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 12px; font-size: 12px; background: #f8fafc; color: #102a43; outline: none;">
                             </div>
                             <div>
                                 <label
                                     style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Sampai
                                     Dengan</label>
-                                <input type="date" name="end_date" value="<?php echo e($endDate); ?>"
+                                <input type="date" id="filterEndDate" name="end_date" onchange="triggerFilter()"
+                                    value="<?php echo e($endDate); ?>"
                                     style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 12px; font-size: 12px; background: #f8fafc; color: #102a43; outline: none;">
                             </div>
                         </div>
@@ -1138,14 +1140,16 @@
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <label
                                 style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border: 1px solid #dce1e9; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                                <input type="radio" name="jenis_laporan" value="harian" style="cursor: pointer;">
+                                <input type="radio" id="jenisLaporanHarian" name="jenis_laporan" value="harian"
+                                    onchange="triggerFilter()" style="cursor: pointer;">
                                 <div style="flex: 1;">
                                     <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Harian</div>
                                 </div>
                             </label>
                             <label
                                 style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border: 1px solid #dce1e9; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                                <input type="radio" name="jenis_laporan" value="bulanan" style="cursor: pointer;">
+                                <input type="radio" id="jenisLaporanBulanan" name="jenis_laporan" value="bulanan"
+                                    onchange="triggerFilter()" style="cursor: pointer;">
                                 <div style="flex: 1;">
                                     <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Bulanan
                                     </div>
@@ -1153,7 +1157,8 @@
                             </label>
                             <label
                                 style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border: 1px solid #dce1e9; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                                <input type="radio" name="jenis_laporan" value="tahunan" style="cursor: pointer;">
+                                <input type="radio" id="jenisLaporanTahunan" name="jenis_laporan" value="tahunan"
+                                    onchange="triggerFilter()" style="cursor: pointer;">
                                 <div style="flex: 1;">
                                     <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Tahunan
                                     </div>
@@ -1169,7 +1174,7 @@
                                 <label
                                     style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Pilih
                                     Bulan</label>
-                                <select name="bulan"
+                                <select id="filterBulan" name="bulan" onchange="triggerFilter()"
                                     style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
                                     <option value="">-- Pilih Bulan --</option>
                                     <option value="1">Januari</option>
@@ -1196,7 +1201,7 @@
                                 <label
                                     style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Pilih
                                     Tahun</label>
-                                <select name="tahun"
+                                <select id="filterTahun" name="tahun" onchange="triggerFilter()"
                                     style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
                                     <option value="">-- Pilih Tahun --</option>
                                     <?php
@@ -1216,13 +1221,15 @@
                             style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 12px;">Format
                             Output</label>
                         <div style="display: flex; gap: 10px;">
-                            <button type="button" onclick="downloadLaporan('pdf')"
+                            <button type="button" id="btnFormatPdf" onclick="selectFormat('pdf')"
+                                ondblclick="toggleFormatSelection('pdf')"
                                 style="flex: 1; padding: 10px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s;"
-                                onmouseover="this.style.background='#fee'; this.style.borderColor='#dc2626';"
+                                onmouseover="this.style.background='#fef2f2'; this.style.borderColor='#dc2626';"
                                 onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
                                 <i class="fas fa-file-pdf"></i> PDF
                             </button>
-                            <button type="button" onclick="downloadLaporan('excel')"
+                            <button type="button" id="btnFormatExcel" onclick="selectFormat('excel')"
+                                ondblclick="toggleFormatSelection('excel')"
                                 style="flex: 1; padding: 10px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s;"
                                 onmouseover="this.style.background='#f0fdf4'; this.style.borderColor='#16a34a';"
                                 onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
@@ -1232,11 +1239,20 @@
                     </div>
 
                     <!-- Preview Button -->
-                    <button type="submit"
-                        style="width: 100%; padding: 12px; background: #0a1f3b; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
-                        onmouseover="this.style.background='#132d4f';" onmouseout="this.style.background='#0a1f3b';">
-                        <i class="fas fa-eye"></i> Lihat Pratinjau
-                    </button>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" onclick="resetFilters()"
+                            style="flex: 1; padding: 12px; background: #f0f0f0; color: #102a43; border: 1px solid #dce1e9; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
+                            onmouseover="this.style.background='#e0e0e0';"
+                            onmouseout="this.style.background='#f0f0f0';">
+                            <i class="fas fa-redo"></i> Reset Filter
+                        </button>
+                        <button type="button" onclick="triggerDownload()"
+                            style="flex: 1; padding: 12px; background: #0a1f3b; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
+                            onmouseover="this.style.background='#132d4f';"
+                            onmouseout="this.style.background='#0a1f3b';">
+                            <i class="fas fa-download"></i> Download Laporan
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -1245,120 +1261,315 @@
         <div class="table-card" id="laporan-tabel">
             <div class="table-header">
                 <h2 style="font-size: 18px; font-weight: 700; color: #102a43;">Tabel Arsip Laporan Cetak</h2>
+                <div id="filterStatus" style="font-size: 12px; color: #64748b; display: none;">Hasil Filter: <span
+                        id="filterCount">0</span> data</div>
             </div>
 
-            <?php if($laporans->count() > 0): ?>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>ID LAPORAN</th>
-                            <th>TANGGAL DIBUAT</th>
-                            <th>CAKUPAN DATA</th>
-                            <th>DIBUAT OLEH</th>
-                            <th>AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $__currentLoopData = $laporans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $laporan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" style="display: none; text-align: center; padding: 40px; color: #999;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 15px; display: block;"></i>
+                <p style="font-size: 14px;">Memuat data...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" style="display: none; text-align: center; padding: 60px 20px; color: #999;">
+                <i class="fas fa-inbox"
+                    style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                <p style="font-size: 14px;">Belum ada data laporan yang tervalidasi</p>
+            </div>
+
+            <!-- Table Container -->
+            <div id="tableContainer">
+                <?php if($laporans->count() > 0): ?>
+                    <table class="report-table">
+                        <thead>
                             <tr>
-                                <td><strong>#LAP-<?php echo e(str_pad($laporan->id, 4, '0', STR_PAD_LEFT)); ?></strong></td>
-                                <td><?php echo e($laporan->created_at->format('d M Y, H:i')); ?></td>
-                                <td>
-                                    <span
-                                        style="background: #e3f2fd; color: #0d2640; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">
-                                        <?php if($laporan->user): ?>
-                                            TPI <?php echo e($laporan->user->wilayah ?: $laporan->user->nama); ?>
-
-                                        <?php else: ?>
-                                            N/A
-                                        <?php endif; ?>
-                                    </span>
-                                </td>
-                                <td><?php echo e($laporan->user ? $laporan->user->nama : 'N/A'); ?></td>
-                                <td>
-                                    <button type="button" class="action-btn btn-download"
-                                        data-id="<?php echo e($laporan->id); ?>"
-                                        style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
-                                        onmouseover="this.style.background='#0d2640'; this.style.color='white';"
-                                        onmouseout="this.style.background='#e3f2fd'; this.style.color='#0d2640';">
-                                        <i class="fas fa-download"></i> Lihat Detail
-                                    </button>
-                                </td>
+                                <th>ID LAPORAN</th>
+                                <th>TANGGAL DIBUAT</th>
+                                <th>CAKUPAN DATA</th>
+                                <th>DIBUAT OLEH</th>
+                                <th>AKSI</th>
                             </tr>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody id="laporanTableBody">
+                            <?php $__currentLoopData = $laporans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $laporan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+                                    <td><strong>#LAP-<?php echo e(str_pad($laporan->id, 4, '0', STR_PAD_LEFT)); ?></strong></td>
+                                    <td><?php echo e($laporan->created_at->format('d M Y, H:i')); ?></td>
+                                    <td>
+                                        <span
+                                            style="background: #e3f2fd; color: #0d2640; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">
+                                            <?php if($laporan->user): ?>
+                                                TPI <?php echo e($laporan->user->wilayah ?: $laporan->user->nama); ?>
 
-                <!-- Pagination -->
-                <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
-                    <?php echo e($laporans->links('pagination.custom')); ?>
+                                            <?php else: ?>
+                                                N/A
+                                            <?php endif; ?>
+                                        </span>
+                                    </td>
+                                    <td><?php echo e($laporan->user ? $laporan->user->nama : 'N/A'); ?></td>
+                                    <td>
+                                        <button type="button" class="action-btn btn-download"
+                                            data-id="<?php echo e($laporan->id); ?>"
+                                            style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
+                                            onmouseover="this.style.background='#0d2640'; this.style.color='white';"
+                                            onmouseout="this.style.background='#e3f2fd'; this.style.color='#0d2640';">
+                                            <i class="fas fa-download"></i> Download
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </tbody>
+                    </table>
 
-                </div>
-            <?php else: ?>
-                <div style="text-align: center; padding: 60px 20px; color: #999;">
-                    <i class="fas fa-inbox"
-                        style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
-                    <p style="font-size: 14px;">Belum ada data laporan yang tervalidasi</p>
-                </div>
-            <?php endif; ?>
+                    <!-- Pagination -->
+                    <div style="margin-top: 20px; display: flex; justify-content: flex-end;" id="paginationContainer">
+                        <?php echo e($laporans->links('pagination.custom')); ?>
+
+                    </div>
+                <?php else: ?>
+                    <div style="text-align: center; padding: 60px 20px; color: #999;">
+                        <i class="fas fa-inbox"
+                            style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                        <p style="font-size: 14px;">Belum ada data laporan yang tervalidasi</p>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
     </main>
 
     <script>
-        // Handle jenis laporan radio button styling dan tampilkan/sembunyikan field
-        document.addEventListener('DOMContentLoaded', function() {
-            const radioButtons = document.querySelectorAll('input[name="jenis_laporan"]');
-            const bulananSection = document.getElementById('bulanan-section');
-            const tahunanSection = document.getElementById('tahunan-section');
-            let lastSelected = null;
+        // === GLOBAL VARIABLES ===
+        let selectedFormat = null; // No default format selected
 
-            radioButtons.forEach(radio => {
-                const label = radio.closest('label');
+        // === AJAX FILTERING LOGIC ===
 
-                radio.addEventListener('change', function() {
-                    // Reset all labels to default style
-                    radioButtons.forEach(rb => {
-                        const lbl = rb.closest('label');
-                        lbl.style.background = '#f8fafc';
-                        lbl.style.border = '1px solid #dce1e9';
-                    });
+        // Debounce function untuk mencegah multiple AJAX calls
+        let filterTimeout;
 
-                    // Style the selected label
-                    if (this.checked) {
-                        label.style.background = '#edf2ff';
-                        label.style.border = '2px solid #0d2640';
-                        lastSelected = this.value;
+        function triggerFilter() {
+            clearTimeout(filterTimeout);
+            filterTimeout = setTimeout(() => {
+                fetchFilteredData();
+            }, 300); // 300ms delay
+        }
 
-                        // Tampilkan/sembunyikan section berdasarkan jenis laporan
-                        if (this.value === 'bulanan') {
-                            bulananSection.style.display = 'block';
-                            tahunanSection.style.display = 'none';
-                        } else if (this.value === 'tahunan') {
-                            bulananSection.style.display = 'none';
-                            tahunanSection.style.display = 'block';
-                        } else {
-                            bulananSection.style.display = 'none';
-                            tahunanSection.style.display = 'none';
-                        }
+        // Fetch filtered data via AJAX
+        function fetchFilteredData() {
+            const tpi = document.getElementById('filterTpi').value;
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const jenisLaporan = document.querySelector('input[name="jenis_laporan"]:checked')?.value || '';
+            const bulan = document.getElementById('filterBulan').value;
+            const tahun = document.getElementById('filterTahun').value;
+
+            // Show loading indicator
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const tableContainer = document.getElementById('tableContainer');
+            loadingIndicator.style.display = 'block';
+            tableContainer.style.opacity = '0.5';
+
+            // Build query parameters
+            const params = new URLSearchParams();
+            if (tpi) params.append('tpi', tpi);
+            if (startDate) params.append('start_date', startDate);
+            if (endDate) params.append('end_date', endDate);
+            if (jenisLaporan) params.append('jenis_laporan', jenisLaporan);
+            if (bulan) params.append('bulan', bulan);
+            if (tahun) params.append('tahun', tahun);
+            params.append('page', 1);
+
+            // AJAX request
+            fetch(`<?php echo e(route('staff.cetak.filter')); ?>?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
-                });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingIndicator.style.display = 'none';
+                    tableContainer.style.opacity = '1';
 
-                // Add click handler for toggle behavior
-                radio.addEventListener('click', function(e) {
-                    if (lastSelected === this.value && this.checked) {
-                        // If clicking the same option, uncheck it
-                        this.checked = false;
-                        label.style.background = '#f8fafc';
-                        label.style.border = '1px solid #dce1e9';
-                        lastSelected = null;
-                        bulananSection.style.display = 'none';
-                        tahunanSection.style.display = 'none';
+                    if (data.success) {
+                        updateTable(data.data, data.pagination);
+                    } else {
+                        showEmptyState(data.message);
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    loadingIndicator.style.display = 'none';
+                    tableContainer.style.opacity = '1';
+                    alert('Terjadi kesalahan saat mengambil data');
                 });
+        }
+
+        // Update table with filtered data
+        function updateTable(data, pagination) {
+            const tbody = document.getElementById('laporanTableBody');
+            const tableContainer = document.getElementById('tableContainer');
+            const filterStatus = document.getElementById('filterStatus');
+            const paginationContainer = document.getElementById('paginationContainer');
+
+            if (data.length === 0) {
+                showEmptyState('Tidak ada data yang sesuai dengan filter');
+                return;
+            }
+
+            // Build table rows
+            let html = '';
+            data.forEach(laporan => {
+                html += `
+                    <tr>
+                        <td><strong>${laporan.id_laporan}</strong></td>
+                        <td>${laporan.tanggal_dibuat}</td>
+                        <td>
+                            <span style="background: #e3f2fd; color: #0d2640; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">
+                                TPI ${laporan.tpi}
+                            </span>
+                        </td>
+                        <td>${laporan.dibuat_oleh}</td>
+                        <td>
+                            <button type="button" class="action-btn btn-download"
+                                data-id="${laporan.id}"
+                                style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
+                                onmouseover="this.style.background='#0d2640'; this.style.color='white';"
+                                onmouseout="this.style.background='#e3f2fd'; this.style.color='#0d2640';">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </td>
+                    </tr>
+                `;
             });
-        });
+
+            tbody.innerHTML = html;
+
+            // Show filter status
+            filterStatus.style.display = 'block';
+            document.getElementById('filterCount').textContent = pagination.total;
+
+            // Update pagination
+            if (pagination.last_page > 1) {
+                let paginationHtml = '<div style="display: flex; gap: 5px; justify-content: center;">';
+
+                // Previous button
+                if (pagination.current_page > 1) {
+                    paginationHtml +=
+                        `<button onclick="goToPage(${pagination.current_page - 1})" style="padding: 8px 12px; border: 1px solid #dce1e9; background: white; cursor: pointer; border-radius: 4px;">← Prev</button>`;
+                }
+
+                // Page numbers
+                const maxPages = 5;
+                let startPage = Math.max(1, pagination.current_page - Math.floor(maxPages / 2));
+                let endPage = Math.min(pagination.last_page, startPage + maxPages - 1);
+
+                if (endPage - startPage < maxPages - 1) {
+                    startPage = Math.max(1, endPage - maxPages + 1);
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    if (i === pagination.current_page) {
+                        paginationHtml +=
+                            `<button style="padding: 8px 12px; border: 1px solid #0d2640; background: #0d2640; color: white; cursor: pointer; border-radius: 4px;">${i}</button>`;
+                    } else {
+                        paginationHtml +=
+                            `<button onclick="goToPage(${i})" style="padding: 8px 12px; border: 1px solid #dce1e9; background: white; cursor: pointer; border-radius: 4px;">${i}</button>`;
+                    }
+                }
+
+                // Next button
+                if (pagination.current_page < pagination.last_page) {
+                    paginationHtml +=
+                        `<button onclick="goToPage(${pagination.current_page + 1})" style="padding: 8px 12px; border: 1px solid #dce1e9; background: white; cursor: pointer; border-radius: 4px;">Next →</button>`;
+                }
+
+                paginationHtml += '</div>';
+                paginationContainer.innerHTML = paginationHtml;
+            } else {
+                paginationContainer.innerHTML = '';
+            }
+
+            // Re-attach download button listeners
+            attachDownloadListeners();
+        }
+
+        // Show empty state
+        function showEmptyState(message) {
+            const tableContainer = document.getElementById('tableContainer');
+            const tbody = document.getElementById('laporanTableBody');
+            const filterStatus = document.getElementById('filterStatus');
+            const paginationContainer = document.getElementById('paginationContainer');
+
+            if (tbody) {
+                tbody.innerHTML = '';
+            }
+
+            filterStatus.style.display = 'none';
+            paginationContainer.innerHTML = '';
+
+            tableContainer.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; color: #999;">
+                    <i class="fas fa-inbox" style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                    <p style="font-size: 14px;">${message}</p>
+                </div>
+            `;
+        }
+
+        // Go to specific page
+        function goToPage(page) {
+            const tpi = document.getElementById('filterTpi').value;
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const jenisLaporan = document.querySelector('input[name="jenis_laporan"]:checked')?.value || '';
+            const bulan = document.getElementById('filterBulan').value;
+            const tahun = document.getElementById('filterTahun').value;
+
+            const params = new URLSearchParams();
+            if (tpi) params.append('tpi', tpi);
+            if (startDate) params.append('start_date', startDate);
+            if (endDate) params.append('end_date', endDate);
+            if (jenisLaporan) params.append('jenis_laporan', jenisLaporan);
+            if (bulan) params.append('bulan', bulan);
+            if (tahun) params.append('tahun', tahun);
+            params.append('page', page);
+
+            fetch(`<?php echo e(route('staff.cetak.filter')); ?>?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateTable(data.data, data.pagination);
+                    }
+                });
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('filterForm').reset();
+            document.getElementById('bulanan-section').style.display = 'none';
+            document.getElementById('tahunan-section').style.display = 'none';
+            document.getElementById('filterStatus').style.display = 'none';
+
+            // Reset table to initial state
+            location.reload();
+        }
 
         // Download laporan function
+        function triggerDownload() {
+            if (!selectedFormat) {
+                alert('Pilih format (PDF atau EXCEL) terlebih dahulu!');
+                return;
+            }
+            downloadLaporan(selectedFormat);
+        }
+
         function downloadLaporan(format, laporanId = null) {
             const requestData = {
                 format: format,
@@ -1440,19 +1651,177 @@
             document.body.removeChild(form);
         }
 
-        // Event listener untuk tombol download di table
-        document.querySelectorAll('.btn-download').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const laporanId = this.dataset.id;
-                const format = confirm('Format:\nOK = PDF\nCancel = Excel') ? 'pdf' : 'excel';
-                downloadLaporan(format, laporanId);
+        // Attach download button listeners
+        function attachDownloadListeners() {
+            document.querySelectorAll('.btn-download').forEach(btn => {
+                btn.removeEventListener('click', handleDownloadClick);
+                btn.addEventListener('click', handleDownloadClick);
             });
-        });
-
-        // Download all data
-        function downloadAllData(format = 'pdf') {
-            downloadLaporan(format);
         }
+
+        function handleDownloadClick(e) {
+            const laporanId = e.currentTarget.dataset.id;
+            if (!selectedFormat) {
+                alert('Pilih format (PDF atau EXCEL) terlebih dahulu!');
+                return;
+            }
+            downloadLaporan(selectedFormat, laporanId);
+        }
+
+        // Select format function
+        function selectFormat(format) {
+            selectedFormat = format;
+
+            // Update button styles
+            const btnPdf = document.getElementById('btnFormatPdf');
+            const btnExcel = document.getElementById('btnFormatExcel');
+
+            if (format === 'pdf') {
+                btnPdf.style.background = '#fee';
+                btnPdf.style.border = '2px solid #dc2626';
+                btnPdf.style.color = '#dc2626';
+                btnPdf.dataset.selected = 'true';
+
+                btnExcel.style.background = 'white';
+                btnExcel.style.border = '1px solid #dce1e9';
+                btnExcel.style.color = '#102a43';
+                btnExcel.dataset.selected = 'false';
+
+                // Override mouseout for PDF to keep color
+                btnPdf.onmouseout = function() {
+                    if (selectedFormat === 'pdf') {
+                        this.style.background = '#fee';
+                        this.style.borderColor = '#dc2626';
+                    } else {
+                        this.style.background = 'white';
+                        this.style.borderColor = '#dce1e9';
+                    }
+                };
+
+                // Reset mouseout for EXCEL
+                btnExcel.onmouseout = function() {
+                    this.style.background = 'white';
+                    this.style.borderColor = '#dce1e9';
+                };
+            } else {
+                btnPdf.style.background = 'white';
+                btnPdf.style.border = '1px solid #dce1e9';
+                btnPdf.style.color = '#102a43';
+                btnPdf.dataset.selected = 'false';
+
+                btnExcel.style.background = '#f0fdf4';
+                btnExcel.style.border = '2px solid #16a34a';
+                btnExcel.style.color = '#16a34a';
+                btnExcel.dataset.selected = 'true';
+
+                // Reset mouseout for PDF
+                btnPdf.onmouseout = function() {
+                    this.style.background = 'white';
+                    this.style.borderColor = '#dce1e9';
+                };
+
+                // Override mouseout for EXCEL to keep color
+                btnExcel.onmouseout = function() {
+                    if (selectedFormat === 'excel') {
+                        this.style.background = '#f0fdf4';
+                        this.style.borderColor = '#16a34a';
+                    } else {
+                        this.style.background = 'white';
+                        this.style.borderColor = '#dce1e9';
+                    }
+                };
+            }
+        }
+
+        // Toggle format selection on double click
+        function toggleFormatSelection(format) {
+            if (selectedFormat === format) {
+                // Deselect - remove all colors
+                const btnPdf = document.getElementById('btnFormatPdf');
+                const btnExcel = document.getElementById('btnFormatExcel');
+
+                selectedFormat = null;
+
+                btnPdf.style.background = 'white';
+                btnPdf.style.border = '1px solid #dce1e9';
+                btnPdf.style.color = '#102a43';
+                btnPdf.dataset.selected = 'false';
+
+                btnExcel.style.background = 'white';
+                btnExcel.style.border = '1px solid #dce1e9';
+                btnExcel.style.color = '#102a43';
+                btnExcel.dataset.selected = 'false';
+
+                // Reset mouseout handlers - plain reset without checking selectedFormat
+                btnPdf.onmouseout = function() {
+                    this.style.background = 'white';
+                    this.style.borderColor = '#dce1e9';
+                };
+                btnExcel.onmouseout = function() {
+                    this.style.background = 'white';
+                    this.style.borderColor = '#dce1e9';
+                };
+            } else {
+                // Select normally
+                selectFormat(format);
+            }
+        }
+
+        // Handle jenis laporan radio button styling dan tampilkan/sembunyikan field
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('input[name="jenis_laporan"]');
+            const bulananSection = document.getElementById('bulanan-section');
+            const tahunanSection = document.getElementById('tahunan-section');
+            let lastSelected = null;
+
+            radioButtons.forEach(radio => {
+                const label = radio.closest('label');
+
+                radio.addEventListener('change', function() {
+                    // Reset all labels to default style
+                    radioButtons.forEach(rb => {
+                        const lbl = rb.closest('label');
+                        lbl.style.background = '#f8fafc';
+                        lbl.style.border = '1px solid #dce1e9';
+                    });
+
+                    // Style the selected label
+                    if (this.checked) {
+                        label.style.background = '#edf2ff';
+                        label.style.border = '2px solid #0d2640';
+                        lastSelected = this.value;
+
+                        // Tampilkan/sembunyikan section berdasarkan jenis laporan
+                        if (this.value === 'bulanan') {
+                            bulananSection.style.display = 'block';
+                            tahunanSection.style.display = 'none';
+                        } else if (this.value === 'tahunan') {
+                            bulananSection.style.display = 'none';
+                            tahunanSection.style.display = 'block';
+                        } else {
+                            bulananSection.style.display = 'none';
+                            tahunanSection.style.display = 'none';
+                        }
+                    }
+                });
+
+                // Add click handler for toggle behavior
+                radio.addEventListener('click', function(e) {
+                    if (lastSelected === this.value && this.checked) {
+                        // If clicking the same option, uncheck it
+                        this.checked = false;
+                        label.style.background = '#f8fafc';
+                        label.style.border = '1px solid #dce1e9';
+                        lastSelected = null;
+                        bulananSection.style.display = 'none';
+                        tahunanSection.style.display = 'none';
+                    }
+                });
+            });
+
+            // Attach initial download button listeners
+            attachDownloadListeners();
+        });
 
         // === PROFILE MODAL ===
         function openProfileModal(event) {

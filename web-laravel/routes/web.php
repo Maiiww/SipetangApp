@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/cetak-laporan', [CetakLaporanController::class, 'index'])->name('staff.cetak');
         Route::post('/cetak-laporan/preview', [CetakLaporanController::class, 'preview'])->name('staff.cetak.preview');
         Route::post('/cetak-laporan/download', [CetakLaporanController::class, 'download'])->name('staff.cetak.download');
+        Route::get('/cetak-laporan/filter', [CetakLaporanController::class, 'getFilteredData'])->name('staff.cetak.filter');
 
         Route::get('/notifikasi', function () {
             return view('Staff.notifikasi');

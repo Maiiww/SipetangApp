@@ -67,20 +67,13 @@ class CetakLaporanController extends Controller
         $laporans = $query->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Get list of TPI (users with role 'juruRekap') - show only unique wilayah
+        // Get list of TPI (users with role 'juruRekap') - get unique users by wilayah
         $tpiList = \App\Models\User::whereIn('role', ['juruRekap', 'juru_rekap'])
-            ->distinct()
             ->orderBy('wilayah', 'asc')
-            ->select('wilayah')
+            ->select('id', 'nama', 'wilayah')
             ->where('wilayah', '!=', null)
-            ->get()
-            ->map(function ($item) {
-                return (object)[
-                    'id' => $item->wilayah,
-                    'nama' => $item->wilayah,
-                    'wilayah' => $item->wilayah
-                ];
-            });
+            ->distinct('wilayah')
+            ->get();
 
         // Calculate statistics
         $stats = [
@@ -123,6 +116,9 @@ class CetakLaporanController extends Controller
                 'start_date' => 'nullable|date',
                 'end_date' => 'nullable|date',
                 'tpi' => 'nullable|integer',
+                'jenis_laporan' => 'nullable|in:harian,bulanan,tahunan',
+                'bulan' => 'nullable|integer|between:1,12',
+                'tahun' => 'nullable|integer',
             ]);
 
             $laporan = collect();
@@ -142,11 +138,42 @@ class CetakLaporanController extends Controller
                     $query->where('user_id', $validated['tpi']);
                 }
 
-                if ($request->has('start_date') && $request->has('end_date')) {
-                    $query->whereBetween('created_at', [
-                        $validated['start_date'] . ' 00:00:00',
-                        $validated['end_date'] . ' 23:59:59'
-                    ]);
+                // Apply date filters based on jenis_laporan
+                if (!empty($validated['jenis_laporan'])) {
+                    $jenisLaporan = $validated['jenis_laporan'];
+
+                    if ($jenisLaporan === 'harian') {
+                        // Untuk laporan harian, gunakan date range
+                        if (!empty($validated['start_date']) && !empty($validated['end_date'])) {
+                            $query->whereBetween('created_at', [
+                                $validated['start_date'] . ' 00:00:00',
+                                $validated['end_date'] . ' 23:59:59'
+                            ]);
+                        } elseif (!empty($validated['start_date'])) {
+                            $query->whereDate('created_at', '>=', $validated['start_date']);
+                        } elseif (!empty($validated['end_date'])) {
+                            $query->whereDate('created_at', '<=', $validated['end_date']);
+                        }
+                    } elseif ($jenisLaporan === 'bulanan') {
+                        // Untuk laporan bulanan, gunakan bulan dan tahun
+                        if (!empty($validated['bulan']) && !empty($validated['tahun'])) {
+                            $query->whereMonth('created_at', $validated['bulan'])
+                                ->whereYear('created_at', $validated['tahun']);
+                        }
+                    } elseif ($jenisLaporan === 'tahunan') {
+                        // Untuk laporan tahunan, gunakan tahun saja
+                        if (!empty($validated['tahun'])) {
+                            $query->whereYear('created_at', $validated['tahun']);
+                        }
+                    }
+                } else {
+                    // Default: gunakan date range jika tersedia
+                    if (!empty($validated['start_date']) && !empty($validated['end_date'])) {
+                        $query->whereBetween('created_at', [
+                            $validated['start_date'] . ' 00:00:00',
+                            $validated['end_date'] . ' 23:59:59'
+                        ]);
+                    }
                 }
 
                 $laporan = $query->orderBy('created_at', 'desc')->get();
@@ -213,7 +240,7 @@ class CetakLaporanController extends Controller
         $sheet->mergeCells('A2:H2');
 
         // Column headers
-        $headers = ['ID', 'Nama Nelayan', 'Nama Pembeli', 'Jenis Ikan', 'Berat (kg)', 'Harga Jual', 'Status', 'Tanggal'];
+        $headers = ['ID', 'Nama Nelayan', 'Nama Pembeli', 'Jenis Ikan', 'Berat (kg)', 'Harga Jual'];
         $col = 'A';
         $row = 4;
         foreach ($headers as $header) {
@@ -232,13 +259,11 @@ class CetakLaporanController extends Controller
             $sheet->setCellValue('D' . $row, $item->jenis_ikan);
             $sheet->setCellValue('E' . $row, $item->berat);
             $sheet->setCellValue('F' . $row, 'Rp ' . number_format($item->harga_jual, 0, ',', '.'));
-            $sheet->setCellValue('G' . $row, $item->status);
-            $sheet->setCellValue('H' . $row, $item->created_at->format('d/m/Y'));
             $row++;
         }
 
         // Auto fit columns
-        foreach (range('A', 'H') as $col) {
+        foreach (range('A', 'F') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -254,6 +279,121 @@ class CetakLaporanController extends Controller
                 'Content-Disposition' => 'attachment; filename="' . $fileName . '"'
             ]
         );
+    }
+
+    /**
+     * Get filtered laporan data via AJAX
+     */
+    public function getFilteredData(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'tpi' => 'nullable|integer',
+                'start_date' => 'nullable|date',
+                'end_date' => 'nullable|date',
+                'jenis_laporan' => 'nullable|in:harian,bulanan,tahunan',
+                'bulan' => 'nullable|integer|between:1,12',
+                'tahun' => 'nullable|integer',
+                'page' => 'nullable|integer|min:1',
+            ]);
+
+            // Build query untuk laporan yang sudah divalidasi
+            $query = Tangkapan::where('status', 'Divalidasi');
+
+            // Apply TPI filter (berdasarkan user_id)
+            if (!empty($validated['tpi'])) {
+                $query->where('user_id', $validated['tpi']);
+            }
+
+            // Apply jenis laporan filter
+            if (!empty($validated['jenis_laporan'])) {
+                $jenisLaporan = $validated['jenis_laporan'];
+
+                if ($jenisLaporan === 'harian') {
+                    // Untuk laporan harian, gunakan date range jika ada
+                    if (!empty($validated['start_date']) && !empty($validated['end_date'])) {
+                        $query->whereBetween('created_at', [
+                            $validated['start_date'] . ' 00:00:00',
+                            $validated['end_date'] . ' 23:59:59'
+                        ]);
+                    } elseif (!empty($validated['start_date'])) {
+                        $query->whereDate('created_at', '>=', $validated['start_date']);
+                    } elseif (!empty($validated['end_date'])) {
+                        $query->whereDate('created_at', '<=', $validated['end_date']);
+                    }
+                } elseif ($jenisLaporan === 'bulanan') {
+                    // Untuk laporan bulanan, gunakan bulan dan tahun
+                    if (!empty($validated['bulan']) && !empty($validated['tahun'])) {
+                        $query->whereMonth('created_at', $validated['bulan'])
+                            ->whereYear('created_at', $validated['tahun']);
+                    }
+                } elseif ($jenisLaporan === 'tahunan') {
+                    // Untuk laporan tahunan, gunakan tahun saja
+                    if (!empty($validated['tahun'])) {
+                        $query->whereYear('created_at', $validated['tahun']);
+                    }
+                }
+            } else {
+                // Jika tidak ada jenis_laporan dipilih, gunakan date range default
+                if (!empty($validated['bulan']) && !empty($validated['tahun'])) {
+                    $query->whereMonth('created_at', $validated['bulan'])
+                        ->whereYear('created_at', $validated['tahun']);
+                } else {
+                    if (!empty($validated['start_date']) && !empty($validated['end_date'])) {
+                        $query->whereBetween('created_at', [
+                            $validated['start_date'] . ' 00:00:00',
+                            $validated['end_date'] . ' 23:59:59'
+                        ]);
+                    } elseif (!empty($validated['start_date'])) {
+                        $query->whereDate('created_at', '>=', $validated['start_date']);
+                    } elseif (!empty($validated['end_date'])) {
+                        $query->whereDate('created_at', '<=', $validated['end_date']);
+                    }
+                }
+            }
+
+            // Get paginated data
+            $page = $validated['page'] ?? 1;
+            $laporans = $query->orderBy('created_at', 'desc')
+                ->paginate(10, ['*'], 'page', $page);
+
+            // Format data untuk response
+            $formattedData = $laporans->map(function ($laporan) {
+                return [
+                    'id' => $laporan->id,
+                    'id_laporan' => '#LAP-' . str_pad($laporan->id, 4, '0', STR_PAD_LEFT),
+                    'tanggal_dibuat' => $laporan->created_at->format('d M Y, H:i'),
+                    'tpi' => $laporan->user ? ($laporan->user->wilayah ?: $laporan->user->nama) : 'N/A',
+                    'dibuat_oleh' => $laporan->user ? $laporan->user->nama : 'N/A',
+                    'created_at' => $laporan->created_at,
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $formattedData,
+                'pagination' => [
+                    'current_page' => $laporans->currentPage(),
+                    'last_page' => $laporans->lastPage(),
+                    'per_page' => $laporans->perPage(),
+                    'total' => $laporans->total(),
+                    'from' => $laporans->firstItem(),
+                    'to' => $laporans->lastItem(),
+                ],
+                'message' => $laporans->count() > 0 ? 'Data ditemukan' : 'Tidak ada data yang sesuai filter'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -276,8 +416,6 @@ class CetakLaporanController extends Controller
                 <td style="padding: 10px; border: 1px solid #000;">' . $item->jenis_ikan . '</td>
                 <td style="padding: 10px; border: 1px solid #000; text-align: right;">' . number_format($item->berat, 2) . '</td>
                 <td style="padding: 10px; border: 1px solid #000; text-align: right;">Rp ' . number_format($item->harga_jual, 0, ',', '.') . '</td>
-                <td style="padding: 10px; border: 1px solid #000;">' . $item->status . '</td>
-                <td style="padding: 10px; border: 1px solid #000;">' . $item->created_at->format('d/m/Y') . '</td>
             </tr>';
         }
 
@@ -314,8 +452,6 @@ class CetakLaporanController extends Controller
                         <th>Jenis Ikan</th>
                         <th style="text-align: right;">Berat (kg)</th>
                         <th style="text-align: right;">Harga Jual</th>
-                        <th>Status</th>
-                        <th>Tanggal</th>
                     </tr>
                 </thead>
                 <tbody>

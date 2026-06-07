@@ -17,17 +17,17 @@ class TangkapanController extends Controller
         $userId = $request->query('user_id');
 
         $totalBerat = Tangkapan::whereDate('created_at', $tanggal)
-                               ->where('user_id', $userId)
-                               ->sum('berat');
-                               
+            ->where('user_id', $userId)
+            ->sum('berat');
+
         $totalProduksi = Tangkapan::whereDate('created_at', $tanggal)
-                                  ->where('user_id', $userId)
-                                  ->count();
+            ->where('user_id', $userId)
+            ->count();
 
         $tangkapan = Tangkapan::whereDate('created_at', $tanggal)
-                              ->where('user_id', $userId)
-                              ->orderBy('created_at', 'desc')
-                              ->paginate(10);
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return response()->json([
             'status' => 'success',
@@ -46,14 +46,14 @@ class TangkapanController extends Controller
         $tahunIni = Carbon::now()->year;
 
         $totalKg = Tangkapan::whereMonth('created_at', $bulanIni)
-                        ->whereYear('created_at', $tahunIni)
-                        ->sum('berat');
+            ->whereYear('created_at', $tahunIni)
+            ->sum('berat');
 
         $totalTon = $totalKg / 1000;
 
         $lastUpdate = Tangkapan::whereMonth('created_at', $bulanIni)
-                           ->whereYear('created_at', $tahunIni)
-                           ->max('created_at');
+            ->whereYear('created_at', $tahunIni)
+            ->max('created_at');
 
         $formattedDate = $lastUpdate ? Carbon::parse($lastUpdate)->translatedFormat('d F Y') : 'Belum ada data bulan ini';
 
@@ -63,7 +63,7 @@ class TangkapanController extends Controller
                 'total_ton' => round($totalTon, 1),
                 'last_update' => $formattedDate
             ]
-        ]);                   
+        ]);
     }
 
     public function sendToStaff(Request $request)
@@ -73,10 +73,38 @@ class TangkapanController extends Controller
             'user_id' => 'required|integer'
         ]);
 
+        // Get laporan yang akan di-update
+        $laporans = Tangkapan::whereDate('created_at', $request->tanggal)
+            ->where('user_id', $request->user_id)
+            ->where('status', 'Draft')
+            ->get();
+
+        if ($laporans->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tidak ada data Draft pada tanggal ini yang bisa dikirim.'
+            ], 404);
+        }
+
+        // Update status untuk semua laporan
         $updated = Tangkapan::whereDate('created_at', $request->tanggal)
             ->where('user_id', $request->user_id)
             ->where('status', 'Draft')
             ->update(['status' => 'Menunggu Validasi']);
+
+        // Create notifications untuk staff validation
+        $user = \App\Models\User::find($request->user_id);
+        $tpiName = $user ? $user->wilayah : 'Tidak diketahui';
+
+        foreach ($laporans as $laporan) {
+            \App\Models\Notification::create([
+                'user_id' => $request->user_id,
+                'tangkapan_id' => $laporan->id,
+                'type' => 'submission',
+                'message' => 'Data hasil tangkap (' . $laporan->jenis_ikan . ' - ' . $laporan->berat . ' kg) dari ' . $tpiName . ' telah dikirim untuk validasi.',
+                'read' => false,
+            ]);
+        }
 
         if ($updated > 0) {
             return response()->json([
@@ -96,8 +124,8 @@ class TangkapanController extends Controller
         $userId = $request->query('user_id');
 
         $jumlah = Tangkapan::where('user_id', $userId)
-                           ->where('status', 'Ditolak')
-                           ->count();
+            ->where('status', 'Ditolak')
+            ->count();
 
         return response()->json([
             'status' => 'success',
@@ -106,12 +134,12 @@ class TangkapanController extends Controller
             ]
         ], 200);
     }
-    
+
 
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|integer', 
+            'user_id' => 'required|integer',
             'nama_pembeli' => 'required|string',
             'nama_nelayan' => 'required|string',
             'jenis_ikan' => 'required|string',
@@ -155,13 +183,12 @@ class TangkapanController extends Controller
                 'semua_riwayat' => $semuaRiwayat
             ]
         ], 200);
-
     }
 
     public function show($id)
     {
         $tangkapan = Tangkapan::find($id);
-        
+
         if (!$tangkapan) {
             return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
         }
@@ -186,7 +213,7 @@ class TangkapanController extends Controller
             'jenis_ikan' => $request->jenis_ikan,
             'berat' => $request->berat,
             'harga_jual' => $request->harga_jual,
-            'status' => 'Menunggu Validasi', 
+            'status' => 'Menunggu Validasi',
             'revision_needed' => 0
         ]);
 

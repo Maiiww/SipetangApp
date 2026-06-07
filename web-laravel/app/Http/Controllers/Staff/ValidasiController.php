@@ -28,20 +28,38 @@ class ValidasiController extends Controller
         $query = Tangkapan::query();
         $currentUser = Auth::user();
 
-        // Filter berdasarkan pilihan TPI dari dropdown
-        if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
-            // Filter berdasarkan wilayah user yang memasukkan data
-            $query->whereHas('user', function ($q) use ($tpiFilter) {
-                $q->where('wilayah', $tpiFilter);
-            });
-        } elseif ($currentUser->role === 'staff' && !empty($currentUser->wilayah)) {
-            // Staff default: tampilkan data dari TPI mereka saja
-            $query->whereHas('user', function ($q) use ($currentUser) {
-                $q->where('wilayah', $currentUser->wilayah);
-            });
+        // Filter berdasarkan role dan pilihan TPI
+        // Jika staff dari Dinas Pusat (central office), bisa lihat semua TPI atau filter spesifik
+        // Jika staff dari TPI tertentu, hanya lihat TPI mereka (atau filter spesifik jika ada)
+        if ($currentUser->role === 'staff') {
+            // Jika staff dari Dinas Pusat
+            if (strpos($currentUser->wilayah, 'Pusat') !== false || strpos($currentUser->wilayah, 'pusat') !== false) {
+                // Central office staff: boleh filter berdasarkan tpiFilter jika ada
+                if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
+                    $query->whereHas('user', function ($q) use ($tpiFilter) {
+                        $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
+                    });
+                }
+                // Jika tidak ada tpiFilter, lihat semua TPI (tidak ada WHERE clause)
+            } else {
+                // Local TPI staff: filter berdasarkan TPI mereka
+                if (!empty($currentUser->wilayah)) {
+                    $query->whereHas('user', function ($q) use ($currentUser) {
+                        $q->where('wilayah', 'LIKE', '%' . $currentUser->wilayah . '%');
+                    });
+                }
+            }
+        } else {
+            // Admin/Head Staff: boleh filter berdasarkan tpiFilter jika ada
+            if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
+                $query->whereHas('user', function ($q) use ($tpiFilter) {
+                    $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
+                });
+            }
+            // Jika tidak ada tpiFilter, lihat semua TPI (tidak ada WHERE clause)
         }
 
-        // Filter by validation status
+        // Filter by validation status (hanya tampil yang valid)
         $validStatuses = ['Draft', 'Menunggu Validasi', 'Divalidasi', 'Ditolak'];
         $query->whereIn('status', $validStatuses);
 
@@ -66,14 +84,30 @@ class ValidasiController extends Controller
 
         // Count stats based on filtered data
         $statQuery = Tangkapan::query();
-        if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
-            $statQuery->whereHas('user', function ($q) use ($tpiFilter) {
-                $q->where('wilayah', $tpiFilter);
-            });
-        } elseif ($currentUser->role === 'staff' && !empty($currentUser->wilayah)) {
-            $statQuery->whereHas('user', function ($q) use ($currentUser) {
-                $q->where('wilayah', $currentUser->wilayah);
-            });
+
+        // Apply same TPI filter untuk stats
+        if ($currentUser->role === 'staff') {
+            if (strpos($currentUser->wilayah, 'Pusat') !== false || strpos($currentUser->wilayah, 'pusat') !== false) {
+                // Central office staff
+                if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
+                    $statQuery->whereHas('user', function ($q) use ($tpiFilter) {
+                        $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
+                    });
+                }
+            } else {
+                // Local TPI staff
+                if (!empty($currentUser->wilayah)) {
+                    $statQuery->whereHas('user', function ($q) use ($currentUser) {
+                        $q->where('wilayah', 'LIKE', '%' . $currentUser->wilayah . '%');
+                    });
+                }
+            }
+        } else {
+            if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
+                $statQuery->whereHas('user', function ($q) use ($tpiFilter) {
+                    $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
+                });
+            }
         }
 
         $stats = [
@@ -115,6 +149,15 @@ class ValidasiController extends Controller
             'status' => 'Divalidasi',
         ]);
 
+        // Buat notifikasi untuk juru rekap bahwa laporan telah divalidasi
+        Notification::create([
+            'user_id' => $tangkapan->user_id,
+            'tangkapan_id' => $tangkapan->id,
+            'type' => 'validation_approved',
+            'message' => 'Data hasil tangkap Anda untuk ' . $tangkapan->jenis_ikan . ' (' . $tangkapan->berat . ' kg) telah berhasil divalidasi oleh staff validasi.',
+            'read' => false,
+        ]);
+
         return redirect()->route('staff.validasi')->with('success', 'Data berhasil divalidasi');
     }
 
@@ -154,11 +197,26 @@ class ValidasiController extends Controller
     {
         $request->validate([
             'tangkapan_ids' => 'required|array',
-            'tangkapan_ids.*' => 'exists:tangkapan,id'
+            'tangkapan_ids.*' => 'exists:hasil_tangkap,id'
         ]);
 
+        // Get tangkapan records yang akan divalidasi
+        $tangkapans = Tangkapan::whereIn('id', $request->tangkapan_ids)->get();
+
+        // Update status untuk semua
         Tangkapan::whereIn('id', $request->tangkapan_ids)
             ->update(['status' => 'Divalidasi']);
+
+        // Create notifications untuk juru rekap
+        foreach ($tangkapans as $tangkapan) {
+            Notification::create([
+                'user_id' => $tangkapan->user_id,
+                'tangkapan_id' => $tangkapan->id,
+                'type' => 'validation_approved',
+                'message' => 'Data hasil tangkap Anda untuk ' . $tangkapan->jenis_ikan . ' (' . $tangkapan->berat . ' kg) telah berhasil divalidasi oleh staff validasi.',
+                'read' => false,
+            ]);
+        }
 
         return redirect()->route('staff.validasi')->with('success', 'Data terpilih berhasil divalidasi massal');
     }
