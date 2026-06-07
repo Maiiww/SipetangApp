@@ -213,19 +213,38 @@
 
         .password-group input {
             padding-right: 44px;
+            width: 100%;
         }
 
         .password-toggle {
             position: absolute;
-            right: 14px;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
             font-size: 18px;
             color: #94a3bb;
-            transition: color 0.3s;
+            transition: color 0.3s ease;
+            z-index: 20;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            user-select: none;
         }
 
         .password-toggle:hover {
             color: #1a4d8d;
+        }
+
+        .password-toggle:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .password-toggle i {
+            pointer-events: none;
         }
 
         .forgot-password {
@@ -391,7 +410,8 @@
                 </div>
 
                 <h2 class="login-title">MASUK</h2>
-                <p class="login-description">Akses sistem SIPETANG untuk mengelola data hasil tangkap, aset perikanan, dan laporan maritim secara terintegrasi dan efisien.</p>
+                <p class="login-description">Akses sistem SIPETANG untuk mengelola data hasil tangkap, aset perikanan,
+                    dan laporan maritim secara terintegrasi dan efisien.</p>
             </div>
 
             <div class="login-footer">
@@ -436,7 +456,7 @@
                         <div class="password-group">
                             <input type="password" class="form-control" id="password" name="password"
                                 placeholder="••••••••" required>
-                            <span class="password-toggle" onclick="togglePassword()">
+                            <span class="password-toggle" id="togglePasswordBtn" style="cursor: pointer;">
                                 <i class="fas fa-eye"></i>
                             </span>
                         </div>
@@ -456,20 +476,30 @@
     </div>
 
     <script>
-        function togglePassword() {
+        // Setup toggle password functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('togglePasswordBtn');
             const passwordInput = document.getElementById('password');
-            const toggleIcon = document.querySelector('.password-toggle i');
+            const toggleIcon = toggleBtn ? toggleBtn.querySelector('i') : null;
 
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
+            if (toggleBtn && passwordInput && toggleIcon) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Toggle password visibility
+                    const isPassword = passwordInput.type === 'password';
+                    passwordInput.type = isPassword ? 'text' : 'password';
+
+                    // Toggle icon
+                    toggleIcon.classList.toggle('fa-eye');
+                    toggleIcon.classList.toggle('fa-eye-slash');
+
+                    // Focus kembali ke input
+                    passwordInput.focus();
+                });
             }
-        }
+        });
     </script>
 </body>
 

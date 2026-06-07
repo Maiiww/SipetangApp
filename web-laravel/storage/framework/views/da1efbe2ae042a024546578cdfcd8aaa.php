@@ -202,6 +202,161 @@
             background: #e0e0e0;
         }
 
+        /* Profile Modal Styles */
+        .profile-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .profile-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-modal-content {
+            background-color: white;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .profile-modal-header {
+            background: linear-gradient(135deg, #0d2640 0%, #1a4d7d 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-modal-close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .profile-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .profile-role {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-modal-body {
+            padding: 30px;
+        }
+
+        .profile-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .profile-item-icon {
+            width: 40px;
+            height: 40px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1976d2;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .profile-item-content {
+            flex: 1;
+        }
+
+        .profile-item-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .profile-item-value {
+            font-size: 14px;
+            color: #0d2640;
+            font-weight: 500;
+        }
+
+        .profile-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .profile-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .profile-status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         .page-title {
             margin-bottom: 28px;
         }
@@ -917,7 +1072,7 @@
         <div class="header">
             <div class="header-right">
                 <div class="header-icons">
-                    <a href="<?php echo e(route('staff.profile')); ?>" style="text-decoration: none; color: inherit;">
+                    <a href="#" style="text-decoration: none; color: inherit;" onclick="openProfileModal(event)">
                         <div class="header-icon" style="cursor: pointer;"><i class="fas fa-user"
                                 style="color: #1a4d7d;"></i></div>
                     </a>
@@ -947,8 +1102,8 @@
                             style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
                             <option value="">Semua TPI</option>
                             <?php $__currentLoopData = $tpiList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tpi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($tpi->id); ?>" <?php if($tpiFilter == $tpi->id): ?> selected <?php endif; ?>>
-                                    <?php echo e($tpi->nama); ?> <?php echo e($tpi->wilayah ? '(' . $tpi->wilayah . ')' : ''); ?>
+                                <option value="<?php echo e($tpi->wilayah); ?>" <?php if($tpiFilter == $tpi->wilayah): ?> selected <?php endif; ?>>
+                                    <?php echo e($tpi->wilayah); ?>
 
                                 </option>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -1298,7 +1453,93 @@
         function downloadAllData(format = 'pdf') {
             downloadLaporan(format);
         }
+
+        // === PROFILE MODAL ===
+        function openProfileModal(event) {
+            event.preventDefault();
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('profileModal');
+            if (event.target === modal) {
+                closeProfileModal();
+            }
+        }
     </script>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="profile-modal">
+        <div class="profile-modal-content">
+            <div class="profile-modal-header">
+                <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
+                <div class="profile-avatar">
+                    <?php echo e(strtoupper(substr(Auth::user()->nama ?? Auth::user()->username, 0, 2))); ?></div>
+                <div class="profile-name"><?php echo e(Auth::user()->nama ?? Auth::user()->username); ?></div>
+                <div class="profile-role"><?php echo e(ucfirst(Auth::user()->role)); ?></div>
+            </div>
+            <div class="profile-modal-body">
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Lokasi Penempatan</div>
+                        <div class="profile-item-value"><?php echo e(Auth::user()->wilayah ?? '-'); ?></div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Jenis Kelamin</div>
+                        <div class="profile-item-value"><?php echo e(Auth::user()->jenis_kelamin ?? '-'); ?></div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">No. Telepon</div>
+                        <div class="profile-item-value"><?php echo e(Auth::user()->no_telepon ?? '-'); ?></div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-map-pin"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Alamat</div>
+                        <div class="profile-item-value"><?php echo e(Auth::user()->alamat ?? '-'); ?></div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Status</div>
+                        <?php if(Auth::user()->is_active ?? true): ?>
+                            <span class="profile-status active">Aktif</span>
+                        <?php else: ?>
+                            <span class="profile-status inactive">Nonaktif</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Staff\LaporanViewController;
 use App\Http\Controllers\Staff\ValidasiController;
 use App\Http\Controllers\Staff\RekamanViewController;
 use App\Http\Controllers\Staff\CetakLaporanController;
+use App\Http\Controllers\Staff\StatistikController;
 use App\Models\User;
 use App\Http\Controllers\Staff\LaporanDownloadController;
 
@@ -38,7 +39,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/validasi-laporan', [ValidasiController::class, 'index'])->name('staff.validasi');
 
         Route::post('/validasi-laporan/bulk', [ValidasiController::class, 'bulkValidate'])->name('staff.validasi.bulk');
-        
+
         Route::post('/validasi-laporan/{id}/validate', [ValidasiController::class, 'validate'])->name('staff.validasi.validate');
         Route::post('/validasi-laporan/{id}/reject', [ValidasiController::class, 'reject'])->name('staff.validasi.reject');
         Route::get('/validasi-laporan/{id}', [ValidasiController::class, 'show'])->name('staff.validasi.show');
@@ -48,9 +49,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/rekaman-revisi/{id}', [RekamanViewController::class, 'submitRevisi'])->name('staff.rekaman.submit');
         Route::get('/notifikasi-revisi', [RekamanViewController::class, 'getNotifications'])->name('staff.notifikasi.revisi');
 
-        Route::get('/statistik', function () {
-            return view('Staff.statistik');
-        })->name('staff.statistik');
+        Route::get('/statistik', [StatistikController::class, 'index'])->name('staff.statistik');
 
         Route::get('/cetak-laporan', [CetakLaporanController::class, 'index'])->name('staff.cetak');
         Route::post('/cetak-laporan/preview', [CetakLaporanController::class, 'preview'])->name('staff.cetak.preview');

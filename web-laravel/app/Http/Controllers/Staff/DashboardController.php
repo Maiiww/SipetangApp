@@ -79,6 +79,7 @@ class DashboardController extends Controller
         return view('Staff.dashboard', [
             'statistik' => $statistik,
             'aktivitas' => collect($aktivitasTerbaru),
+            'user' => auth()->user(),
         ]);
     }
 

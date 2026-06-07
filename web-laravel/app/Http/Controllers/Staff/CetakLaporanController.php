@@ -37,9 +37,11 @@ class CetakLaporanController extends Controller
             });
         }
 
-        // Apply TPI filter (berdasarkan user_id yang memasukkan data)
+        // Apply TPI filter (berdasarkan wilayah)
         if (!empty($tpiFilter)) {
-            $query->where('user_id', $tpiFilter);
+            $query->whereHas('user', function ($q) use ($tpiFilter) {
+                $q->where('wilayah', $tpiFilter);
+            });
         }
 
         // Apply date range filter atau filter bulan/tahun
@@ -65,11 +67,20 @@ class CetakLaporanController extends Controller
         $laporans = $query->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Get list of TPI (users with role 'juruRekap') - show all available TPIs
+        // Get list of TPI (users with role 'juruRekap') - show only unique wilayah
         $tpiList = \App\Models\User::whereIn('role', ['juruRekap', 'juru_rekap'])
+            ->distinct()
             ->orderBy('wilayah', 'asc')
-            ->select('id', 'nama', 'wilayah')
-            ->get();
+            ->select('wilayah')
+            ->where('wilayah', '!=', null)
+            ->get()
+            ->map(function ($item) {
+                return (object)[
+                    'id' => $item->wilayah,
+                    'nama' => $item->wilayah,
+                    'wilayah' => $item->wilayah
+                ];
+            });
 
         // Calculate statistics
         $stats = [

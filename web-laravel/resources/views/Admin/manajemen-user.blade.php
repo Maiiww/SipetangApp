@@ -24,11 +24,11 @@
 
         /* Sidebar */
         .sidebar {
-            width: 200px;
+            width: 280px;
             /* Warna sudah disamakan dengan Dashboard Admin & Staff */
             background: linear-gradient(180deg, #0a3b99 0%, #1d65d0 100%);
             color: white;
-            padding: 30px 20px;
+            padding: 40px 25px;
             display: flex;
             flex-direction: column;
             position: fixed;
@@ -41,31 +41,37 @@
         .sidebar-logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 40px;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 50px;
             font-weight: 700;
+            flex-direction: column;
+            text-align: center;
         }
 
         .sidebar-logo-box {
             background: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 6px;
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #0d2640;
+            font-size: 40px;
         }
 
         .sidebar-logo-text h3 {
-            font-size: 14px;
+            font-size: 18px;
             margin: 0;
+            letter-spacing: 1px;
         }
 
         .sidebar-logo-text p {
-            font-size: 9px;
-            opacity: 0.7;
+            font-size: 11px;
+            opacity: 0.8;
             margin: 0;
+            line-height: 1.4;
         }
 
         .sidebar-menu {
@@ -74,7 +80,7 @@
         }
 
         .sidebar-menu li {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .sidebar-menu a {
@@ -82,38 +88,66 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 10px;
-            border-radius: 6px;
+            gap: 18px;
+            padding: 12px 15px;
+            border-radius: 8px;
             transition: background 0.2s ease, transform 0.1s ease;
-            font-size: 14px;
+            font-size: 15px;
+            font-weight: 500;
         }
 
         .sidebar-menu a:hover,
         .sidebar-menu a.active {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .sidebar-menu a:active {
-            background: rgba(255, 255, 255, 0.16);
+            background: rgba(255, 255, 255, 0.2);
             transform: scale(0.98);
+        }
+
+        .sidebar-menu i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
         }
 
         .sidebar-logout {
             margin-top: auto;
-            padding-top: 20px;
+            padding-top: 25px;
             border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .sidebar-logout a {
+        .sidebar-logout-button {
             color: white;
-            text-decoration: none;
-            font-size: 14px;
+            background: #1a4d7d;
+            border-radius: 25px;
+            padding: 12px 25px;
+            width: 100%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-logout-button:hover {
+            background: #0f3a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-logout-button i {
+            font-size: 18px;
         }
 
         /* Main Content Area */
         .main-content {
-            margin-left: 200px;
+            margin-left: 280px;
             flex: 1;
             padding: 30px;
         }
@@ -711,7 +745,7 @@
                 <thead>
                     <tr>
                         <th>Nama Petugas</th>
-                        <th>Asal TPI</th>
+                        <th>Lokasi Penempatan</th>
                         <th>Jenis Kelamin</th>
                         <th>No Telepon</th>
                         <th>Alamat</th>
@@ -859,8 +893,9 @@
 
                 <div class="form-row full" id="asal_tpi_field" style="display: none;">
                     <div class="form-group-modal">
-                        <label>ASAL TPI (WILAYAH) <span id="wilayah_required" style="display: none;">*</span></label>
-                        <input type="text" name="wilayah" id="wilayah_input" placeholder="Contoh: TPI Blanakan">
+                        <label>WILAYAH <span id="wilayah_required" style="display: none;">*</span></label>
+                        <input type="text" name="wilayah" id="wilayah_input"
+                            placeholder="Contoh: TPI Blanakan atau Dinas Pusat">
                     </div>
                 </div>
 

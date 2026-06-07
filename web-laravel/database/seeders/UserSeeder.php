@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             'alamat'        => 'Jl. Raya Blanakan No. 12, Subang',
             'wilayah'       => 'TPI Blanakan',
             'status_akun'   => 'Aktif',
-            'foto_profil'   => null, 
+            'foto_profil'   => null,
         ]);
 
         User::updateOrCreate([
@@ -54,8 +54,8 @@ class UserSeeder extends Seeder
             'status_akun'   => 'Aktif',
             'foto_profil'   => null,
         ]);
-        
-        User::firstOrCreate([
+
+        User::updateOrCreate([
             'username'      => 'staff_tpi',
         ], [
             'password'      => Hash::make('rahasia123'),
@@ -64,8 +64,8 @@ class UserSeeder extends Seeder
             'no_induk'      => 'STF01',
             'jenis_kelamin' => 'Perempuan',
             'no_telepon'    => '083144555666',
-            'alamat'        => 'Kantor Cabang Dinas Blanakan',
-            'wilayah'       => 'TPI Blanakan',
+            'alamat'        => 'Kantor Dinas Perikanan Pusat, Subang',
+            'wilayah'       => 'Dinas Pusat',
             'status_akun'   => 'Aktif',
             'foto_profil'   => null,
         ]);

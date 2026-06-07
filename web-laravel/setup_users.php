@@ -94,7 +94,7 @@ try {
         'STF01',
         'Perempuan',
         '083144555666',
-        'Kantor Cabang Dinas Blanakan',
+        'Kantor Dinas Perikanan Pusat, Subang',
         'TPI Blanakan',
         'Aktif',
         null

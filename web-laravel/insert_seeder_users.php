@@ -57,7 +57,7 @@ try {
             'no_induk' => 'STF01',
             'jenis_kelamin' => 'Perempuan',
             'no_telepon' => '083144555666',
-            'alamat' => 'Kantor Cabang Dinas Blanakan',
+            'alamat' => 'Kantor Dinas Perikanan Pusat, Subang',
             'wilayah' => 'TPI Blanakan',
             'status_akun' => 'Aktif',
         ]

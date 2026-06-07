@@ -615,6 +615,170 @@
             color: white;
         }
 
+        /* Profile Modal Styles */
+        .profile-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .profile-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-modal-content {
+            background-color: white;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .profile-modal-header {
+            background: linear-gradient(135deg, #0d2640 0%, #1a4d7d 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-modal-close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .profile-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .profile-role {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-modal-body {
+            padding: 30px;
+        }
+
+        .profile-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .profile-item-icon {
+            width: 40px;
+            height: 40px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1976d2;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .profile-item-content {
+            flex: 1;
+        }
+
+        .profile-item-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .profile-item-value {
+            font-size: 14px;
+            color: #0d2640;
+            font-weight: 500;
+        }
+
+        .profile-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .profile-status.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .profile-status.inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .profile-status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 60px;
@@ -640,7 +804,7 @@
     <div class="main-content">
         <div class="header">
             <div class="header-right">
-                <a href="{{ route('staff.profile') }}" style="text-decoration: none; color: inherit;">
+                <a href="#" style="text-decoration: none; color: inherit;" onclick="openProfileModal(event)">
                     <div class="header-icon" style="cursor: pointer;"><i class="fas fa-user"></i></div>
                 </a>
             </div>
@@ -724,6 +888,92 @@
             </div>
         </div>
     </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="profile-modal">
+        <div class="profile-modal-content">
+            <div class="profile-modal-header">
+                <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
+                <div class="profile-avatar">{{ strtoupper(substr($user->nama ?? $user->username, 0, 2)) }}</div>
+                <div class="profile-name">{{ $user->nama ?? $user->username }}</div>
+                <div class="profile-role">{{ ucfirst($user->role) }}</div>
+            </div>
+            <div class="profile-modal-body">
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Lokasi Penempatan</div>
+                        <div class="profile-item-value">{{ $user->wilayah ?? '-' }}</div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Jenis Kelamin</div>
+                        <div class="profile-item-value">{{ $user->jenis_kelamin ?? '-' }}</div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">No. Telepon</div>
+                        <div class="profile-item-value">{{ $user->no_telepon ?? '-' }}</div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-map-pin"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Alamat</div>
+                        <div class="profile-item-value">{{ $user->alamat ?? '-' }}</div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Status</div>
+                        @if ($user->is_active ?? true)
+                            <span class="profile-status active">Aktif</span>
+                        @else
+                            <span class="profile-status inactive">Nonaktif</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openProfileModal(event) {
+            event.preventDefault();
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('profileModal');
+            if (event.target === modal) {
+                closeProfileModal();
+            }
+        }
+    </script>
 </body>
 
 </html>
