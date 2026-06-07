@@ -205,4 +205,31 @@ class TangkapanController extends Controller
             'data' => $ikan
         ], 200);
     }
+
+    public function TrenProduksi()
+    {
+        $labels = [];
+        $values = [];
+
+        for ($i = 5; $i >= 0; $i--) {
+            $date = Carbon::now()->subMonths($i);
+            
+            $labels[] = $date->translatedFormat('M'); 
+
+            $totalKg = Tangkapan::whereMonth('created_at', $date->month)
+                                ->whereYear('created_at', $date->year)
+                                ->sum('berat');
+
+            $totalTon = $totalKg / 1000;
+            $values[] = round($totalTon, 1); 
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'labels' => $labels,
+                'values' => $values
+            ]
+        ]);
+    }
 }

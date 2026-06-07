@@ -17,6 +17,8 @@ Route::post('/tangkapan', [TangkapanController::class, 'store']);
 
 Route::get('/ikan', [TangkapanController::class, 'getIkan']);
 
+Route::get('/tangkapan/tren', [TangkapanController::class, 'trenProduksi']);
+
 Route::get('/tangkapan/{id}', [TangkapanController::class, 'show']);
 Route::put('/tangkapan/{id}', [TangkapanController::class, 'update']);
 

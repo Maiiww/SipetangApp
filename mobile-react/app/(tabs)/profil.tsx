@@ -245,7 +245,7 @@ export default function ProfilScreen() {
                 </View>
 
                 <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                    <Text style={styles.logoutButtonText}>LOGOUT</Text>
+                    <Text style={styles.logoutButtonText}>KELUAR</Text>
                 </TouchableOpacity>
 
                 <Text style={styles.versionText}>Versi Aplikasi 2.1.0-stable</Text>
