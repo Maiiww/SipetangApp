@@ -870,13 +870,7 @@
                             <div class="progress-fill" style="width: {{ $statistik['persentaseValidasi'] }}%;"></div>
                         </div>
                     </div>
-                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 12px; color: #666;">Anomali Terdeteksi</span>
-                            <span
-                                style="font-size: 18px; font-weight: 700; color: #ef4444;">{{ str_pad($statistik['anomaliDetected'], 2, '0', STR_PAD_LEFT) }}</span>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 

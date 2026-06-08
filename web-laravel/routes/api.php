@@ -19,6 +19,9 @@ Route::get('/ikan', [TangkapanController::class, 'getIkan']);
 
 Route::get('/tangkapan/tren', [TangkapanController::class, 'trenProduksi']);
 
+Route::get('/dashboard-stats', [TangkapanController::class, 'getStatsForDashboard']);
+
+
 Route::get('/tangkapan/{id}', [TangkapanController::class, 'show']);
 Route::put('/tangkapan/{id}', [TangkapanController::class, 'update']);
 
@@ -32,6 +35,3 @@ Route::get('/cuaca', [CuacaController::class, 'getCuaca']);
 //Foto Profile
 Route::get('/profile/{id}', [ProfileController::class, 'show']);
 Route::post('/profile/{id}/update-foto', [ProfileController::class, 'updateFoto']);
-
-
-

@@ -240,15 +240,15 @@ class TangkapanController extends Controller
 
         for ($i = 5; $i >= 0; $i--) {
             $date = Carbon::now()->subMonths($i);
-            
-            $labels[] = $date->translatedFormat('M'); 
+
+            $labels[] = $date->translatedFormat('M');
 
             $totalKg = Tangkapan::whereMonth('created_at', $date->month)
-                                ->whereYear('created_at', $date->year)
-                                ->sum('berat');
+                ->whereYear('created_at', $date->year)
+                ->sum('berat');
 
             $totalTon = $totalKg / 1000;
-            $values[] = round($totalTon, 1); 
+            $values[] = round($totalTon, 1);
         }
 
         return response()->json([
@@ -258,5 +258,30 @@ class TangkapanController extends Controller
                 'values' => $values
             ]
         ]);
+    }
+
+    /**
+     * Get dashboard statistics for the welcome page
+     * Returns: total weight and number of registered TPI
+     */
+    public function getStatsForDashboard()
+    {
+        // Total weight of all catch (in kg, converted to tons)
+        $totalKg = Tangkapan::sum('berat');
+        $totalTon = $totalKg / 1000;
+        $formattedTotal = $totalTon >= 1000 ? round($totalTon / 1000, 1) . 'k' : round($totalTon, 1);
+
+        // Count unique TPI (users with data)
+        $totalTPI = \App\Models\User::whereHas('tangkapans')->distinct('id')->count();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_catch' => $formattedTotal,
+                'total_tpi' => $totalTPI,
+                'raw_total_kg' => $totalKg,
+                'last_update' => now()->translatedFormat('d F Y H:i')
+            ]
+        ], 200);
     }
 }
