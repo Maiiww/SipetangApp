@@ -102,4 +102,34 @@
         </form>
     </div>
 </aside>
+
+<style>
+    .sidebar-menu a {
+        font-size: 17px !important;
+    }
+    .sidebar-menu i {
+        font-size: 20px !important;
+    }
+    .sidebar-logo-box {
+        width: 72px !important;
+        height: 72px !important;
+        min-width: 72px !important;
+        min-height: 72px !important;
+    }
+    .sidebar-logo-image {
+        width: 86% !important;
+        height: 86% !important;
+    }
+    .sidebar-logo-text h3 {
+        font-size: 24px !important;
+    }
+    .sidebar-logo-text p {
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+    }
+    .sidebar-logout-button {
+        font-size: 15.5px !important;
+    }
+</style>
+
 <?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/components/sidebar-menu.blade.php ENDPATH**/ ?>

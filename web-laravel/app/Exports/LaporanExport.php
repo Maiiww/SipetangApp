@@ -29,38 +29,48 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSi
     {
         $rows = [];
 
+        // Group by jenisIkan / jenis_ikan (normalized to Title Case)
+        $groupedLaporan = $this->laporan->groupBy(function ($item) {
+            return ucwords(strtolower(trim($item->jenisIkan ?? $item->jenis_ikan)));
+        })->map(function ($items, $jenisIkan) {
+            return (object) [
+                'jenisIkan' => $jenisIkan,
+                'beratTotal' => $items->sum(function ($i) { return $i->beratTotal ?? $i->berat; }),
+                'harga_jual' => $items->sum('harga_jual'),
+            ];
+        });
+
         // Add summary section
         $rows[] = ['LAPORAN DATA MARITIM SIPETANG'];
         $rows[] = [];
         $rows[] = ['Tipe Laporan:', ucfirst(str_replace('_', ' ', $this->validated['laporan_type']))];
         $rows[] = ['Tanggal Generate:', now()->format('d/m/Y H:i:s')];
-        $rows[] = ['Total Record:', $this->laporan->count()];
-        $rows[] = ['Total Berat (kg):', number_format($this->laporan->sum('beratTotal'), 2, ',', '.')];
+        $rows[] = ['Total Record (Jenis Ikan):', $groupedLaporan->count()];
+        $rows[] = ['Total Berat (kg):', number_format($groupedLaporan->sum('beratTotal'), 2, ',', '.')];
         $rows[] = [];
 
         // Add data headers
         $rows[] = [
-            'ID Laporan',
-            'Nama TPI',
             'Jenis Ikan',
             'Berat Total (kg)',
-            'Tanggal Tangkap',
-            'Tanggal Input',
-            'Status'
+            'Harga Jual'
         ];
 
         // Add data rows
-        foreach ($this->laporan as $item) {
+        foreach ($groupedLaporan as $item) {
             $rows[] = [
-                $item->idLaporan,
-                $item->namaTPI,
                 $item->jenisIkan,
                 number_format($item->beratTotal, 2, ',', '.'),
-                $item->tanggalTangkap ? $item->tanggalTangkap->format('d/m/Y') : '-',
-                $item->tanggalInput ? $item->tanggalInput->format('d/m/Y H:i:s') : '-',
-                ucfirst($item->status),
+                'Rp ' . number_format($item->harga_jual, 0, ',', '.'),
             ];
         }
+
+        // Add TOTAL row at the bottom
+        $rows[] = [
+            'TOTAL:',
+            number_format($groupedLaporan->sum('beratTotal'), 2, ',', '.') . ' kg',
+            'Rp ' . number_format($groupedLaporan->sum('harga_jual'), 0, ',', '.'),
+        ];
 
         return $rows;
     }
@@ -80,7 +90,7 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSi
     public function styles(Worksheet $sheet)
     {
         // Title styling
-        $sheet->mergeCells('A1:G1');
+        $sheet->mergeCells('A1:C1');
         $sheet->getStyle('A1')->applyFromArray([
             'font' => ['bold' => true, 'size' => 14],
             'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
@@ -93,7 +103,7 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSi
 
         // Data headers styling (row 8)
         $dataHeaderRow = 8;
-        $sheet->getStyle('A' . $dataHeaderRow . ':G' . $dataHeaderRow)->applyFromArray([
+        $sheet->getStyle('A' . $dataHeaderRow . ':C' . $dataHeaderRow)->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
@@ -109,10 +119,16 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSi
 
         // Data rows styling
         $startRow = $dataHeaderRow + 1;
-        $endRow = $startRow + $this->laporan->count() - 1;
+        // The count of data rows is groupedLaporan count. Since we can't call groupedLaporan directly here, 
+        // we can group the collection again.
+        $groupedCount = $this->laporan->groupBy(function ($item) {
+            return ucwords(strtolower(trim($item->jenisIkan ?? $item->jenis_ikan)));
+        })->count();
+        
+        $endRow = $startRow + $groupedCount - 1;
 
         if ($endRow >= $startRow) {
-            $sheet->getStyle('A' . $startRow . ':G' . $endRow)->applyFromArray([
+            $sheet->getStyle('A' . $startRow . ':C' . ($endRow + 1))->applyFromArray([
                 'border' => [
                     'allBorders' => [
                         'borderStyle' => Border::BORDER_THIN,
@@ -120,6 +136,8 @@ class LaporanExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSi
                 ],
                 'alignment' => ['vertical' => Alignment::VERTICAL_CENTER]
             ]);
+            // Make the TOTAL row bold
+            $sheet->getStyle('A' . ($endRow + 1) . ':C' . ($endRow + 1))->getFont()->setBold(true);
         }
 
         return [];

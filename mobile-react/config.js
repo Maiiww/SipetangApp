@@ -1,2 +1,2 @@
-const API_URL = 'https://xa7g1kwcei.sharedwithexpose.com/api';
+const API_URL = 'http://192.168.100.8:8000/api';
 export default API_URL;

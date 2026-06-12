@@ -884,6 +884,107 @@
             border-radius: 50%;
             background: currentColor;
         }
+        /* === MODAL KONFIRMASI VALIDASI SEMUA === */
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInOverlay 0.2s ease;
+        }
+        .confirm-overlay.active {
+            display: flex;
+        }
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        .confirm-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 36px 32px 28px;
+            width: 90%;
+            max-width: 440px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+            text-align: center;
+            animation: slideUpBox 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes slideUpBox {
+            from { transform: translateY(30px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        .confirm-icon {
+            width: 64px;
+            height: 64px;
+            background: #fff7e6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            color: #f59e0b;
+        }
+        .confirm-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0d2640;
+            margin-bottom: 10px;
+        }
+        .confirm-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+        .confirm-desc strong {
+            color: #0d2640;
+        }
+        .confirm-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .confirm-btn-cancel {
+            flex: 1;
+            padding: 11px 0;
+            border: 1.5px solid #e0e0e0;
+            background: #fff;
+            color: #555;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .confirm-btn-cancel:hover {
+            background: #f5f5f5;
+            border-color: #bbb;
+        }
+        .confirm-btn-ok {
+            flex: 1;
+            padding: 11px 0;
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .confirm-btn-ok:hover {
+            background: linear-gradient(135deg, #218838, #155724);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(40,167,69,0.35);
+        }
     </style>
 </head>
 
@@ -1061,31 +1162,40 @@
 
         <!-- Table Section -->
         <div class="table-section">
-            <div class="table-title"
-                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                <span>Antrean Laporan ({{ $laporans->total() }} data)</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding: 18px 20px; background: #fff; border-radius: 10px 10px 0 0; border-bottom: 2px solid #f0f0f0; margin-bottom: 0;">
+                <div>
+                    <div style="font-size: 16px; font-weight: 700; color: #0d2640; margin-bottom: 3px;">
+                        Data Laporan Hasil Tangkap
+                    </div>
+                    <div style="font-size: 12px; color: #999; margin-top: 2px;">
+                        Total <strong style="color: #0d2640;">{{ $laporans->total() }}</strong> data ditemukan
+                    </div>
+                </div>
 
-                <!-- Tombol Validasi Massal -->
-                @if ($stats['pending'] > 0)
-                    <button type="button" class="btn-filter"
-                        style="background: #28a745; color: white; cursor: pointer; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.3s;"
-                        onmouseover="this.style.background='#218838'" onmouseout="this.style.background='#28a745'"
+                <!-- Tombol Validasi Massal + Link Pilih Semua -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                    <button type="button" id="btnValidasiSemua"
+                        style="background: linear-gradient(135deg, #28a745, #1e7e34); color: white; cursor: pointer; border: none; padding: 11px 22px; border-radius: 8px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 9px; transition: all 0.25s; box-shadow: 0 4px 12px rgba(40,167,69,0.25);"
+                        onmouseover="this.style.boxShadow='0 6px 18px rgba(40,167,69,0.4)'; this.style.transform='translateY(-1px)'"
+                        onmouseout="this.style.boxShadow='0 4px 12px rgba(40,167,69,0.25)'; this.style.transform='translateY(0)'"
                         onclick="confirmBulkValidation()">
-                        <i class="fas fa-check-double"></i> Validasi Semua Terpilih
+                        <i class="fas fa-check-double"></i> Validasi Semua
                     </button>
-                @endif
+                    <a href="#" onclick="pilihSemuaLaporan(); return false;"
+                       style="color: #2563eb; font-weight: 600; text-decoration: none; font-size: 13px; transition: color 0.2s;"
+                       onmouseover="this.style.color='#1a4db8'" onmouseout="this.style.color='#2563eb'">
+                        <i class="fas fa-check-square"></i>
+                        Pilih Semua Laporan untuk Validasi
+                    </a>
+                </div>
             </div>
 
             <table class="reports-table">
                 <thead>
                     <tr>
-                        <!-- Checkbox Header -->
-                        <th style="width: 40px; text-align: center;">
-                            <input type="checkbox" id="checkAll">
-                        </th>
                         <th>Tanggal</th>
                         <th>Asal TPI</th>
-                        <th></th>Nama Pembeli</th>
+                        <th>Nama Pembeli</th>
                         <th>Nama Penjual</th>
                         <th>Jenis Ikan</th>
                         <th>Volume (Kg)</th>
@@ -1096,24 +1206,13 @@
                 <tbody>
                     @forelse($laporans as $laporan)
                         <tr>
-                            <!-- Checkbox per Baris -->
-                            <td style="text-align: center;">
-                                @if (in_array($laporan->status, ['Draft', 'Menunggu Validasi']))
-                                    <input type="checkbox" value="{{ $laporan->id }}" class="check-item">
-                                @endif
-                            </td>
                             <td>
                                 <div class="date-cell">
                                     {{ $laporan->created_at->format('d M Y') }}
                                 </div>
                             </td>
                             <td>
-                                <div style="display: flex; align-items: center; gap: 6px;">
-                                    <span
-                                        style="font-weight: 600; color: #1a4d7d; background: #e8f4f8; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
-                                        {{ $laporan->user->wilayah ?? '-' }}
-                                    </span>
-                                </div>
+                                {{ $laporan->user->wilayah ?? '-' }}
                             </td>
                             <td>
                                 <div class="tpi-name">{{ $laporan->nama_pembeli }}</div>
@@ -1155,7 +1254,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" style="text-align: center; padding: 30px; color: #999;">
+                            <td colspan="8" style="text-align: center; padding: 30px; color: #999;">
                                 <i class="fas fa-inbox"
                                     style="font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
                                 Tidak ada data untuk ditampilkan
@@ -1190,11 +1289,34 @@
             </div>
         </div>
 
-        <!-- HIDDEN FORM UNTUK VALIDASI MASSAL (Agar tidak menabrak form satuan) -->
+        <!-- HIDDEN FORM UNTUK VALIDASI MASSAL -->
         <form id="hiddenBulkForm" action="{{ route('staff.validasi.bulk') }}" method="POST"
             style="display: none;">
             @csrf
+            <input type="hidden" name="validate_all" id="validateAllInput" value="0">
         </form>
+
+        <!-- Modal Konfirmasi Validasi Semua -->
+        <div id="confirmValidasiModal" class="confirm-overlay">
+            <div class="confirm-box">
+                <div class="confirm-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="confirm-title">Konfirmasi Validasi</div>
+                <div class="confirm-desc" id="confirmValidasiDesc">
+                    Apakah Anda yakin ingin memvalidasi semua laporan?<br>
+                    Tindakan ini <strong>tidak dapat dibatalkan</strong>.
+                </div>
+                <div class="confirm-actions">
+                    <button type="button" class="confirm-btn-cancel" onclick="closeConfirmModal()">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                    <button type="button" class="confirm-btn-ok" id="confirmValidasiOkBtn" onclick="submitBulkValidation()">
+                        <i class="fas fa-check-double"></i> Ya, Validasi!
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- Profile Modal -->
         <div id="profileModal" class="profile-modal">
@@ -1310,10 +1432,26 @@
             }
 
             // === LOGIC VALIDASI MASSAL ===
-            document.getElementById('checkAll')?.addEventListener('change', function(e) {
-                const checkboxes = document.querySelectorAll('.check-item');
-                checkboxes.forEach(cb => cb.checked = e.target.checked);
-            });
+            // Fungsi dipanggil saat link "Pilih Semua Laporan untuk Validasi" diklik
+            function pilihSemuaLaporan() {
+                const total = {{ $stats['pending'] }};
+                if (total === 0) {
+                    alert('Tidak ada laporan yang perlu divalidasi saat ini.');
+                    return;
+                }
+                // Set mode validate semua halaman
+                document.getElementById('validateAllInput').value = '1';
+                document.querySelectorAll('#hiddenBulkForm input[name="tangkapan_ids[]"]').forEach(el => el.remove());
+                // Tampilkan modal konfirmasi
+                document.getElementById('confirmValidasiDesc').innerHTML =
+                    'Anda akan memvalidasi <strong>' + total + ' laporan</strong> yang belum divalidasi dari <strong>seluruh halaman</strong>.<br><br>' +
+                    'Tindakan ini <strong>tidak dapat dibatalkan</strong>.';
+                document.getElementById('confirmValidasiModal').classList.add('active');
+            }
+
+            function confirmBulkValidation() {
+                pilihSemuaLaporan();
+            }
 
             function openRejectModal(id, name) {
                 document.getElementById('rejectModal').style.display = 'flex';
@@ -1346,36 +1484,63 @@
             }
 
             function confirmBulkValidation() {
-                const checkedItems = document.querySelectorAll('.check-item:checked');
-                if (checkedItems.length === 0) {
-                    alert('Silakan centang minimal satu data laporan terlebih dahulu!');
+                const allItems = document.querySelectorAll('.check-item');
+                const total = {{ $stats['pending'] }};
+
+                if (selectAllPagesMode) {
+                    if (total === 0) {
+                        alert('Tidak ada laporan yang perlu divalidasi.');
+                        return;
+                    }
+                    // Tampilkan modal kustom (mode semua halaman)
+                    document.getElementById('confirmValidasiDesc').innerHTML =
+                        'Anda akan memvalidasi <strong>' + total + ' laporan</strong> yang belum divalidasi dari <strong>seluruh halaman</strong>.<br><br>' +
+                        'Tindakan ini <strong>tidak dapat dibatalkan</strong>.';
+                    document.getElementById('validateAllInput').value = '1';
+                    document.querySelectorAll('#hiddenBulkForm input[name="tangkapan_ids[]"]').forEach(el => el.remove());
+                    document.getElementById('confirmValidasiModal').classList.add('active');
                     return;
                 }
 
-                if (confirm('Apakah Anda yakin ingin memvalidasi ' + checkedItems.length + ' data sekaligus?')) {
-                    const form = document.getElementById('hiddenBulkForm');
-
-                    // Clear previous inputs except CSRF token
-                    const inputs = form.querySelectorAll('input[type="hidden"]');
-                    inputs.forEach(input => {
-                        if (input.name !== '_token') {
-                            input.remove();
-                        }
-                    });
-
-                    // Add selected IDs to form
-                    checkedItems.forEach(cb => {
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = 'tangkapan_ids[]';
-                        input.value = cb.value;
-                        form.appendChild(input);
-                    });
-
-                    // Submit form
-                    document.getElementById('filterForm').submit();
+                if (allItems.length === 0) {
+                    alert('Tidak ada laporan yang perlu divalidasi saat ini.');
+                    return;
                 }
+
+                allItems.forEach(cb => cb.checked = true);
+                const checkAllEl = document.getElementById('checkAll');
+                if (checkAllEl) checkAllEl.checked = true;
+
+                // Tampilkan modal kustom (mode halaman ini)
+                document.getElementById('confirmValidasiDesc').innerHTML =
+                    'Anda akan memvalidasi <strong>' + allItems.length + ' laporan</strong> di halaman ini.<br><br>' +
+                    'Tindakan ini <strong>tidak dapat dibatalkan</strong>.';
+                document.getElementById('validateAllInput').value = '0';
+                // Siapkan ID ke form
+                document.querySelectorAll('#hiddenBulkForm input[name="tangkapan_ids[]"]').forEach(el => el.remove());
+                allItems.forEach(cb => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'tangkapan_ids[]';
+                    input.value = cb.value;
+                    document.getElementById('hiddenBulkForm').appendChild(input);
+                });
+                document.getElementById('confirmValidasiModal').classList.add('active');
             }
+
+            function submitBulkValidation() {
+                closeConfirmModal();
+                document.getElementById('hiddenBulkForm').submit();
+            }
+
+            function closeConfirmModal() {
+                document.getElementById('confirmValidasiModal').classList.remove('active');
+            }
+
+            // Tutup modal saat klik luar
+            document.getElementById('confirmValidasiModal')?.addEventListener('click', function(e) {
+                if (e.target === this) closeConfirmModal();
+            });
 
             document.getElementById('rejectModal')?.addEventListener('click', function(e) {
                 if (e.target === this) {

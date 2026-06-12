@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Laporan;
 use App\Models\Tangkapan;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+
 
 class DashboardController extends Controller
 {
@@ -51,27 +51,28 @@ class DashboardController extends Controller
             'anomaliDetected' => $anomaliDetected,
         ];
 
-        // Data Aktivitas Terbaru (5 laporan terakhir dari database)
-        $laporanTerbaru = Laporan::with('user')
-            ->orderBy('tanggalInput', 'desc')
+        // Data Aktivitas Terbaru (5 tangkapan/laporan terakhir dari juru rekap)
+        $tangkapanTerbaru = Tangkapan::with('user')
+            ->whereIn('status', ['Menunggu Validasi', 'Divalidasi', 'Ditolak', 'Draft'])
+            ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
         $aktivitasTerbaru = [];
-        $avatarColors = ['e0f2fe', 'fef3c7', 'f0fdf4'];
+        $avatarColors = ['#dbeafe', '#fef3c7', '#dcfce7', '#fee2e2', '#f3e8ff'];
         $counter = 0;
 
-        foreach ($laporanTerbaru as $laporan) {
+        foreach ($tangkapanTerbaru as $tangkapan) {
             $aktivitasTerbaru[] = [
-                'id' => $laporan->idLaporan,
-                'nama' => $laporan->user->username ?? 'Staff',
-                'lokasi' => $laporan->namaTPI,
-                'status' => $laporan->status,
-                'waktu' => $laporan->tanggalInput,
-                'jenis' => $laporan->jenisIkan,
-                'berat' => $laporan->beratTotal,
-                'avatar' => $this->getInitials($laporan->user->username ?? 'XX'),
-                'avatarBg' => $avatarColors[$counter % 3]
+                'id'       => $tangkapan->id,
+                'nama'     => $tangkapan->user->nama ?? $tangkapan->user->username ?? 'Juru Rekap',
+                'lokasi'   => optional($tangkapan->user)->wilayah ?? '-',
+                'status'   => $tangkapan->status,
+                'waktu'    => $tangkapan->created_at,
+                'jenis'    => $tangkapan->jenis_ikan,
+                'berat'    => $tangkapan->berat,
+                'avatar'   => $this->getInitials($tangkapan->user->nama ?? $tangkapan->user->username ?? 'JR'),
+                'avatarBg' => $avatarColors[$counter % 5],
             ];
             $counter++;
         }
@@ -79,7 +80,7 @@ class DashboardController extends Controller
         return view('Staff.dashboard', [
             'statistik' => $statistik,
             'aktivitas' => collect($aktivitasTerbaru),
-            'user' => auth()->user(),
+            'user'      => auth()->user(),
         ]);
     }
 

@@ -488,6 +488,11 @@
             color: #856404;
         }
 
+        .activity-status.rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
         .activity-time {
             color: #888;
             font-size: 11px;
@@ -879,6 +884,46 @@
                     <h3>Aktivitas Terbaru</h3>
                     <a href="{{ route('staff.validasi') }}">Lihat Semua</a>
                 </div>
+
+                @forelse ($aktivitas as $item)
+                    <div class="activity-item">
+                        <div class="activity-avatar"
+                            style="background-color: {{ $item['avatarBg'] }}; color: #0d2640;">
+                            {{ $item['avatar'] }}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-name">{{ $item['nama'] }}</div>
+                            <div class="activity-location">
+                                <i class="fas fa-map-marker-alt" style="font-size:10px;"></i>
+                                {{ $item['lokasi'] }}
+                            </div>
+                            <div style="font-size:11px; color:#555; margin-top:3px;">
+                                {{ $item['jenis'] }} &bull; {{ number_format($item['berat'], 1) }} kg
+                            </div>
+                            @php
+                                $statusMap = [
+                                    'Menunggu Validasi' => ['class' => 'pending',  'label' => 'Menunggu'],
+                                    'Draft'             => ['class' => 'pending',  'label' => 'Draft'],
+                                    'Divalidasi'        => ['class' => 'verified', 'label' => 'Divalidasi'],
+                                    'Ditolak'           => ['class' => 'rejected', 'label' => 'Ditolak'],
+                                ];
+                                $statusInfo = $statusMap[$item['status']] ?? ['class' => 'pending', 'label' => $item['status']];
+                            @endphp
+                            <span class="activity-status {{ $statusInfo['class'] }}">
+                                {{ $statusInfo['label'] }}
+                            </span>
+                            <div class="activity-time">
+                                <i class="fas fa-clock" style="font-size:9px;"></i>
+                                {{ \Carbon\Carbon::parse($item['waktu'])->diffForHumans() }}
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div style="text-align:center; padding: 30px 0; color: #aaa;">
+                        <i class="fas fa-inbox" style="font-size:28px; margin-bottom:8px; display:block;"></i>
+                        <span style="font-size:13px;">Belum ada laporan masuk</span>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>

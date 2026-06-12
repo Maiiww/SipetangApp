@@ -195,8 +195,50 @@ class ValidasiController extends Controller
 
     public function bulkValidate(Request $request)
     {
+        // === Mode Validasi Semua Halaman ===
+        if ($request->input('validate_all') == '1') {
+            $currentUser = Auth::user();
+
+            $query = Tangkapan::whereIn('status', ['Draft', 'Menunggu Validasi']);
+
+            // Terapkan filter wilayah sesuai role staff
+            if ($currentUser->role === 'staff') {
+                if (strpos($currentUser->wilayah, 'Pusat') === false && strpos($currentUser->wilayah, 'pusat') === false) {
+                    if (!empty($currentUser->wilayah)) {
+                        $query->whereHas('user', function ($q) use ($currentUser) {
+                            $q->where('wilayah', 'LIKE', '%' . $currentUser->wilayah . '%');
+                        });
+                    }
+                }
+            }
+
+            $tangkapans = $query->get();
+
+            if ($tangkapans->isEmpty()) {
+                return redirect()->route('staff.validasi')->with('error', 'Tidak ada laporan yang perlu divalidasi.');
+            }
+
+            // Update semua ke Divalidasi
+            $ids = $tangkapans->pluck('id')->toArray();
+            Tangkapan::whereIn('id', $ids)->update(['status' => 'Divalidasi']);
+
+            // Kirim notifikasi ke setiap juru rekap
+            foreach ($tangkapans as $tangkapan) {
+                Notification::create([
+                    'user_id'      => $tangkapan->user_id,
+                    'tangkapan_id' => $tangkapan->id,
+                    'type'         => 'validation_approved',
+                    'message'      => 'Data hasil tangkap Anda untuk ' . $tangkapan->jenis_ikan . ' (' . $tangkapan->berat . ' kg) telah berhasil divalidasi oleh staff validasi.',
+                    'read'         => false,
+                ]);
+            }
+
+            return redirect()->route('staff.validasi')->with('success', count($ids) . ' laporan dari semua halaman berhasil divalidasi.');
+        }
+
+        // === Mode Validasi Per ID (halaman saat ini) ===
         $request->validate([
-            'tangkapan_ids' => 'required|array',
+            'tangkapan_ids'   => 'required|array',
             'tangkapan_ids.*' => 'exists:hasil_tangkap,id'
         ]);
 

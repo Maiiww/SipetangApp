@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -7,6 +7,8 @@
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>Cetak Laporan - SIPETANG</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -1167,6 +1169,20 @@
                         </div>
                     </div>
 
+                    <!-- Laporan Harian Detail (hanya untuk Laporan Harian) -->
+                    <div id="harian-section" style="margin-bottom: 22px; display: none;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                            <div>
+                                <button type="button" onclick="triggerPaperPreview('harian')"
+                                    style="width: 100%; padding: 12px; background: white; color: #102a43; border: 1px solid #dce1e9; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#102a43';"
+                                    onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
+                                    <i class="fas fa-file-alt"></i> Lihat Detail Laporan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Pilih Bulan (hanya untuk Laporan Bulanan) -->
                     <div id="bulanan-section" style="margin-bottom: 22px; display: none;">
                         <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
@@ -1190,6 +1206,12 @@
                                     <option value="11">November</option>
                                     <option value="12">Desember</option>
                                 </select>
+                                <button type="button" onclick="triggerPaperPreview('bulanan')"
+                                    style="margin-top: 10px; width: 100%; padding: 12px; background: white; color: #102a43; border: 1px solid #dce1e9; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#102a43';"
+                                    onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
+                                    <i class="fas fa-file-alt"></i> Lihat Detail Laporan
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1211,6 +1233,12 @@
                                         }
                                     ?>
                                 </select>
+                                <button type="button" onclick="triggerPaperPreview('tahunan')"
+                                    style="margin-top: 10px; width: 100%; padding: 12px; background: white; color: #102a43; border: 1px solid #dce1e9; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#102a43';"
+                                    onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
+                                    <i class="fas fa-file-alt"></i> Lihat Detail Laporan
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1222,15 +1250,13 @@
                             Output</label>
                         <div style="display: flex; gap: 10px;">
                             <button type="button" id="btnFormatPdf" onclick="selectFormat('pdf')"
-                                ondblclick="toggleFormatSelection('pdf')"
-                                style="flex: 1; padding: 10px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s;"
+                                style="flex: 1; padding: 12px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
                                 onmouseover="this.style.background='#fef2f2'; this.style.borderColor='#dc2626';"
                                 onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
                                 <i class="fas fa-file-pdf"></i> PDF
                             </button>
                             <button type="button" id="btnFormatExcel" onclick="selectFormat('excel')"
-                                ondblclick="toggleFormatSelection('excel')"
-                                style="flex: 1; padding: 10px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s;"
+                                style="flex: 1; padding: 12px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
                                 onmouseover="this.style.background='#f0fdf4'; this.style.borderColor='#16a34a';"
                                 onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
                                 <i class="fas fa-file-excel"></i> EXCEL
@@ -1308,7 +1334,14 @@
                                         </span>
                                     </td>
                                     <td><?php echo e($laporan->user ? $laporan->user->nama : 'N/A'); ?></td>
-                                    <td>
+                                    <td style="display: flex; gap: 8px; align-items: center;">
+                                        <button type="button" class="action-btn btn-detail"
+                                            data-id="<?php echo e($laporan->id); ?>"
+                                            style="background: #f0f4f8; color: #1a4d7d; padding: 6px 12px; border: 1px solid #dce1e9; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
+                                            onmouseover="this.style.background='#1a4d7d'; this.style.color='white'; this.style.borderColor='#1a4d7d';"
+                                            onmouseout="this.style.background='#f0f4f8'; this.style.color='#1a4d7d'; this.style.borderColor='#dce1e9';">
+                                            <i class="fas fa-eye"></i> Detail
+                                        </button>
                                         <button type="button" class="action-btn btn-download"
                                             data-id="<?php echo e($laporan->id); ?>"
                                             style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
@@ -1379,32 +1412,48 @@
             if (tahun) params.append('tahun', tahun);
             params.append('page', 1);
 
-            // AJAX request
-            fetch(`<?php echo e(route('staff.cetak.filter')); ?>?${params.toString()}`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    loadingIndicator.style.display = 'none';
-                    tableContainer.style.opacity = '1';
-
-                    if (data.success) {
-                        updateTable(data.data, data.pagination);
-                    } else {
-                        showEmptyState(data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    loadingIndicator.style.display = 'none';
-                    tableContainer.style.opacity = '1';
-                    alert('Terjadi kesalahan saat mengambil data');
-                });
-        }
+             // AJAX request
+             fetch(`<?php echo e(route('staff.cetak.filter')); ?>?${params.toString()}`, {
+                     method: 'GET',
+                     headers: {
+                         'Accept': 'application/json',
+                         'X-Requested-With': 'XMLHttpRequest'
+                     }
+                 })
+                 .then(response => {
+                     if (!response.ok) {
+                         if (response.status === 401 || response.status === 419) {
+                             window.location.reload();
+                             return;
+                         }
+                         throw new Error('Network response was not ok');
+                     }
+                     return response.json();
+                 })
+                 .then(data => {
+                     if (!data) return;
+                     loadingIndicator.style.display = 'none';
+                     tableContainer.style.opacity = '1';
+ 
+                     if (data.success) {
+                         updateTable(data.data, data.pagination);
+                     } else {
+                         showEmptyState(data.message);
+                     }
+                 })
+                 .catch(error => {
+                     console.error('Error:', error);
+                     loadingIndicator.style.display = 'none';
+                     tableContainer.style.opacity = '1';
+                     Swal.fire({
+                         icon: 'error',
+                         title: 'Terjadi Kesalahan',
+                         text: 'Terjadi kesalahan saat mengambil data laporan. Silakan muat ulang halaman.',
+                         confirmButtonColor: '#dc3545',
+                         confirmButtonText: 'Tutup'
+                     });
+                 });
+         }
 
         // Update table with filtered data
         function updateTable(data, pagination) {
@@ -1414,7 +1463,7 @@
             const paginationContainer = document.getElementById('paginationContainer');
 
             if (data.length === 0) {
-                showEmptyState('Tidak ada data yang sesuai dengan filter');
+                showEmptyState('Tidak ada data laporan');
                 return;
             }
 
@@ -1431,7 +1480,14 @@
                             </span>
                         </td>
                         <td>${laporan.dibuat_oleh}</td>
-                        <td>
+                        <td style="display: flex; gap: 8px; align-items: center;">
+                            <button type="button" class="action-btn btn-detail"
+                                data-id="${laporan.id}"
+                                style="background: #f0f4f8; color: #1a4d7d; padding: 6px 12px; border: 1px solid #dce1e9; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
+                                onmouseover="this.style.background='#1a4d7d'; this.style.color='white'; this.style.borderColor='#1a4d7d';"
+                                onmouseout="this.style.background='#f0f4f8'; this.style.color='#1a4d7d'; this.style.borderColor='#dce1e9';">
+                                <i class="fas fa-eye"></i> Detail
+                            </button>
                             <button type="button" class="action-btn btn-download"
                                 data-id="${laporan.id}"
                                 style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
@@ -1452,12 +1508,25 @@
 
             // Update pagination
             if (pagination.last_page > 1) {
-                let paginationHtml = '<div style="display: flex; gap: 5px; justify-content: center;">';
+                let paginationHtml = '<div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 20px;">';
 
-                // Previous button
-                if (pagination.current_page > 1) {
-                    paginationHtml +=
-                        `<button onclick="goToPage(${pagination.current_page - 1})" style="padding: 8px 12px; border: 1px solid #dce1e9; background: white; cursor: pointer; border-radius: 4px;">← Prev</button>`;
+                // Previous Page Link
+                if (pagination.current_page === 1) {
+                    paginationHtml += `
+                        <button disabled
+                            style="width: 32px; height: 32px; border: 1px solid #e0e0e0; background: #f5f5f5; border-radius: 4px; cursor: not-allowed; opacity: 0.5; color: #999; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            <i class="fas fa-chevron-left" style="font-size: 12px;"></i>
+                        </button>
+                    `;
+                } else {
+                    paginationHtml += `
+                        <button onclick="goToPage(${pagination.current_page - 1})"
+                            style="width: 32px; height: 32px; border: 1px solid #e0e0e0; background: white; border-radius: 4px; cursor: pointer; color: #1a4d7d; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.3s;"
+                            onmouseover="this.style.borderColor='#1a4d7d'; this.style.background='#f5f5f5';"
+                            onmouseout="this.style.borderColor='#e0e0e0'; this.style.background='white';">
+                            <i class="fas fa-chevron-left" style="font-size: 12px;"></i>
+                        </button>
+                    `;
                 }
 
                 // Page numbers
@@ -1471,19 +1540,49 @@
 
                 for (let i = startPage; i <= endPage; i++) {
                     if (i === pagination.current_page) {
-                        paginationHtml +=
-                            `<button style="padding: 8px 12px; border: 1px solid #0d2640; background: #0d2640; color: white; cursor: pointer; border-radius: 4px;">${i}</button>`;
+                        paginationHtml += `
+                            <button disabled
+                                style="width: 32px; height: 32px; border: 1px solid #0d2640; background: #0d2640; border-radius: 4px; cursor: default; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;">
+                                ${i}
+                            </button>
+                        `;
                     } else {
-                        paginationHtml +=
-                            `<button onclick="goToPage(${i})" style="padding: 8px 12px; border: 1px solid #dce1e9; background: white; cursor: pointer; border-radius: 4px;">${i}</button>`;
+                        paginationHtml += `
+                            <button onclick="goToPage(${i})"
+                                style="width: 32px; height: 32px; border: 1px solid #e0e0e0; background: white; border-radius: 4px; cursor: pointer; color: #1a4d7d; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s; font-weight: 600;"
+                                onmouseover="this.style.background='#f5f5f5'; this.style.borderColor='#1a4d7d';"
+                                onmouseout="this.style.background='white'; this.style.borderColor='#e0e0e0';">
+                                ${i}
+                            </button>
+                        `;
                     }
                 }
 
-                // Next button
+                // Next Page Link
                 if (pagination.current_page < pagination.last_page) {
-                    paginationHtml +=
-                        `<button onclick="goToPage(${pagination.current_page + 1})" style="padding: 8px 12px; border: 1px solid #dce1e9; background: white; cursor: pointer; border-radius: 4px;">Next →</button>`;
+                    paginationHtml += `
+                        <button onclick="goToPage(${pagination.current_page + 1})"
+                            style="width: 32px; height: 32px; border: 1px solid #e0e0e0; background: white; border-radius: 4px; cursor: pointer; color: #1a4d7d; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.3s;"
+                            onmouseover="this.style.borderColor='#1a4d7d'; this.style.background='#f5f5f5';"
+                            onmouseout="this.style.borderColor='#e0e0e0'; this.style.background='white';">
+                            <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
+                        </button>
+                    `;
+                } else {
+                    paginationHtml += `
+                        <button disabled
+                            style="width: 32px; height: 32px; border: 1px solid #e0e0e0; background: #f5f5f5; border-radius: 4px; cursor: not-allowed; opacity: 0.5; color: #999; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
+                        </button>
+                    `;
                 }
+
+                // Page Info
+                paginationHtml += `
+                    <span style="font-size: 12px; color: #999; margin-left: 10px;">
+                        Halaman ${pagination.current_page} dan ${pagination.last_page}
+                    </span>
+                `;
 
                 paginationHtml += '</div>';
                 paginationContainer.innerHTML = paginationHtml;
@@ -1491,30 +1590,29 @@
                 paginationContainer.innerHTML = '';
             }
 
-            // Re-attach download button listeners
-            attachDownloadListeners();
+            // Re-attach action button listeners
+            attachActionListeners();
         }
 
         // Show empty state
         function showEmptyState(message) {
-            const tableContainer = document.getElementById('tableContainer');
             const tbody = document.getElementById('laporanTableBody');
             const filterStatus = document.getElementById('filterStatus');
             const paginationContainer = document.getElementById('paginationContainer');
 
             if (tbody) {
-                tbody.innerHTML = '';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 60px 20px; color: #999;">
+                            <i class="fas fa-inbox" style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
+                            <p style="font-size: 14px;">${message}</p>
+                        </td>
+                    </tr>
+                `;
             }
 
-            filterStatus.style.display = 'none';
-            paginationContainer.innerHTML = '';
-
-            tableContainer.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px; color: #999;">
-                    <i class="fas fa-inbox" style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
-                    <p style="font-size: 14px;">${message}</p>
-                </div>
-            `;
+            if (filterStatus) filterStatus.style.display = 'none';
+            if (paginationContainer) paginationContainer.innerHTML = '';
         }
 
         // Go to specific page
@@ -1553,6 +1651,7 @@
         // Reset filters
         function resetFilters() {
             document.getElementById('filterForm').reset();
+            document.getElementById('harian-section').style.display = 'none';
             document.getElementById('bulanan-section').style.display = 'none';
             document.getElementById('tahunan-section').style.display = 'none';
             document.getElementById('filterStatus').style.display = 'none';
@@ -1561,10 +1660,313 @@
             location.reload();
         }
 
+        // Preview collective report HTML (printable paper format)
+        function triggerPaperPreview(jenisLaporan) {
+            const tpi = document.getElementById('filterTpi').value;
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const bulan = document.getElementById('filterBulan').value;
+            const tahun = document.getElementById('filterTahun').value;
+
+            // Validate
+            if (jenisLaporan === 'bulanan' && !bulan) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Bulan Belum Dipilih',
+                    text: 'Silakan pilih bulan terlebih dahulu!',
+                    confirmButtonColor: '#0a3b99',
+                    confirmButtonText: 'Mengerti'
+                });
+                return;
+            }
+            if (jenisLaporan === 'tahunan' && !tahun) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tahun Belum Dipilih',
+                    text: 'Silakan pilih tahun terlebih dahulu!',
+                    confirmButtonColor: '#0a3b99',
+                    confirmButtonText: 'Mengerti'
+                });
+                return;
+            }
+
+            let tahunVal = tahun;
+            if (jenisLaporan === 'bulanan' && !tahunVal) {
+                tahunVal = new Date().getFullYear();
+            }
+
+            // Show loading
+            Swal.fire({
+                title: 'Menyiapkan Pratinjau Kertas...',
+                text: 'Mohon tunggu sebentar.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Fetch HTML preview
+            fetch('<?php echo e(route('staff.cetak.preview_html')); ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '<?php echo e(csrf_token()); ?>',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    jenis_laporan: jenisLaporan,
+                    tpi: tpi,
+                    start_date: startDate,
+                    end_date: endDate,
+                    bulan: bulan,
+                    tahun: tahunVal
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show in SweetAlert2 as iframe
+                    Swal.fire({
+                        title: `<span style="font-size: 20px; font-weight: 700; color: #102a43;">Pratinjau Cetak Laporan</span>`,
+                        html: `
+                            <div style="margin-top: 15px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #f8fafc; padding: 10px;">
+                                <iframe id="previewIframe" style="width: 100%; height: 500px; border: none; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-radius: 4px;"></iframe>
+                            </div>
+                        `,
+                        width: '80%',
+                        showCancelButton: true,
+                        showDenyButton: true,
+                        confirmButtonText: '<i class="fas fa-file-pdf"></i> Download PDF',
+                        denyButtonText: '<i class="fas fa-file-excel"></i> Download Excel',
+                        cancelButtonText: 'Tutup',
+                        confirmButtonColor: '#dc2626', // Red for PDF
+                        denyButtonColor: '#16a34a', // Green for Excel
+                        cancelButtonColor: '#6e7881',
+                        didOpen: () => {
+                            const iframe = document.getElementById('previewIframe');
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            iframeDoc.open();
+                            iframeDoc.write(data.html);
+                            iframeDoc.close();
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            selectFormat('pdf');
+                            downloadLaporan('pdf');
+                        } else if (result.isDenied) {
+                            selectFormat('excel');
+                            downloadLaporan('excel');
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Tidak Ada Data',
+                        text: data.message || 'Gagal memuat pratinjau laporan.',
+                        confirmButtonColor: '#0a3b99'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan Sistem',
+                    text: 'Terjadi kesalahan saat memproses pratinjau.',
+                    confirmButtonColor: '#dc3545'
+                });
+            });
+        }
+
+        // Preview collective report details before download
+        function previewCollectiveReport(jenisLaporan, tpi, startDate, endDate, bulan, tahun) {
+            // Validate first
+            if (jenisLaporan === 'bulanan' && !bulan) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Bulan Belum Dipilih',
+                    text: 'Silakan pilih bulan untuk laporan bulanan!',
+                    confirmButtonColor: '#0a3b99',
+                    confirmButtonText: 'Mengerti'
+                });
+                return;
+            }
+            if (jenisLaporan === 'tahunan' && !tahun) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tahun Belum Dipilih',
+                    text: 'Silakan pilih tahun untuk laporan tahunan!',
+                    confirmButtonColor: '#0a3b99',
+                    confirmButtonText: 'Mengerti'
+                });
+                return;
+            }
+
+            // Show loading
+            Swal.fire({
+                title: 'Menghitung Ringkasan Laporan...',
+                text: 'Silakan tunggu sebentar.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Build query params
+            const params = new URLSearchParams();
+            if (tpi) params.append('tpi', tpi);
+            if (startDate) params.append('start_date', startDate);
+            if (endDate) params.append('end_date', endDate);
+            if (jenisLaporan) params.append('jenis_laporan', jenisLaporan);
+            if (bulan) params.append('bulan', bulan);
+            if (tahun) params.append('tahun', tahun);
+
+            fetch(`<?php echo e(route('staff.cetak.filter')); ?>?${params.toString()}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const totalData = data.pagination.total;
+                    const totalBerat = data.total_berat || 0;
+                    const totalNilai = data.total_nilai || 0;
+
+                    if (totalData === 0) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Tidak Ada Data',
+                            text: 'Tidak ada data laporan yang sesuai dengan filter yang dipilih.',
+                            confirmButtonColor: '#0a3b99',
+                            confirmButtonText: 'Tutup'
+                        });
+                        return;
+                    }
+
+                    // Format values
+                    const formatBerat = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(totalBerat);
+                    const formatNilai = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNilai);
+                    
+                    let periodText = '';
+                    if (jenisLaporan === 'bulanan') {
+                        const bulanNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                        periodText = `${bulanNames[parseInt(bulan) - 1]} ${tahun}`;
+                    } else if (jenisLaporan === 'tahunan') {
+                        periodText = `Tahun ${tahun}`;
+                    } else {
+                        periodText = 'Kustom';
+                    }
+
+                    const tpiSelect = document.getElementById('filterTpi');
+                    const tpiText = tpi ? tpiSelect.options[tpiSelect.selectedIndex].text : 'Semua TPI';
+
+                    Swal.fire({
+                        title: `<span style="font-size: 20px; font-weight: 700; color: #102a43;">Ringkasan Laporan Berkala</span>`,
+                        html: `
+                            <div style="text-align: left; margin-top: 15px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 14px;">
+                                <div style="background: #f7fafc; border-radius: 8px; padding: 12px; margin-bottom: 15px; border: 1px solid #edf2f7;">
+                                    <div style="margin-bottom: 6px;"><strong style="color: #7a869a;">Jenis Laporan:</strong> <span style="color: #102a43; font-weight: 600;">Laporan ${jenisLaporan.charAt(0).toUpperCase() + jenisLaporan.slice(1)}</span></div>
+                                    <div style="margin-bottom: 6px;"><strong style="color: #7a869a;">Periode:</strong> <span style="color: #102a43; font-weight: 600;">${periodText}</span></div>
+                                    <div><strong style="color: #7a869a;">Asal TPI:</strong> <span style="color: #102a43; font-weight: 600;">${tpiText}</span></div>
+                                </div>
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tr style="border-bottom: 1px solid #edf2f7;">
+                                        <td style="padding: 10px 0; font-weight: 600; color: #7a869a;">Total Jumlah Data</td>
+                                        <td style="padding: 10px 0; color: #102a43; font-weight: bold; text-align: right;">${totalData} Laporan</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #edf2f7;">
+                                        <td style="padding: 10px 0; font-weight: 600; color: #7a869a;">Total Volume Ikan</td>
+                                        <td style="padding: 10px 0; color: #102a43; font-weight: bold; text-align: right;">${formatBerat} kg</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #edf2f7;">
+                                        <td style="padding: 10px 0; font-weight: 600; color: #7a869a;">Total Nilai Hasil Tangkap</td>
+                                        <td style="padding: 10px 0; color: #16a34a; font-weight: bold; text-align: right;">${formatNilai}</td>
+                                    </tr>
+                                </table>
+                                <p style="font-size: 12px; color: #7a869a; margin-top: 15px; line-height: 1.4;">
+                                    *Silakan periksa kembali ringkasan di atas sebelum mengunduh berkas laporan Anda.
+                                </p>
+                            </div>
+                        `,
+                        icon: 'info',
+                        showCancelButton: true,
+                        showDenyButton: true,
+                        confirmButtonText: '<i class="fas fa-file-pdf"></i> Download PDF',
+                        denyButtonText: '<i class="fas fa-file-excel"></i> Download Excel',
+                        cancelButtonText: 'Batal',
+                        confirmButtonColor: '#dc2626', // Red for PDF
+                        denyButtonColor: '#16a34a', // Green for Excel
+                        cancelButtonColor: '#6e7881'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            selectFormat('pdf');
+                            downloadLaporan('pdf');
+                        } else if (result.isDenied) {
+                            selectFormat('excel');
+                            downloadLaporan('excel');
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan',
+                        text: data.message || 'Gagal mengambil ringkasan laporan.',
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan Koneksi',
+                    text: 'Terjadi kesalahan saat menghubungi server.',
+                    confirmButtonColor: '#dc3545'
+                });
+            });
+        }
+
         // Download laporan function
         function triggerDownload() {
+            const tpi = document.getElementById('filterTpi').value;
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const jenisLaporan = document.querySelector('input[name="jenis_laporan"]:checked')?.value || '';
+            const bulan = document.getElementById('filterBulan').value;
+            const tahun = document.getElementById('filterTahun').value;
+
+            // Jika laporan bulanan atau tahunan, tunjukkan ringkasan terlebih dahulu
+            if (jenisLaporan === 'bulanan' || jenisLaporan === 'tahunan') {
+                previewCollectiveReport(jenisLaporan, tpi, startDate, endDate, bulan, tahun);
+                return;
+            }
+
             if (!selectedFormat) {
-                alert('Pilih format (PDF atau EXCEL) terlebih dahulu!');
+                Swal.fire({
+                    title: 'Pilih Format Output',
+                    text: 'Silakan pilih format laporan yang ingin diunduh:',
+                    icon: 'question',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-file-pdf"></i> PDF',
+                    denyButtonText: '<i class="fas fa-file-excel"></i> EXCEL',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#dc2626', // Red for PDF
+                    denyButtonColor: '#16a34a', // Green for Excel
+                    cancelButtonColor: '#6e7881'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        selectFormat('pdf');
+                        downloadLaporan('pdf');
+                    } else if (result.isDenied) {
+                        selectFormat('excel');
+                        downloadLaporan('excel');
+                    }
+                });
                 return;
             }
             downloadLaporan(selectedFormat);
@@ -1587,7 +1989,13 @@
             // Validasi untuk laporan bulanan
             if (jenisLaporan === 'bulanan' && !laporanId) {
                 if (!bulan) {
-                    alert('Silakan pilih bulan untuk laporan bulanan!');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Bulan Belum Dipilih',
+                        text: 'Silakan pilih bulan untuk laporan bulanan!',
+                        confirmButtonColor: '#0a3b99',
+                        confirmButtonText: 'Mengerti'
+                    });
                     return;
                 }
             }
@@ -1595,7 +2003,13 @@
             // Validasi untuk laporan tahunan
             if (jenisLaporan === 'tahunan' && !laporanId) {
                 if (!tahun) {
-                    alert('Silakan pilih tahun untuk laporan tahunan!');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tahun Belum Dipilih',
+                        text: 'Silakan pilih tahun untuk laporan tahunan!',
+                        confirmButtonColor: '#0a3b99',
+                        confirmButtonText: 'Mengerti'
+                    });
                     return;
                 }
             }
@@ -1622,6 +2036,19 @@
             if (!laporanId) {
                 requestData.jenis_laporan = jenisLaporan;
             }
+
+            // Tampilkan popup sukses mengunduh
+            Swal.fire({
+                title: 'Memulai Unduhan',
+                html: `Menyiapkan berkas <strong>${format.toUpperCase()}</strong> Anda.<br>Mohon tunggu sebentar...`,
+                icon: 'success',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             // Create form untuk download
             const form = document.createElement('form');
@@ -1651,30 +2078,163 @@
             document.body.removeChild(form);
         }
 
-        // Attach download button listeners
-        function attachDownloadListeners() {
+        // Attach action button listeners
+        function attachActionListeners() {
             document.querySelectorAll('.btn-download').forEach(btn => {
                 btn.removeEventListener('click', handleDownloadClick);
                 btn.addEventListener('click', handleDownloadClick);
+            });
+            document.querySelectorAll('.btn-detail').forEach(btn => {
+                btn.removeEventListener('click', handleDetailClick);
+                btn.addEventListener('click', handleDetailClick);
             });
         }
 
         function handleDownloadClick(e) {
             const laporanId = e.currentTarget.dataset.id;
             if (!selectedFormat) {
-                alert('Pilih format (PDF atau EXCEL) terlebih dahulu!');
+                Swal.fire({
+                    title: 'Pilih Format Output',
+                    text: 'Silakan pilih format laporan yang ingin diunduh:',
+                    icon: 'question',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-file-pdf"></i> PDF',
+                    denyButtonText: '<i class="fas fa-file-excel"></i> EXCEL',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#dc2626', // Red for PDF
+                    denyButtonColor: '#16a34a', // Green for Excel
+                    cancelButtonColor: '#6e7881'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        selectFormat('pdf');
+                        downloadLaporan('pdf', laporanId);
+                    } else if (result.isDenied) {
+                        selectFormat('excel');
+                        downloadLaporan('excel', laporanId);
+                    }
+                });
                 return;
             }
             downloadLaporan(selectedFormat, laporanId);
         }
 
+        function handleDetailClick(e) {
+            const laporanId = e.currentTarget.dataset.id;
+            
+            // Show loading popup
+            Swal.fire({
+                title: 'Menyiapkan Pratinjau Kertas...',
+                text: 'Mohon tunggu sebentar.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // AJAX request to preview HTML
+            fetch('<?php echo e(route('staff.cetak.preview_html')); ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '<?php echo e(csrf_token()); ?>',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ laporan_id: laporanId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Show in SweetAlert2 as iframe
+                    Swal.fire({
+                        title: `<span style="font-size: 20px; font-weight: 700; color: #102a43;">Pratinjau Cetak Laporan</span>`,
+                        html: `
+                            <div style="margin-top: 15px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #f8fafc; padding: 10px;">
+                                <iframe id="previewIframe" style="width: 100%; height: 500px; border: none; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-radius: 4px;"></iframe>
+                            </div>
+                        `,
+                        width: '80%',
+                        showCancelButton: true,
+                        showDenyButton: true,
+                        confirmButtonText: '<i class="fas fa-file-pdf"></i> Download PDF',
+                        denyButtonText: '<i class="fas fa-file-excel"></i> Download Excel',
+                        cancelButtonText: 'Tutup',
+                        confirmButtonColor: '#dc2626', // Red for PDF
+                        denyButtonColor: '#16a34a', // Green for Excel
+                        cancelButtonColor: '#6e7881',
+                        didOpen: () => {
+                            const iframe = document.getElementById('previewIframe');
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            iframeDoc.open();
+                            iframeDoc.write(data.html);
+                            iframeDoc.close();
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            selectFormat('pdf');
+                            downloadLaporan('pdf', laporanId);
+                        } else if (result.isDenied) {
+                            selectFormat('excel');
+                            downloadLaporan('excel', laporanId);
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Tidak Ada Data',
+                        text: data.message || 'Gagal memuat pratinjau laporan.',
+                        confirmButtonColor: '#0a3b99'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan Sistem',
+                    text: 'Terjadi kesalahan saat memproses pratinjau.',
+                    confirmButtonColor: '#dc3545'
+                });
+            });
+        }
+
         // Select format function
         function selectFormat(format) {
-            selectedFormat = format;
-
-            // Update button styles
             const btnPdf = document.getElementById('btnFormatPdf');
             const btnExcel = document.getElementById('btnFormatExcel');
+
+            // Toggle selection if clicked again
+            if (selectedFormat === format) {
+                selectedFormat = null;
+
+                btnPdf.style.background = 'white';
+                btnPdf.style.border = '1px solid #dce1e9';
+                btnPdf.style.color = '#102a43';
+                btnPdf.dataset.selected = 'false';
+
+                btnExcel.style.background = 'white';
+                btnExcel.style.border = '1px solid #dce1e9';
+                btnExcel.style.color = '#102a43';
+                btnExcel.dataset.selected = 'false';
+
+                btnPdf.onmouseout = function() {
+                    this.style.background = 'white';
+                    this.style.borderColor = '#dce1e9';
+                };
+                btnExcel.onmouseout = function() {
+                    this.style.background = 'white';
+                    this.style.borderColor = '#dce1e9';
+                };
+                return;
+            }
+
+            selectedFormat = format;
 
             if (format === 'pdf') {
                 btnPdf.style.background = '#fee';
@@ -1733,43 +2293,10 @@
             }
         }
 
-        // Toggle format selection on double click
-        function toggleFormatSelection(format) {
-            if (selectedFormat === format) {
-                // Deselect - remove all colors
-                const btnPdf = document.getElementById('btnFormatPdf');
-                const btnExcel = document.getElementById('btnFormatExcel');
-
-                selectedFormat = null;
-
-                btnPdf.style.background = 'white';
-                btnPdf.style.border = '1px solid #dce1e9';
-                btnPdf.style.color = '#102a43';
-                btnPdf.dataset.selected = 'false';
-
-                btnExcel.style.background = 'white';
-                btnExcel.style.border = '1px solid #dce1e9';
-                btnExcel.style.color = '#102a43';
-                btnExcel.dataset.selected = 'false';
-
-                // Reset mouseout handlers - plain reset without checking selectedFormat
-                btnPdf.onmouseout = function() {
-                    this.style.background = 'white';
-                    this.style.borderColor = '#dce1e9';
-                };
-                btnExcel.onmouseout = function() {
-                    this.style.background = 'white';
-                    this.style.borderColor = '#dce1e9';
-                };
-            } else {
-                // Select normally
-                selectFormat(format);
-            }
-        }
-
         // Handle jenis laporan radio button styling dan tampilkan/sembunyikan field
         document.addEventListener('DOMContentLoaded', function() {
             const radioButtons = document.querySelectorAll('input[name="jenis_laporan"]');
+            const harianSection = document.getElementById('harian-section');
             const bulananSection = document.getElementById('bulanan-section');
             const tahunanSection = document.getElementById('tahunan-section');
             let lastSelected = null;
@@ -1792,15 +2319,28 @@
                         lastSelected = this.value;
 
                         // Tampilkan/sembunyikan section berdasarkan jenis laporan
-                        if (this.value === 'bulanan') {
+                        if (this.value === 'harian') {
+                            harianSection.style.display = 'block';
+                            bulananSection.style.display = 'none';
+                            tahunanSection.style.display = 'none';
+                            document.getElementById('filterBulan').value = '';
+                            document.getElementById('filterTahun').value = '';
+                        } else if (this.value === 'bulanan') {
+                            harianSection.style.display = 'none';
                             bulananSection.style.display = 'block';
                             tahunanSection.style.display = 'none';
+                            document.getElementById('filterTahun').value = '';
                         } else if (this.value === 'tahunan') {
+                            harianSection.style.display = 'none';
                             bulananSection.style.display = 'none';
                             tahunanSection.style.display = 'block';
+                            document.getElementById('filterBulan').value = '';
                         } else {
+                            harianSection.style.display = 'none';
                             bulananSection.style.display = 'none';
                             tahunanSection.style.display = 'none';
+                            document.getElementById('filterBulan').value = '';
+                            document.getElementById('filterTahun').value = '';
                         }
                     }
                 });
@@ -1813,14 +2353,18 @@
                         label.style.background = '#f8fafc';
                         label.style.border = '1px solid #dce1e9';
                         lastSelected = null;
+                        harianSection.style.display = 'none';
                         bulananSection.style.display = 'none';
                         tahunanSection.style.display = 'none';
+                        document.getElementById('filterBulan').value = '';
+                        document.getElementById('filterTahun').value = '';
+                        triggerFilter();
                     }
                 });
             });
 
-            // Attach initial download button listeners
-            attachDownloadListeners();
+            // Attach initial action button listeners
+            attachActionListeners();
         });
 
         // === PROFILE MODAL ===

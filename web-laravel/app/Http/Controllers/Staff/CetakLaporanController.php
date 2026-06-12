@@ -45,10 +45,10 @@ class CetakLaporanController extends Controller
         }
 
         // Apply date range filter atau filter bulan/tahun
-        if (!empty($bulan) && !empty($tahun)) {
-            // Filter berdasarkan bulan dan tahun
+        if (!empty($bulan)) {
+            $tahunVal = !empty($tahun) ? $tahun : date('Y');
             $query->whereMonth('created_at', $bulan)
-                ->whereYear('created_at', $tahun);
+                ->whereYear('created_at', $tahunVal);
         } else {
             // Filter berdasarkan date range
             if (!empty($startDate) && !empty($endDate)) {
@@ -105,6 +105,87 @@ class CetakLaporanController extends Controller
     }
 
     /**
+     * Get HTML preview of the report (paper layout)
+     */
+    public function previewHTML(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'laporan_id' => 'nullable|integer',
+                'start_date' => 'nullable|date',
+                'end_date' => 'nullable|date',
+                'tpi' => 'nullable|integer',
+                'jenis_laporan' => 'nullable|in:harian,bulanan,tahunan',
+                'bulan' => 'nullable|integer|between:1,12',
+                'tahun' => 'nullable|integer',
+            ]);
+
+            if (!empty($validated['laporan_id'])) {
+                $query = Tangkapan::where('id', $validated['laporan_id'])
+                    ->where('status', 'Divalidasi');
+            } else {
+                $query = Tangkapan::where('status', 'Divalidasi');
+
+                // Apply TPI filter
+                if (!empty($validated['tpi'])) {
+                    $query->whereHas('user', function ($q) use ($validated) {
+                        $q->where('id', $validated['tpi']);
+                    });
+                }
+
+                // Apply date filters based on jenis_laporan
+                if (!empty($validated['jenis_laporan'])) {
+                    $jenisLaporan = $validated['jenis_laporan'];
+
+                    if ($jenisLaporan === 'harian') {
+                        if (!empty($validated['start_date']) && !empty($validated['end_date'])) {
+                            $query->whereBetween('created_at', [
+                                $validated['start_date'] . ' 00:00:00',
+                                $validated['end_date'] . ' 23:59:59'
+                            ]);
+                        } elseif (!empty($validated['start_date'])) {
+                            $query->whereDate('created_at', '>=', $validated['start_date']);
+                        } elseif (!empty($validated['end_date'])) {
+                            $query->whereDate('created_at', '<=', $validated['end_date']);
+                        }
+                    } elseif ($jenisLaporan === 'bulanan') {
+                        if (!empty($validated['bulan'])) {
+                            $tahunVal = !empty($validated['tahun']) ? $validated['tahun'] : date('Y');
+                            $query->whereMonth('created_at', $validated['bulan'])
+                                  ->whereYear('created_at', $tahunVal);
+                        }
+                    } elseif ($jenisLaporan === 'tahunan') {
+                        if (!empty($validated['tahun'])) {
+                            $query->whereYear('created_at', $validated['tahun']);
+                        }
+                    }
+                }
+            }
+
+            $laporan = $query->orderBy('created_at', 'desc')->get();
+
+            if ($laporan->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada data laporan'
+                ], 200);
+            }
+
+            $html = $this->generateHTML($laporan);
+
+            return response()->json([
+                'success' => true,
+                'html' => $html
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Download laporan dalam format PDF atau Excel
      */
     public function download(Request $request)
@@ -155,10 +236,11 @@ class CetakLaporanController extends Controller
                             $query->whereDate('created_at', '<=', $validated['end_date']);
                         }
                     } elseif ($jenisLaporan === 'bulanan') {
-                        // Untuk laporan bulanan, gunakan bulan dan tahun
-                        if (!empty($validated['bulan']) && !empty($validated['tahun'])) {
+                        // Untuk laporan bulanan, gunakan bulan dan tahun (default ke tahun sekarang jika tidak dipilih)
+                        if (!empty($validated['bulan'])) {
+                            $tahunVal = !empty($validated['tahun']) ? $validated['tahun'] : date('Y');
                             $query->whereMonth('created_at', $validated['bulan'])
-                                ->whereYear('created_at', $validated['tahun']);
+                                ->whereYear('created_at', $tahunVal);
                         }
                     } elseif ($jenisLaporan === 'tahunan') {
                         // Untuk laporan tahunan, gunakan tahun saja
@@ -181,8 +263,8 @@ class CetakLaporanController extends Controller
                 if ($laporan->isEmpty()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Tidak ada data laporan yang sesuai dengan filter'
-                    ], 404);
+                        'message' => 'Tidak ada data laporan'
+                    ], 200);
                 }
             }
 
@@ -220,9 +302,6 @@ class CetakLaporanController extends Controller
         return $pdf->download($fileName);
     }
 
-    /**
-     * Generate Excel
-     */
     private function generateExcel($laporan)
     {
         $fileName = 'Laporan_' . now()->format('YmdHis') . '.xlsx';
@@ -233,14 +312,14 @@ class CetakLaporanController extends Controller
 
         // Header
         $sheet->setCellValue('A1', 'LAPORAN HASIL TANGKAP - SIPETANG');
-        $sheet->mergeCells('A1:H1');
+        $sheet->mergeCells('A1:C1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
         $sheet->setCellValue('A2', 'Tanggal Cetak: ' . now()->format('d/m/Y H:i'));
-        $sheet->mergeCells('A2:H2');
+        $sheet->mergeCells('A2:C2');
 
         // Column headers
-        $headers = ['ID', 'Nama Nelayan', 'Nama Pembeli', 'Jenis Ikan', 'Berat (kg)', 'Harga Jual'];
+        $headers = ['Jenis Ikan', 'Berat (kg)', 'Harga Jual'];
         $col = 'A';
         $row = 4;
         foreach ($headers as $header) {
@@ -250,20 +329,36 @@ class CetakLaporanController extends Controller
             $col++;
         }
 
+        // Group by jenis_ikan (normalized to Title Case) and sum berat and harga_jual
+        $groupedLaporan = $laporan->groupBy(function ($item) {
+            return ucwords(strtolower(trim($item->jenis_ikan)));
+        })->map(function ($items, $jenisIkan) {
+            return (object) [
+                'jenis_ikan' => $jenisIkan,
+                'berat' => $items->sum('berat'),
+                'harga_jual' => $items->sum('harga_jual'),
+            ];
+        });
+
         // Data rows
         $row = 5;
-        foreach ($laporan as $item) {
-            $sheet->setCellValue('A' . $row, $item->id);
-            $sheet->setCellValue('B' . $row, $item->nama_nelayan);
-            $sheet->setCellValue('C' . $row, $item->nama_pembeli);
-            $sheet->setCellValue('D' . $row, $item->jenis_ikan);
-            $sheet->setCellValue('E' . $row, $item->berat);
-            $sheet->setCellValue('F' . $row, 'Rp ' . number_format($item->harga_jual, 0, ',', '.'));
+        foreach ($groupedLaporan as $item) {
+            $sheet->setCellValue('A' . $row, $item->jenis_ikan);
+            $sheet->setCellValue('B' . $row, $item->berat);
+            $sheet->setCellValue('C' . $row, 'Rp ' . number_format($item->harga_jual, 0, ',', '.'));
             $row++;
         }
 
+        // Add TOTAL row at the bottom
+        $sheet->setCellValue('A' . $row, 'TOTAL:');
+        $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+        $sheet->setCellValue('B' . $row, $groupedLaporan->sum('berat'));
+        $sheet->getStyle('B' . $row)->getFont()->setBold(true);
+        $sheet->setCellValue('C' . $row, 'Rp ' . number_format($groupedLaporan->sum('harga_jual'), 0, ',', '.'));
+        $sheet->getStyle('C' . $row)->getFont()->setBold(true);
+
         // Auto fit columns
-        foreach (range('A', 'F') as $col) {
+        foreach (range('A', 'C') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -287,6 +382,7 @@ class CetakLaporanController extends Controller
     public function getFilteredData(Request $request)
     {
         try {
+            \Log::info('AJAX Request Params: ' . json_encode($request->all()));
             $validated = $request->validate([
                 'tpi' => 'nullable|integer',
                 'start_date' => 'nullable|date',
@@ -322,10 +418,11 @@ class CetakLaporanController extends Controller
                         $query->whereDate('created_at', '<=', $validated['end_date']);
                     }
                 } elseif ($jenisLaporan === 'bulanan') {
-                    // Untuk laporan bulanan, gunakan bulan dan tahun
-                    if (!empty($validated['bulan']) && !empty($validated['tahun'])) {
+                    // Untuk laporan bulanan, gunakan bulan dan tahun (default ke tahun sekarang jika tidak dipilih)
+                    if (!empty($validated['bulan'])) {
+                        $tahunVal = !empty($validated['tahun']) ? $validated['tahun'] : date('Y');
                         $query->whereMonth('created_at', $validated['bulan'])
-                            ->whereYear('created_at', $validated['tahun']);
+                            ->whereYear('created_at', $tahunVal);
                     }
                 } elseif ($jenisLaporan === 'tahunan') {
                     // Untuk laporan tahunan, gunakan tahun saja
@@ -335,9 +432,10 @@ class CetakLaporanController extends Controller
                 }
             } else {
                 // Jika tidak ada jenis_laporan dipilih, gunakan date range default
-                if (!empty($validated['bulan']) && !empty($validated['tahun'])) {
+                if (!empty($validated['bulan'])) {
+                    $tahunVal = !empty($validated['tahun']) ? $validated['tahun'] : date('Y');
                     $query->whereMonth('created_at', $validated['bulan'])
-                        ->whereYear('created_at', $validated['tahun']);
+                        ->whereYear('created_at', $tahunVal);
                 } else {
                     if (!empty($validated['start_date']) && !empty($validated['end_date'])) {
                         $query->whereBetween('created_at', [
@@ -351,6 +449,10 @@ class CetakLaporanController extends Controller
                     }
                 }
             }
+
+            // Calculate totals using clone of query
+            $totalBerat = (float) $query->clone()->sum('berat');
+            $totalNilai = (float) $query->clone()->sum('harga_jual');
 
             // Get paginated data
             $page = $validated['page'] ?? 1;
@@ -372,6 +474,8 @@ class CetakLaporanController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $formattedData,
+                'total_berat' => $totalBerat,
+                'total_nilai' => $totalNilai,
                 'pagination' => [
                     'current_page' => $laporans->currentPage(),
                     'last_page' => $laporans->lastPage(),
@@ -380,7 +484,7 @@ class CetakLaporanController extends Controller
                     'from' => $laporans->firstItem(),
                     'to' => $laporans->lastItem(),
                 ],
-                'message' => $laporans->count() > 0 ? 'Data ditemukan' : 'Tidak ada data yang sesuai filter'
+                'message' => $laporans->count() > 0 ? 'Data ditemukan' : 'Tidak ada data laporan'
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -396,23 +500,29 @@ class CetakLaporanController extends Controller
         }
     }
 
-    /**
-     * Generate HTML untuk preview atau PDF
-     */
     private function generateHTML($laporan)
     {
         $totalBerat = $laporan->sum('berat');
         $totalNilai = $laporan->sum('harga_jual');
         $tanggalCetak = now()->format('d/m/Y H:i');
-        $totalData = $laporan->count();
+        
+        // Group by jenis_ikan (normalized to Title Case) and sum berat and harga_jual
+        $groupedLaporan = $laporan->groupBy(function ($item) {
+            return ucwords(strtolower(trim($item->jenis_ikan)));
+        })->map(function ($items, $jenisIkan) {
+            return (object) [
+                'jenis_ikan' => $jenisIkan,
+                'berat' => $items->sum('berat'),
+                'harga_jual' => $items->sum('harga_jual'),
+            ];
+        });
+
+        $totalData = $groupedLaporan->count();
         $totalNilaiFormatted = number_format($totalNilai, 0, ',', '.');
 
         $rows = '';
-        foreach ($laporan as $item) {
+        foreach ($groupedLaporan as $item) {
             $rows .= '<tr>
-                <td style="padding: 10px; border: 1px solid #000;">' . $item->id . '</td>
-                <td style="padding: 10px; border: 1px solid #000;">' . $item->nama_nelayan . '</td>
-                <td style="padding: 10px; border: 1px solid #000;">' . $item->nama_pembeli . '</td>
                 <td style="padding: 10px; border: 1px solid #000;">' . $item->jenis_ikan . '</td>
                 <td style="padding: 10px; border: 1px solid #000; text-align: right;">' . number_format($item->berat, 2) . '</td>
                 <td style="padding: 10px; border: 1px solid #000; text-align: right;">Rp ' . number_format($item->harga_jual, 0, ',', '.') . '</td>
@@ -446,9 +556,6 @@ class CetakLaporanController extends Controller
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nama Nelayan</th>
-                        <th>Nama Pembeli</th>
                         <th>Jenis Ikan</th>
                         <th style="text-align: right;">Berat (kg)</th>
                         <th style="text-align: right;">Harga Jual</th>

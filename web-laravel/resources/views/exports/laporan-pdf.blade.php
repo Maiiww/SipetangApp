@@ -160,42 +160,45 @@
         </div>
 
         <!-- Data Table -->
+        @php
+            $groupedLaporan = $laporan->groupBy(function($item) {
+                return ucwords(strtolower(trim($item->jenisIkan ?? $item->jenis_ikan)));
+            })->map(function($items, $jenisIkan) {
+                return (object) [
+                    'jenisIkan' => $jenisIkan,
+                    'jenis_ikan' => $jenisIkan,
+                    'beratTotal' => $items->sum(function($i) { return $i->beratTotal ?? $i->berat; }),
+                    'berat' => $items->sum(function($i) { return $i->beratTotal ?? $i->berat; }),
+                    'harga_jual' => $items->sum('harga_jual'),
+                ];
+            });
+        @endphp
         <table>
             <thead>
                 <tr>
-                    <th>ID Laporan</th>
-                    <th>Nama TPI</th>
                     <th>Jenis Ikan</th>
-                    <th class="text-right">Berat Total (kg)</th>
-                    <th>Tanggal Tangkap</th>
-                    <th>Tanggal Input</th>
-                    <th class="text-center">Status</th>
+                    <th class="text-right">Berat (kg)</th>
+                    <th class="text-right">Harga Jual</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($laporan as $item)
+                @forelse($groupedLaporan as $item)
                 <tr>
-                    <td><strong>{{ $item->idLaporan }}</strong></td>
-                    <td>{{ $item->namaTPI }}</td>
                     <td>{{ $item->jenisIkan }}</td>
                     <td class="text-right">{{ number_format($item->beratTotal, 2, ',', '.') }}</td>
-                    <td>{{ $item->tanggalTangkap ? $item->tanggalTangkap->format('d/m/Y') : '-' }}</td>
-                    <td>{{ $item->tanggalInput ? $item->tanggalInput->format('d/m/Y H:i:s') : '-' }}</td>
-                    <td class="text-center">
-                        <span class="badge">{{ ucfirst($item->status) }}</span>
-                    </td>
+                    <td class="text-right">Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center">Tidak ada data laporan</td>
+                    <td colspan="3" class="text-center">Tidak ada data laporan</td>
                 </tr>
                 @endforelse
 
-                @if($laporan->count() > 0)
+                @if($groupedLaporan->count() > 0)
                 <tr class="total-row">
-                    <td colspan="3" class="text-right"><strong>TOTAL:</strong></td>
+                    <td class="text-right"><strong>TOTAL:</strong></td>
                     <td class="text-right"><strong>{{ number_format($total_berat, 2, ',', '.') }} kg</strong></td>
-                    <td colspan="3"></td>
+                    <td class="text-right"><strong>Rp {{ number_format($groupedLaporan->sum('harga_jual'), 0, ',', '.') }}</strong></td>
                 </tr>
                 @endif
             </tbody>
