@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ringkasan Operasional - SIPETANG</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -201,10 +203,11 @@
             font-size: 24px;
             color: #0d2640;
             margin-bottom: 5px;
+            font-weight: 700;
         }
 
         .content-header p {
-            color: #666;
+            color: #64748b;
             font-size: 14px;
         }
 
@@ -218,121 +221,184 @@
         .stat-card {
             background: white;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border: 1px solid #edf2f7;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(10, 59, 153, 0.08);
+            border-color: rgba(10, 59, 153, 0.15);
         }
 
         .stat-info h4 {
-            font-size: 12px;
+            font-size: 11px;
             color: #888;
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .stat-info span {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 26px;
+            font-weight: 800;
             color: #0d2640;
         }
 
         .stat-icon {
             font-size: 20px;
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 12px;
         }
 
         .bg-blue {
-            background: #e3f2fd;
-            color: #1976d2;
+            background: #e0f2fe;
+            color: #0369a1;
         }
 
         .bg-green {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: #dcfce7;
+            color: #166534;
         }
 
         .bg-orange {
-            background: #fff3e0;
-            color: #ef6c00;
+            background: #fee2e2;
+            color: #991b1b;
         }
 
         .dashboard-container {
             display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 20px;
+            grid-template-columns: 1fr 360px;
+            gap: 24px;
         }
 
         .stat-card-large {
             background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-            margin-bottom: 20px;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card-large:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(10, 59, 153, 0.08);
+            border-color: rgba(10, 59, 153, 0.15);
         }
 
         .stat-card-large h4 {
             font-size: 11px;
             color: #888;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .stat-card-large .number {
             font-size: 32px;
-            font-weight: 700;
+            font-weight: 800;
             color: #0d2640;
         }
 
         .stat-card-dark {
             background: linear-gradient(135deg, #0d2640 0%, #1a4d7d 100%);
             color: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card-dark:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(10, 59, 153, 0.18);
         }
 
         .stat-card-dark h4 {
             font-size: 11px;
             opacity: 0.8;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .stat-card-dark .number {
-            font-size: 36px;
-            font-weight: 700;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .stat-icon-wrapper {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        
+        .stat-icon-blue {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .stat-icon-white {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            backdrop-filter: blur(4px);
+        }
+
+        .stat-icon-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .stat-icon-orange {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
         .real-time-badge {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             font-size: 10px;
+            font-weight: 700;
             color: #10b981;
             margin-top: 10px;
+            letter-spacing: 0.5px;
         }
 
         .real-time-badge::before {
             content: '';
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
             background: #10b981;
             border-radius: 50%;
-            animation: pulse 1s infinite;
+            animation: pulse 1.2s infinite;
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
+                transform: scale(1);
             }
-
             50% {
-                opacity: 0.5;
+                opacity: 0.4;
+                transform: scale(1.15);
             }
         }
 
@@ -345,9 +411,20 @@
 
         .small-stat {
             background: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .small-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(10, 59, 153, 0.08);
+            border-color: rgba(10, 59, 153, 0.15);
         }
 
         .small-stat label {
@@ -355,148 +432,174 @@
             color: #888;
             text-transform: uppercase;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .small-stat .value {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 24px;
+            font-weight: 800;
             color: #0d2640;
         }
 
         .progress-bar {
             width: 100%;
-            height: 6px;
-            background: #eee;
-            border-radius: 3px;
-            margin-top: 8px;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-top: 10px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
             background: #10b981;
-            width: 88%;
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .anomaly-alert {
+        .progress-stat-card {
             background: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-            border-left: 4px solid #ef4444;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
+            border-left: 4px solid #10b981;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .anomaly-alert label {
-            font-size: 11px;
-            color: #888;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .anomaly-alert .value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #ef4444;
+        .progress-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(10, 59, 153, 0.08);
+            border-color: rgba(10, 59, 153, 0.15);
+            border-left-color: #10b981;
         }
 
         .sidebar-right {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
             height: fit-content;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-right:hover {
+            box-shadow: 0 8px 24px rgba(10, 59, 153, 0.04);
         }
 
         .sidebar-right-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         .sidebar-right-header h3 {
-            font-size: 14px;
+            font-size: 15px;
             color: #0d2640;
-            font-weight: 700;
+            font-weight: 750;
         }
 
         .sidebar-right-header a {
-            color: #2563eb;
-            font-size: 12px;
+            color: #0a3b99;
+            font-size: 12.5px;
+            font-weight: 600;
             text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar-right-header a:hover {
+            color: #1d65d0;
         }
 
         .activity-item {
             display: flex;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
+            gap: 14px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s ease;
         }
 
         .activity-item:last-child {
             border-bottom: none;
+            padding-bottom: 0;
         }
 
         .activity-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 700;
             color: white;
             flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
 
         .activity-content {
             flex: 1;
-            font-size: 12px;
+            font-size: 13px;
         }
 
         .activity-name {
-            font-weight: 600;
+            font-weight: 700;
             color: #0d2640;
+            font-size: 13.5px;
         }
 
         .activity-location {
-            color: #888;
-            font-size: 11px;
+            color: #64748b;
+            font-size: 11.5px;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .activity-status {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            display: inline-block;
-            margin-top: 4px;
+            padding: 3px 10px;
+            border-radius: 30px;
+            font-size: 10.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
         }
 
         .activity-status.verified {
-            background: #d4edda;
+            background: #dcfce7;
             color: #155724;
+            border: 1px solid #bbf7d0;
         }
 
         .activity-status.pending {
             background: #fff3cd;
             color: #856404;
+            border: 1px solid #ffe0b2;
         }
 
         .activity-status.rejected {
             background: #fee2e2;
             color: #991b1b;
+            border: 1px solid #fca5a5;
         }
 
         .activity-time {
-            color: #888;
+            color: #94a3bb;
             font-size: 11px;
-            margin-top: 4px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .content-header-top {
@@ -510,10 +613,11 @@
             font-size: 24px;
             color: #0d2640;
             margin-bottom: 5px;
+            font-weight: 700;
         }
 
         .content-header-left p {
-            color: #666;
+            color: #64748b;
             font-size: 14px;
         }
 
@@ -524,26 +628,36 @@
         }
 
         .date-selector {
-            padding: 8px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            padding: 10px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
             background: white;
-            font-size: 13px;
-            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #334155;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 8px;
         }
+        
+        .date-selector:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
 
         .btn-input {
             padding: 10px 20px;
-            background: #2563eb;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(10, 59, 153, 0.15);
         }
 
         .table-container {
@@ -650,7 +764,7 @@
         }
 
         .profile-modal-header {
-            background: linear-gradient(135deg, #0d2640 0%, #1a4d7d 100%);
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -682,15 +796,17 @@
         .profile-avatar {
             width: 80px;
             height: 80px;
-            background: rgba(255, 255, 255, 0.2);
+            background: white;
             border: 3px solid white;
-            border-radius: 12px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
             font-size: 32px;
             font-weight: 700;
+            color: #0a3b99;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
         .profile-name {
@@ -800,6 +916,56 @@
                 margin-left: 60px;
             }
         }
+
+        /* Header Profile Button */
+        .header-profile-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+
+        .header-profile-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .header-profile-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .header-profile-btn:hover .header-profile-avatar {
+            background: white;
+            color: #0a3b99;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
     </style>
 </head>
 
@@ -809,9 +975,11 @@
     <div class="main-content">
         <div class="header">
             <div class="header-right">
-                <a href="#" style="text-decoration: none; color: inherit;" onclick="openProfileModal(event)">
-                    <div class="header-icon" style="cursor: pointer;"><i class="fas fa-user"></i></div>
-                </a>
+                <div class="header-profile-btn" onclick="openProfileModal(event)" title="Profil Saya">
+                    <div class="header-profile-avatar">
+                        STF
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -832,42 +1000,62 @@
                     </span>
                 </div>
                 <a href="{{ route('staff.validasi') }}" class="btn-input"
-                    style="text-decoration: none; display: inline-flex; align-items: center;"><i class="fas fa-eye"></i>
+                    style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"><i class="fas fa-eye"></i>
                     Lihat Laporan</a>
             </div>
         </div>
 
         <div class="dashboard-container">
-            <div>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="stats-grid">
                     <div class="stat-card-large">
-                        <h4>TOTAL DATA USER</h4>
-                        <div class="number">{{ $statistik['totalUser'] }}</div>
+                        <div class="stat-info">
+                            <h4>TOTAL DATA USER</h4>
+                            <div class="number">{{ $statistik['totalUser'] }}</div>
+                        </div>
+                        <div class="stat-icon-wrapper stat-icon-blue">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
                     </div>
-                    <div class="stat-card-dark">
-                        <h4>DATA PRODUKSI (BULAN)</h4>
-                        <div class="number">{{ $statistik['produksiBulan'] }} <span
-                                style="font-size: 18px; color:#ffffff;">(ton)</span></div>
-                        <div class="real-time-badge">REAL-TIME MONITOR</div>
+                    <div class="stat-card-dark" style="display: flex; align-items: center; justify-content: space-between;">
+                        <div class="stat-info">
+                            <h4 style="margin-bottom: 5px;">DATA PRODUKSI (BULAN)</h4>
+                            <div class="number">{{ $statistik['produksiBulan'] }} <span
+                                    style="font-size: 18px; color:#ffffff;">(ton)</span></div>
+                            <div class="real-time-badge">REAL-TIME MONITOR</div>
+                        </div>
+                        <div class="stat-icon-wrapper stat-icon-white">
+                            <i class="fas fa-chart-column"></i>
+                        </div>
                     </div>
                 </div>
 
                 <div class="stats-grid">
                     <div class="small-stat">
-                        <label>Laporan Masuk</label>
-                        <div class="value">{{ $statistik['totalLaporan'] }}</div>
+                        <div class="stat-info">
+                            <label>Laporan Masuk</label>
+                            <div class="value">{{ $statistik['totalLaporan'] }}</div>
+                        </div>
+                        <div class="stat-icon-wrapper stat-icon-green" style="width: 44px; height: 44px; font-size: 18px;">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
                     </div>
                     <div class="small-stat">
-                        <label>Validasi Tertunda</label>
-                        <div class="value">{{ $statistik['validasiTertunda'] }}</div>
+                        <div class="stat-info">
+                            <label>Validasi Tertunda</label>
+                            <div class="value">{{ $statistik['validasiTertunda'] }}</div>
+                        </div>
+                        <div class="stat-icon-wrapper stat-icon-orange" style="width: 44px; height: 44px; font-size: 18px;">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div class="anomaly-alert">
-                    <label>Data Statistik Terkini</label>
+                <div class="progress-stat-card">
+                    <label style="font-size: 11px; color: #888; text-transform: uppercase; display: block; margin-bottom: 5px; font-weight: 700;">Data Statistik Terkini</label>
                     <div style="margin-top: 10px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <span style="font-size: 12px; color: #0d2640;">Validasi Berhasil</span>
+                            <span style="font-size: 12px; color: #0d2640; font-weight: 600;">Persentase Validasi Berhasil</span>
                             <span
                                 style="font-size: 12px; font-weight: 700; color: #0d2640;">{{ $statistik['persentaseValidasi'] }}%</span>
                         </div>
@@ -875,7 +1063,6 @@
                             <div class="progress-fill" style="width: {{ $statistik['persentaseValidasi'] }}%;"></div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -926,6 +1113,10 @@
                 @endforelse
             </div>
         </div>
+
+        <div class="page-footer">
+            &copy; 2026 Dinas Perikanan Kabupaten Subang | Neutron Tech Solutions
+        </div>
     </div>
 
     <!-- Profile Modal -->
@@ -933,7 +1124,7 @@
         <div class="profile-modal-content">
             <div class="profile-modal-header">
                 <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
-                <div class="profile-avatar">{{ strtoupper(substr($user->nama ?? $user->username, 0, 2)) }}</div>
+                <div class="profile-avatar">STF</div>
                 <div class="profile-name">{{ $user->nama ?? $user->username }}</div>
                 <div class="profile-role">{{ ucfirst($user->role) }}</div>
             </div>
@@ -992,6 +1183,9 @@
                     </div>
                 </div>
             </div>
+            <div class="modal-footer" style="margin: 0 30px 30px; display: flex; justify-content: center; border-top: 1px solid #eee; padding-top: 20px;">
+                <button type="button" onclick="closeProfileModal()" style="width: 100%; text-align: center; padding: 10px 20px; border: 1px solid #ddd; background: white; color: #666; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f5f5f5'; this.style.borderColor='#bbb';" onmouseout="this.style.background='white'; this.style.borderColor='#ddd';">Tutup</button>
+            </div>
         </div>
     </div>
 
@@ -1005,7 +1199,6 @@
             document.getElementById('profileModal').classList.remove('active');
         }
 
-        // Close modal when clicking outside
         window.onclick = function(event) {
             const modal = document.getElementById('profileModal');
             if (event.target === modal) {
@@ -1013,6 +1206,20 @@
             }
         }
     </script>
+
+    @if (session('welcome'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil Masuk',
+                    text: "Selamat datang Staff Dinas",
+                    confirmButtonColor: '#0a3b99',
+                    confirmButtonText: 'Lanjutkan'
+                });
+            });
+        </script>
+    @endif
 </body>
 
 </html>

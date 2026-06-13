@@ -29,8 +29,10 @@ class DashboardController extends Controller
         // Count Tangkapan with status "Menunggu Validasi" (Validasi Tertunda)
         $validasiTertunda = Tangkapan::where('status', 'Menunggu Validasi')->count();
 
-        // Sum total production (berat) for current month
+        // Sum total production (berat) for current month — hanya yang sudah Divalidasi
+        // (konsisten dengan StatistikController yang juga hanya hitung status "Divalidasi")
         $produksiBulan = Tangkapan::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->where('status', 'Divalidasi')
             ->sum('berat');
 
         // Count validated records

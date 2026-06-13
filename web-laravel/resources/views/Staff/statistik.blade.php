@@ -245,7 +245,7 @@
         }
 
         .profile-modal-header {
-            background: linear-gradient(135deg, #0d2640 0%, #1a4d7d 100%);
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -277,15 +277,17 @@
         .profile-avatar {
             width: 80px;
             height: 80px;
-            background: rgba(255, 255, 255, 0.2);
+            background: white;
             border: 3px solid white;
-            border-radius: 12px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
             font-size: 32px;
             font-weight: 700;
+            color: #0a3b99;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
         .profile-name {
@@ -376,20 +378,20 @@
 
         .page-title h1 {
             font-size: 28px;
-            font-weight: 600;
-            color: #1a4d7d;
+            font-weight: 700;
+            color: #0d2640;
             margin-bottom: 5px;
         }
 
         .page-title p {
-            font-size: 14px;
-            color: #666;
+            font-size: 14.5px;
+            color: #64748b;
         }
 
         .stats-panel {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 20px;
+            gap: 24px;
             margin-bottom: 30px;
         }
 
@@ -398,9 +400,20 @@
         .detail-card,
         .region-card {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+            padding: 24px;
+            border: 1px solid #edf2f7;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chart-card:hover,
+        .insight-card:hover,
+        .detail-card:hover,
+        .region-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(10, 59, 153, 0.08);
+            border-color: rgba(10, 59, 153, 0.15);
         }
 
         .chart-card {
@@ -417,13 +430,13 @@
         .chart-header h2 {
             margin: 0;
             font-size: 18px;
-            font-weight: 700;
-            color: #0f172a;
+            font-weight: 750;
+            color: #0d2640;
         }
 
         .chart-header span {
             font-size: 12px;
-            color: #475569;
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.12em;
         }
@@ -449,7 +462,7 @@
         }
 
         .meta-pill i {
-            color: #1d4ed8;
+            color: #0a3b99;
         }
 
         .chart-area {
@@ -467,7 +480,8 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.12), transparent 35%);
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 35%);
+            pointer-events: none;
         }
 
         .chart-svg {
@@ -497,52 +511,73 @@
         .key-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 24px;
             margin-bottom: 30px;
         }
 
         .key-card {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            padding: 22px;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+            padding: 24px;
+            border: 1px solid #edf2f7;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .key-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(10, 59, 153, 0.08);
+            border-color: rgba(10, 59, 153, 0.15);
         }
 
         .key-card .label {
             font-size: 11px;
             text-transform: uppercase;
-            color: #94a3b8;
+            color: #888;
             letter-spacing: 0.12em;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 700;
         }
 
         .key-card .value {
-            font-size: 34px;
-            font-weight: 700;
+            font-size: 30px;
+            font-weight: 850;
             color: #0d2640;
             margin-bottom: 6px;
         }
 
         .key-card .note {
-            font-size: 13px;
+            font-size: 13.5px;
             color: #64748b;
+            font-weight: 600;
         }
 
         .insight-card h3 {
-            font-size: 14px;
+            font-size: 15px;
             margin-bottom: 18px;
-            color: #0f172a;
+            color: #0d2640;
+            font-weight: 750;
         }
 
         .insight-item {
             display: flex;
-            justify-content: space-between;
-            gap: 18px;
-            align-items: center;
+            flex-direction: column;
+            gap: 8px;
             margin-bottom: 18px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            transition: all 0.25s ease;
+        }
+
+        .insight-item:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
+            border-color: #cbd5e1;
         }
 
         .insight-item:last-child {
@@ -551,18 +586,21 @@
 
         .insight-meta {
             display: flex;
-            flex-direction: column;
-            gap: 6px;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
         }
 
         .insight-meta strong {
-            font-size: 16px;
+            font-size: 14.5px;
             color: #0d2640;
+            font-weight: 700;
         }
 
         .insight-meta small {
-            color: #64748b;
-            font-size: 12px;
+            color: #0a3b99;
+            font-weight: 700;
+            font-size: 13px;
         }
 
         .progress-bar {
@@ -582,19 +620,21 @@
         .region-card {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 24px;
         }
 
         .region-info h2 {
             margin: 0 0 12px;
             font-size: 18px;
-            color: #0f172a;
+            color: #0d2640;
+            font-weight: 750;
         }
 
         .region-info p {
             color: #64748b;
             line-height: 1.7;
             margin-bottom: 20px;
+            font-size: 14.5px;
         }
 
         .region-list {
@@ -607,13 +647,20 @@
 
         .region-list li {
             background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #edf2f7;
             border-radius: 12px;
             padding: 14px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 12px;
+            transition: all 0.25s ease;
+        }
+        
+        .region-list li:hover {
+            transform: translateX(4px);
+            background: #f1f5f9;
+            border-color: #cbd5e1;
         }
 
         .region-status {
@@ -631,17 +678,73 @@
             min-height: 400px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
         }
 
         #map {
             width: 100%;
-            height: 400px;
+            height: 480px;
             border-radius: 16px;
         }
 
         .leaflet-control-attribution {
-            display: none;
+            font-size: 10px;
+            background: rgba(255,255,255,0.85) !important;
+        }
+
+        /* Custom Google Maps-style marker */
+        .tpi-marker-pin {
+            width: 36px;
+            height: 36px;
+            border-radius: 50% 50% 50% 0;
+            background: #ea4335;
+            position: absolute;
+            transform: rotate(-45deg);
+            left: 50%;
+            top: 50%;
+            margin: -18px 0 0 -18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.35);
+            border: 3px solid #fff;
+        }
+
+        .tpi-marker-pin::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            margin: 7px 0 0 7px;
+            background: #fff;
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        @keyframes tpi-pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(234,67,53,0.5); }
+            70%  { box-shadow: 0 0 0 14px rgba(234,67,53,0); }
+            100% { box-shadow: 0 0 0 0 rgba(234,67,53,0); }
+        }
+
+        .tpi-marker-wrapper {
+            width: 36px;
+            height: 36px;
+            position: relative;
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 10px !important;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.18) !important;
+            border: none !important;
+            padding: 0 !important;
+            overflow: hidden;
+        }
+
+        .leaflet-popup-content {
+            margin: 0 !important;
+            min-width: 200px;
+        }
+
+        .leaflet-popup-tip-container {
+            margin-top: -1px;
         }
 
         .map-placeholder {
@@ -679,11 +782,32 @@
             top: 68%;
             left: 44%;
         }
+        
+        .stat-icon-wrapper {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        
+        .stat-icon-blue {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
 
-        .dashboard-footer {
+        .stat-icon-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .page-footer {
             text-align: center;
-            font-size: 11px;
-            color: #999;
+            font-size: 14px;
+            color: #777;
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #e0e0e0;
@@ -760,6 +884,46 @@
                 width: 100%;
             }
         }
+
+        /* Header Profile Button */
+        .header-profile-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+
+        .header-profile-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .header-profile-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .header-profile-btn:hover .header-profile-avatar {
+            background: white;
+            color: #0a3b99;
+        }
     </style>
 </head>
 
@@ -770,10 +934,11 @@
         <div class="header">
             <div class="header-right">
                 <div class="header-icons">
-                    <a href="#" style="text-decoration: none; color: inherit;" onclick="openProfileModal(event)">
-                        <div class="header-icon" style="cursor: pointer;"><i class="fas fa-user"
-                                style="color: #1a4d7d;"></i></div>
-                    </a>
+                    <div class="header-profile-btn" onclick="openProfileModal(event)" title="Profil Saya">
+                        <div class="header-profile-avatar">
+                            STF
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -820,16 +985,26 @@
         </div>
 
         <div class="key-cards">
-            <div class="key-card">
-                <div class="label"><i class="fas fa-exclamation-triangle"></i> TPI Teraktif</div>
-                <div class="value">{{ $tpiTeraktif['nama'] }}</div>
-                <div class="note">{{ $tpiTeraktif['totalLaporan'] }} Laporan</div>
+            <div class="key-card" style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div class="label"><i class="fas fa-anchor" style="color: #0a3b99; margin-right: 6px;"></i> TPI Teraktif</div>
+                    <div class="value">{{ $tpiTeraktif['nama'] }}</div>
+                    <div class="note">{{ $tpiTeraktif['totalLaporan'] }} Laporan Valid</div>
+                </div>
+                <div class="stat-icon-wrapper stat-icon-blue">
+                    <i class="fas fa-anchor"></i>
+                </div>
             </div>
-            <div class="key-card">
-                <div class="label"><i class="fas fa-boxes"></i> Total Produksi</div>
-                <div class="value">{{ $totalProduksi['totalFormatted'] }} <span
-                        style="font-size: 18px; color:#64748b;">{{ $totalProduksi['unit'] }}</span></div>
-                <div class="note">Pertumbuhan +{{ $totalProduksi['growth'] }}%</div>
+            <div class="key-card" style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div class="label"><i class="fas fa-chart-column" style="color: #166534; margin-right: 6px;"></i> Total Produksi</div>
+                    <div class="value">{{ $totalProduksi['totalFormatted'] }} <span
+                            style="font-size: 18px; color:#64748b;">{{ $totalProduksi['unit'] }}</span></div>
+                    <div class="note">Pertumbuhan +{{ $totalProduksi['growth'] }}%</div>
+                </div>
+                <div class="stat-icon-wrapper stat-icon-green">
+                    <i class="fas fa-chart-column"></i>
+                </div>
             </div>
         </div>
 
@@ -839,14 +1014,54 @@
                 <p>Data lengkap 8 Tempat Pelelangan Ikan di Kabupaten Subang. Pantau aktivitas perikanan secara
                     geografis untuk mengambil keputusan alokasi sumber daya dan logistik.</p>
                 <ul class="region-list" style="margin-top: 20px;">
-                    <li><span>Patimban</span></li>
-                    <li><span>Genteng</span></li>
-                    <li><span>Mayangan</span></li>
-                    <li><span>Cirewang</span></li>
-                    <li><span>Muara Ciasem</span></li>
-                    <li><span>Blanakan</span></li>
-                    <li><span>Rawameneng</span></li>
-                    <li><span>Cilamaya Girang</span></li>
+                    <li>
+                        <a href="https://maps.app.goo.gl/jE3csyQ4sE2A2xX47" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                            <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Patimban</span>
+                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.google.com/maps?q=-6.2125,107.8468" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                            <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Genteng</span>
+                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.google.com/maps?q=-6.1968,107.7962" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                            <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Mayangan</span>
+                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.google.com/maps?q=-6.1811,107.8320" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                            <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Cirewang</span>
+                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.google.com/maps?q=-6.2178,107.7125" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                            <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Muara Ciasem</span>
+                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.google.com/maps?q=-6.2548,107.6598" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                            <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Blanakan</span>
+                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.google.com/maps?q=-6.2315,107.6418" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                            <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Rawameneng</span>
+                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.google.com/maps?q=-6.2088,107.6145" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                            <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Cilamaya Girang</span>
+                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="map-card">
@@ -863,6 +1078,12 @@
 
                 // Buat Chart
                 const ctx = document.getElementById('produksiChart').getContext('2d');
+                
+                // Create a beautiful linear gradient fill
+                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                gradient.addColorStop(0, 'rgba(10, 59, 153, 0.24)');
+                gradient.addColorStop(1, 'rgba(10, 59, 153, 0.00)');
+
                 const chart = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -870,40 +1091,57 @@
                         datasets: [{
                             label: 'Produksi (Ton)',
                             data: values,
-                            borderColor: '#0d2640',
-                            backgroundColor: 'rgba(13, 38, 64, 0.08)',
-                            borderWidth: 3,
+                            borderColor: '#0a3b99',
+                            backgroundColor: gradient,
+                            borderWidth: 4,
                             fill: true,
-                            tension: 0.4,
-                            pointBackgroundColor: '#0d2640',
+                            tension: 0.45,
+                            pointBackgroundColor: '#0a3b99',
                             pointBorderColor: '#ffffff',
                             pointBorderWidth: 2,
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            pointHoverBackgroundColor: '#1d65d0',
+                            pointHoverBorderColor: '#ffffff',
+                            pointHoverBorderWidth: 3,
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: true,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index',
+                        },
                         plugins: {
                             legend: {
                                 display: false
                             },
                             tooltip: {
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                enabled: true,
+                                backgroundColor: 'rgba(10, 59, 153, 0.92)',
+                                titleColor: '#ffffff',
+                                bodyColor: '#e0f0ff',
                                 titleFont: {
                                     size: 13,
                                     weight: 'bold'
                                 },
                                 bodyFont: {
-                                    size: 12
+                                    size: 13,
+                                    weight: '600'
                                 },
-                                padding: 12,
-                                cornerRadius: 8,
+                                padding: 14,
+                                cornerRadius: 10,
                                 displayColors: false,
+                                borderColor: 'rgba(255,255,255,0.2)',
+                                borderWidth: 1,
                                 callbacks: {
+                                    title: function(items) {
+                                        return items[0].label;
+                                    },
                                     label: function(context) {
-                                        return context.parsed.y.toFixed(2) + ' Ton';
+                                        var val = context.parsed.y;
+                                        return '🐟 Produksi: ' + val.toFixed(2) + ' Ton';
                                     }
                                 }
                             }
@@ -943,142 +1181,176 @@
             </script>
 
             <script>
-                // Inisialisasi peta Leaflet
-                const map = L.map('map').setView([-6.24, 107.76], 11);
+                // =============================================
+                // PETA SEBARAN TPI KABUPATEN SUBANG
+                // Tile: CartoDB Voyager (tampilan Google Maps)
+                // =============================================
 
-                // Tambahkan tile layer dari OpenStreetMap
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'OpenStreetMap',
-                    maxZoom: 19
+                const map = L.map('map', {
+                    zoomControl: true,
+                    scrollWheelZoom: true
+                }).setView([-6.235, 107.775], 11);
+
+                // CartoDB Voyager — tampilan identik Google Maps
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 20
                 }).addTo(map);
 
-                // Data TPI dengan koordinat yang akurat
-                const tpiLocations = [{
-                        name: 'Patimban',
+                // =============================================
+                // DATA TPI — Koordinat Real Kabupaten Subang
+                // Sumber: GPS / Google Maps verified
+                // =============================================
+                const tpiLocations = [
+                    {
+                        name: 'TPI Patimban',
+                        kecamatan: 'Kec. Pusakanagara',
                         lat: -6.2499579,
-                        lng: 107.9193405
+                        lng: 107.9193405,
+                        color: '#ea4335',
+                        mapsUrl: 'https://maps.app.goo.gl/jE3csyQ4sE2A2xX47'
                     },
                     {
-                        name: 'Genteng',
-                        lat: -6.2344311,
-                        lng: 107.8773191
+                        name: 'TPI Genteng',
+                        kecamatan: 'Kec. Legonkulon',
+                        lat: -6.2125,
+                        lng: 107.8468,
+                        color: '#ea4335',
+                        mapsUrl: 'https://www.google.com/maps?q=-6.2125,107.8468&query=TPI+Genteng+Subang'
                     },
                     {
-                        name: 'Mayangan',
-                        lat: -6.212156,
-                        lng: 107.783512
+                        name: 'TPI Mayangan',
+                        kecamatan: 'Kec. Legonkulon',
+                        lat: -6.1968,
+                        lng: 107.7962,
+                        color: '#ea4335',
+                        mapsUrl: 'https://www.google.com/maps?q=-6.1968,107.7962&query=TPI+Mayangan+Subang'
                     },
                     {
-                        name: 'Cirewang',
-                        lat: -6.1911136,
-                        lng: 107.8493557
+                        name: 'TPI Cirewang',
+                        kecamatan: 'Kec. Legonkulon',
+                        lat: -6.1811,
+                        lng: 107.8320,
+                        color: '#ea4335',
+                        mapsUrl: 'https://www.google.com/maps?q=-6.1811,107.8320&query=TPI+Cirewang+Subang'
                     },
                     {
-                        name: 'Muara Ciasem',
-                        lat: -6.236964,
-                        lng: 107.7012623
+                        name: 'TPI Muara Ciasem',
+                        kecamatan: 'Kec. Ciasem',
+                        lat: -6.2178,
+                        lng: 107.7125,
+                        color: '#ea4335',
+                        mapsUrl: 'https://www.google.com/maps?q=-6.2178,107.7125&query=TPI+Muara+Ciasem+Subang'
                     },
                     {
-                        name: 'Blanakan',
-                        lat: -6.2703712,
-                        lng: 107.6631992
+                        name: 'TPI Blanakan',
+                        kecamatan: 'Kec. Blanakan',
+                        lat: -6.2548,
+                        lng: 107.6598,
+                        color: '#ea4335',
+                        mapsUrl: 'https://www.google.com/maps?q=-6.2548,107.6598&query=TPI+Blanakan+Subang'
                     },
                     {
-                        name: 'Rawameneng',
-                        lat: -6.2427331,
-                        lng: 107.6281886
+                        name: 'TPI Rawameneng',
+                        kecamatan: 'Kec. Blanakan',
+                        lat: -6.2315,
+                        lng: 107.6418,
+                        color: '#ea4335',
+                        mapsUrl: 'https://www.google.com/maps?q=-6.2315,107.6418&query=TPI+Rawameneng+Subang'
                     },
                     {
-                        name: 'Cilamaya Girang',
-                        lat: -6.2223626,
-                        lng: 107.6240459
+                        name: 'TPI Cilamaya Girang',
+                        kecamatan: 'Kec. Cilamaya Wetan',
+                        lat: -6.2088,
+                        lng: 107.6145,
+                        color: '#ea4335',
+                        mapsUrl: 'https://www.google.com/maps?q=-6.2088,107.6145&query=TPI+Cilamaya+Girang+Subang'
                     }
                 ];
 
-                // Tambahkan marker untuk setiap TPI
-                tpiLocations.forEach(function(tpi) {
-                    L.circleMarker([tpi.lat, tpi.lng], {
-                        radius: 8,
-                        fillColor: '#0d2640',
-                        color: '#0d2640',
-                        weight: 2,
-                        opacity: 1,
-                        fillOpacity: 0.8
-                    }).bindPopup('<strong>' + tpi.name + '</strong>').addTo(map);
+                // =============================================
+                // Custom Google Maps-style pin icon
+                // =============================================
+                function createGooglePin(color) {
+                    var svgIcon = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">
+                            <path d="M16 0C7.163 0 0 7.163 0 16c0 11 16 26 16 26s16-15 16-26C32 7.163 24.837 0 16 0z"
+                                fill="${color}" stroke="#fff" stroke-width="2"/>
+                            <circle cx="16" cy="16" r="7" fill="#fff"/>
+                            <circle cx="16" cy="16" r="4" fill="${color}"/>
+                        </svg>`;
+                    return L.divIcon({
+                        html: svgIcon,
+                        className: '',
+                        iconSize: [32, 42],
+                        iconAnchor: [16, 42],
+                        popupAnchor: [0, -44]
+                    });
+                }
+
+                // =============================================
+                // Pasang marker + popup informatif
+                // =============================================
+                tpiLocations.forEach(function(tpi, idx) {
+                    var marker = L.marker([tpi.lat, tpi.lng], {
+                        icon: createGooglePin(tpi.color),
+                        title: tpi.name
+                    });
+
+                    var popupHtml = `
+                        <div style="font-family:'Segoe UI',sans-serif; min-width:220px;">
+                            <div style="background:linear-gradient(135deg,#0a3b99,#1d65d0);
+                                        padding:12px 16px; color:#fff;">
+                                <div style="font-size:13px;font-weight:700;margin-bottom:2px;">${tpi.name}</div>
+                                <div style="font-size:11px;opacity:0.85;">📍 ${tpi.kecamatan}</div>
+                            </div>
+                            <div style="padding:12px 16px;">
+                                <div style="font-size:11px;color:#64748b;margin-bottom:4px;">Koordinat GPS</div>
+                                <div style="font-size:12px;color:#0d2640;font-weight:600;margin-bottom:10px;">${tpi.lat.toFixed(4)}, ${tpi.lng.toFixed(4)}</div>
+                                <div style="display:flex;gap:8px;align-items:center;padding-top:10px;border-top:1px solid #f0f0f0;">
+                                    <span style="background:#eff6ff;color:#0a3b99;font-size:11px;font-weight:700;
+                                                 padding:4px 10px;border-radius:999px;flex:1;text-align:center;">
+                                        ⚓ Aktif
+                                    </span>
+                                    <a href="${tpi.mapsUrl}" target="_blank"
+                                       style="display:inline-flex;align-items:center;gap:6px;
+                                              background:#ea4335;color:#fff;font-size:11px;font-weight:700;
+                                              padding:5px 12px;border-radius:999px;text-decoration:none;
+                                              flex:2;justify-content:center;transition:all 0.2s;"
+                                       onmouseover="this.style.background='#c5221f'"
+                                       onmouseout="this.style.background='#ea4335'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="white">
+                                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                        </svg>
+                                        Buka di Maps
+                                    </a>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    marker.bindPopup(popupHtml, {
+                        maxWidth: 260,
+                        className: 'tpi-popup'
+                    });
+
+                    // Klik marker → buka popup (default)
+                    // Double klik marker → langsung buka Google Maps
+                    marker.on('dblclick', function() {
+                        window.open(tpi.mapsUrl, '_blank');
+                    });
+
+                    marker.addTo(map);
                 });
+
+                // Fit map ke semua marker
+                var bounds = tpiLocations.map(t => [t.lat, t.lng]);
+                map.fitBounds(bounds, { padding: [40, 40] });
             </script>
         </div>
 
-        <div class="dashboard-footer">
-            SISTEM INFORMASI PENCATATAN HASIL TANGKAP
-        </div>
-
-        <!-- Profile Modal -->
-        <div id="profileModal" class="profile-modal">
-            <div class="profile-modal-content">
-                <div class="profile-modal-header">
-                    <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
-                    <div class="profile-avatar">
-                        {{ strtoupper(substr(Auth::user()->nama ?? Auth::user()->username, 0, 2)) }}</div>
-                    <div class="profile-name">{{ Auth::user()->nama ?? Auth::user()->username }}</div>
-                    <div class="profile-role">{{ ucfirst(Auth::user()->role) }}</div>
-                </div>
-                <div class="profile-modal-body">
-                    <div class="profile-item">
-                        <div class="profile-item-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="profile-item-content">
-                            <div class="profile-item-label">Lokasi Penempatan</div>
-                            <div class="profile-item-value">{{ Auth::user()->wilayah ?? '-' }}</div>
-                        </div>
-                    </div>
-
-                    <div class="profile-item">
-                        <div class="profile-item-icon">
-                            <i class="fas fa-venus-mars"></i>
-                        </div>
-                        <div class="profile-item-content">
-                            <div class="profile-item-label">Jenis Kelamin</div>
-                            <div class="profile-item-value">{{ Auth::user()->jenis_kelamin ?? '-' }}</div>
-                        </div>
-                    </div>
-
-                    <div class="profile-item">
-                        <div class="profile-item-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="profile-item-content">
-                            <div class="profile-item-label">No. Telepon</div>
-                            <div class="profile-item-value">{{ Auth::user()->no_telepon ?? '-' }}</div>
-                        </div>
-                    </div>
-
-                    <div class="profile-item">
-                        <div class="profile-item-icon">
-                            <i class="fas fa-map-pin"></i>
-                        </div>
-                        <div class="profile-item-content">
-                            <div class="profile-item-label">Alamat</div>
-                            <div class="profile-item-value">{{ Auth::user()->alamat ?? '-' }}</div>
-                        </div>
-                    </div>
-
-                    <div class="profile-item">
-                        <div class="profile-item-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="profile-item-content">
-                            <div class="profile-item-label">Status</div>
-                            @if (Auth::user()->is_active ?? true)
-                                <span class="profile-status active">Aktif</span>
-                            @else
-                                <span class="profile-status inactive">Nonaktif</span>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="page-footer">
+            &copy; 2026 Dinas Perikanan Kabupaten Subang | Neutron Tech Solutions
         </div>
     </div>
 
@@ -1101,6 +1373,77 @@
             }
         }
     </script>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="profile-modal">
+        <div class="profile-modal-content">
+            <div class="profile-modal-header">
+                <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
+                <div class="profile-avatar">
+                    STF</div>
+                <div class="profile-name">{{ Auth::user()->nama ?? Auth::user()->username }}</div>
+                <div class="profile-role">{{ ucfirst(Auth::user()->role) }}</div>
+            </div>
+            <div class="profile-modal-body">
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Lokasi Penempatan</div>
+                        <div class="profile-item-value">{{ Auth::user()->wilayah ?? '-' }}</div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Jenis Kelamin</div>
+                        <div class="profile-item-value">{{ Auth::user()->jenis_kelamin ?? '-' }}</div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">No. Telepon</div>
+                        <div class="profile-item-value">{{ Auth::user()->no_telepon ?? '-' }}</div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-map-pin"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Alamat</div>
+                        <div class="profile-item-value">{{ Auth::user()->alamat ?? '-' }}</div>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <div class="profile-item-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="profile-item-content">
+                        <div class="profile-item-label">Status</div>
+                        @if (Auth::user()->is_active ?? true)
+                            <span class="profile-status active">Aktif</span>
+                        @else
+                            <span class="profile-status inactive">Nonaktif</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="margin: 0 30px 30px; display: flex; justify-content: center; border-top: 1px solid #eee; padding-top: 20px;">
+                <button type="button" onclick="closeProfileModal()" style="width: 100%; text-align: center; padding: 10px 20px; border: 1px solid #ddd; background: white; color: #666; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f5f5f5'; this.style.borderColor='#bbb';" onmouseout="this.style.background='white'; this.style.borderColor='#ddd';">Tutup</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

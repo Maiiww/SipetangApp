@@ -54,10 +54,10 @@ class AuthController extends Controller
             $role = strtolower($user->role);
 
             if ($role === 'admin') {
-                return redirect()->intended(route('admin.manajemen.user'));
+                return redirect()->intended(route('admin.manajemen.user'))->with('welcome', 'Selamat datang Admin Dinas');
             }
 
-            return redirect()->intended(route('staff.dashboard'));
+            return redirect()->intended(route('staff.dashboard'))->with('welcome', 'Selamat datang Staff Dinas');
         }
 
         \Log::info('Login failed', ['username' => $request->username]);

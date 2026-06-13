@@ -94,14 +94,58 @@
     </ul>
 
     <div class="sidebar-logout">
-        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+        <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display: inline;">
             @csrf
-            <button type="submit" class="sidebar-logout-button">
+            <button type="button" class="sidebar-logout-button" onclick="confirmLogout(event)">
                 <i class="fas fa-sign-out-alt"></i> <span>Keluar</span>
             </button>
         </form>
     </div>
 </aside>
+
+<script>
+    // Load SweetAlert2 dynamically if not already loaded
+    if (typeof Swal === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+        document.head.appendChild(script);
+    }
+
+    function confirmLogout(event) {
+        event.preventDefault();
+        
+        const performLogout = () => {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Konfirmasi Keluar',
+                    text: 'Apakah Anda yakin ingin keluar?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#0a3b99',
+                    confirmButtonText: 'Ya, Keluar',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('logout-form').submit();
+                    }
+                });
+            } else {
+                if (confirm('Apakah Anda yakin ingin keluar?')) {
+                    document.getElementById('logout-form').submit();
+                }
+            }
+        };
+
+        if (typeof Swal === 'undefined') {
+            // Give dynamic script a brief moment to initialize
+            setTimeout(performLogout, 150);
+        } else {
+            performLogout();
+        }
+    }
+</script>
 
 <style>
     .sidebar-menu a {

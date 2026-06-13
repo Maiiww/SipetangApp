@@ -234,7 +234,7 @@
         }
 
         .profile-modal-header {
-            background: linear-gradient(135deg, #0d2640 0%, #1a4d7d 100%);
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -266,15 +266,17 @@
         .profile-avatar {
             width: 80px;
             height: 80px;
-            background: rgba(255, 255, 255, 0.2);
+            background: white;
             border: 3px solid white;
-            border-radius: 12px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
             font-size: 32px;
             font-weight: 700;
+            color: #0a3b99;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
         .profile-name {
@@ -1064,6 +1066,56 @@
                 padding: 14px 10px;
             }
         }
+
+        /* Header Profile Button */
+        .header-profile-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+
+        .header-profile-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .header-profile-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .header-profile-btn:hover .header-profile-avatar {
+            background: white;
+            color: #0a3b99;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
     </style>
 </head>
 
@@ -1074,10 +1126,11 @@
         <div class="header">
             <div class="header-right">
                 <div class="header-icons">
-                    <a href="#" style="text-decoration: none; color: inherit;" onclick="openProfileModal(event)">
-                        <div class="header-icon" style="cursor: pointer;"><i class="fas fa-user"
-                                style="color: #1a4d7d;"></i></div>
-                    </a>
+                    <div class="header-profile-btn" onclick="openProfileModal(event)" title="Profil Saya">
+                        <div class="header-profile-avatar">
+                            STF
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1365,6 +1418,10 @@
                     </div>
                 @endif
             </div>
+        </div>
+
+        <div class="page-footer">
+            &copy; 2026 Dinas Perikanan Kabupaten Subang | Neutron Tech Solutions
         </div>
     </main>
 
@@ -2389,7 +2446,7 @@
             <div class="profile-modal-header">
                 <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
                 <div class="profile-avatar">
-                    {{ strtoupper(substr(Auth::user()->nama ?? Auth::user()->username, 0, 2)) }}</div>
+                    STF</div>
                 <div class="profile-name">{{ Auth::user()->nama ?? Auth::user()->username }}</div>
                 <div class="profile-role">{{ ucfirst(Auth::user()->role) }}</div>
             </div>
@@ -2447,6 +2504,9 @@
                         @endif
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer" style="margin: 0 30px 30px; display: flex; justify-content: center; border-top: 1px solid #eee; padding-top: 20px;">
+                <button type="button" onclick="closeProfileModal()" style="width: 100%; text-align: center; padding: 10px 20px; border: 1px solid #ddd; background: white; color: #666; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f5f5f5'; this.style.borderColor='#bbb';" onmouseout="this.style.background='white'; this.style.borderColor='#ddd';">Tutup</button>
             </div>
         </div>
     </div>

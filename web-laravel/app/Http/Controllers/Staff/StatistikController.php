@@ -64,7 +64,7 @@ class StatistikController extends Controller
 
             $data[] = [
                 'month' => $month['month'],
-                'value' => (float) $total ?: 0,
+                'value' => (float) ($total / 1000) ?: 0, // Convert to Tons
             ];
         }
 
@@ -77,6 +77,7 @@ class StatistikController extends Controller
     private function getTotalProduksi()
     {
         $total = Tangkapan::where('status', 'Divalidasi')->sum('berat');
+        $totalTons = $total / 1000; // Convert to Tons
 
         // Hitung pertumbuhan dibanding bulan lalu
         $thisMonthTotal = Tangkapan::whereYear('created_at', Carbon::now()->year)
@@ -92,12 +93,12 @@ class StatistikController extends Controller
         $growth = $lastMonthTotal > 0 ? round((($thisMonthTotal - $lastMonthTotal) / $lastMonthTotal) * 100) : 0;
 
         return [
-            'total' => round($total, 2),
-            'totalFormatted' => $this->formatNumber($total),
+            'total' => round($totalTons, 2),
+            'totalFormatted' => $this->formatNumber($totalTons), // Format the Ton value
             'unit' => 'Ton',
             'growth' => $growth,
-            'thisMonth' => round($thisMonthTotal, 2),
-            'lastMonth' => round($lastMonthTotal, 2),
+            'thisMonth' => round($thisMonthTotal / 1000, 2),
+            'lastMonth' => round($lastMonthTotal / 1000, 2),
         ];
     }
 

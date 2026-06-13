@@ -16,11 +16,60 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(180deg, #04255f 0%, #0b3b80 70%, #0c477e 100%);
+            background: linear-gradient(180deg, #04255f 0%, #0b3b80 70%, #0c477e 100%) no-repeat fixed;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 30px;
+        }
+
+        .bg-blob-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Animated Background Blobs for depth */
+        .bg-blob {
+            position: absolute;
+            width: 550px;
+            height: 550px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.55;
+            animation: float-blob 25s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            background: radial-gradient(circle, #0d3a71 0%, rgba(13, 58, 113, 0) 70%);
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -10%;
+            background: radial-gradient(circle, #0c477e 0%, rgba(12, 71, 126, 0) 70%);
+            animation-delay: -7s;
+        }
+
+        @keyframes float-blob {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(60px, -40px) scale(1.1);
+            }
+            100% {
+                transform: translate(-30px, 30px) scale(0.9);
+            }
         }
 
         .login-wrapper {
@@ -31,6 +80,9 @@
             overflow: hidden;
             background: white;
             box-shadow: 0 40px 120px rgba(6, 31, 91, 0.25);
+            position: relative;
+            z-index: 10;
+            transition: transform 0.3s ease;
         }
 
         .login-left {
@@ -51,6 +103,8 @@
             position: absolute;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.08);
+            filter: blur(8px);
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .login-left::before {
@@ -65,6 +119,14 @@
             left: -20%;
             width: 360px;
             height: 360px;
+        }
+
+        .login-wrapper:hover .login-left::before {
+            transform: scale(1.08) translate(-10px, 10px);
+        }
+
+        .login-wrapper:hover .login-left::after {
+            transform: scale(1.08) translate(10px, -10px);
         }
 
         .login-left-content {
@@ -90,6 +152,11 @@
             flex-shrink: 0;
             overflow: hidden;
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+            transition: transform 0.4s ease;
+        }
+
+        .login-wrapper:hover .logo-box {
+            transform: rotate(-5deg) scale(1.04);
         }
 
         .sipetang-logo {
@@ -119,6 +186,9 @@
             margin-bottom: 18px;
             line-height: 0.95;
             letter-spacing: -1px;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .login-description {
@@ -153,6 +223,13 @@
             border-radius: 28px;
             padding: 50px 44px;
             box-shadow: 0 30px 80px rgba(15, 44, 89, 0.12);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 45px 90px rgba(15, 44, 89, 0.16);
         }
 
         .form-header h2 {
@@ -183,9 +260,17 @@
             letter-spacing: 0.8px;
         }
 
-        .form-group input {
+        /* Inputs wrapper with icon placement */
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
             width: 100%;
-            padding: 14px 16px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 48px !important;
             border: 1px solid #dde4ef;
             border-radius: 14px;
             font-size: 15px;
@@ -194,14 +279,27 @@
             color: #2d3f5f;
         }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: #c6d8f4;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(20, 79, 167, 0.08);
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 18px;
+            color: #9aa3b4;
+            font-size: 16px;
+            transition: color 0.3s ease;
+            z-index: 10;
         }
 
-        .form-group input::placeholder {
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #0f4d8d;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(13, 77, 141, 0.15);
+        }
+
+        .input-wrapper input:focus ~ .input-icon {
+            color: #0f4d8d;
+        }
+
+        .input-wrapper input::placeholder {
             color: #9aa3b4;
         }
 
@@ -209,11 +307,6 @@
             position: relative;
             display: flex;
             align-items: center;
-        }
-
-        .password-group input {
-            padding-right: 44px;
-            width: 100%;
         }
 
         .password-toggle {
@@ -224,7 +317,7 @@
             cursor: pointer;
             font-size: 18px;
             color: #94a3bb;
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.2s ease;
             z-index: 20;
             pointer-events: auto;
             display: flex;
@@ -240,7 +333,7 @@
         }
 
         .password-toggle:active {
-            transform: translateY(-50%) scale(0.95);
+            transform: translateY(-50%) scale(0.9);
         }
 
         .password-toggle i {
@@ -269,7 +362,8 @@
         }
 
         .remember-me input[type="checkbox"] {
-            width: auto;
+            width: 16px;
+            height: 16px;
             margin-right: 10px;
             cursor: pointer;
             accent-color: #f16301;
@@ -303,8 +397,13 @@
 
         .btn-login:hover {
             background: #d95401;
-            transform: translateY(-1px);
-            box-shadow: 0 14px 35px rgba(241, 99, 1, 0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 35px rgba(241, 99, 1, 0.22);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(241, 99, 1, 0.15);
         }
 
         .error-message,
@@ -342,6 +441,10 @@
         }
 
         @media (max-width: 980px) {
+            .bg-blob {
+                display: none;
+            }
+
             .login-wrapper {
                 flex-direction: column;
             }
@@ -395,6 +498,12 @@
 </head>
 
 <body>
+    <!-- Background Animated Blobs -->
+    <div class="bg-blob-wrapper">
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+    </div>
+
     <div class="login-wrapper">
         <!-- Left Side -->
         <div class="login-left">
@@ -447,15 +556,19 @@
 
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username"
-                            placeholder="Masukan Nama" required value="{{ old('username') }}" autofocus>
+                        <div class="input-wrapper">
+                            <input type="text" class="form-control" id="username" name="username"
+                                placeholder="Masukan Nama" required value="{{ old('username') }}" autofocus>
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <div class="password-group">
+                        <div class="password-group input-wrapper">
                             <input type="password" class="form-control" id="password" name="password"
                                 placeholder="••••••••" required>
+                            <i class="fas fa-lock input-icon"></i>
                             <span class="password-toggle" id="togglePasswordBtn" style="cursor: pointer;">
                                 <i class="fas fa-eye"></i>
                             </span>

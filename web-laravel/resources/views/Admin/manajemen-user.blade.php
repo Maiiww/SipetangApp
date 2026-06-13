@@ -7,6 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Manajemen User - SIPETANG</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* Menggunakan CSS yang Anda berikan sebelumnya */
         * {
@@ -535,25 +537,41 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
             overflow: auto;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalScaleUp {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .modal.active {
             display: flex;
             align-items: center;
             justify-content: center;
+            animation: modalFadeIn 0.25s ease-out forwards;
         }
 
         .modal-content {
             background-color: white;
             padding: 30px;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             max-height: 90vh;
             overflow-y: auto;
+        }
+
+        .modal.active .modal-content {
+            animation: modalScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         .modal-header {
@@ -616,13 +634,14 @@
         .form-group-modal input,
         .form-group-modal select,
         .form-group-modal textarea {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 13px;
+            padding: 11px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13.5px;
             font-family: inherit;
-            background: #fcfcfc;
-            transition: border-color 0.2s ease;
+            background: #f8fafc;
+            transition: all 0.25s ease;
+            color: #334155;
         }
 
         .form-group-modal input:focus,
@@ -631,6 +650,7 @@
             outline: none;
             border-color: #2563eb;
             background: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
         .form-group-modal textarea {
@@ -684,6 +704,154 @@
             background: #ccc;
             cursor: not-allowed;
         }
+
+        /* Profile Button Header */
+        .profile-icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+
+        .profile-icon-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .profile-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .profile-icon-btn:hover .profile-avatar {
+            background: white;
+            color: #0a3b99;
+        }
+
+        /* Profile Modal Specific Styles */
+        .profile-modal-header-bg {
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            height: 100px;
+            border-radius: 12px 12px 0 0;
+            margin: -30px -30px 0 -30px;
+            position: relative;
+        }
+
+        .profile-modal-avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: -50px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .profile-modal-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0a3b99;
+            font-size: 44px;
+            margin-bottom: 12px;
+        }
+
+        .profile-modal-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0d2640;
+            margin: 0 0 5px 0;
+            text-align: center;
+        }
+
+        .profile-modal-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(3, 105, 161, 0.08);
+        }
+
+        .profile-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 10px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 20px;
+        }
+
+        .profile-detail-card {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+
+        .profile-detail-card:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+        }
+
+        .profile-detail-card.full-width {
+            grid-column: span 2;
+        }
+
+        .profile-detail-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .profile-detail-value i {
+            margin-right: 6px;
+            color: #0a3b99;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
     </style>
 </head>
 
@@ -694,10 +862,9 @@
         <div class="header">
             <div style="flex: 1;"></div>
             <div class="header-right">
-                <div class="user-profile">
-                    <div>
-                        <p style="font-size: 14px; font-weight: bold;">Admin</p>
-                        <small style="color: #888;">DINAS PERIKANAN</small>
+                <div class="profile-icon-btn" onclick="openAdminProfileModal()" title="Profil Saya">
+                    <div class="profile-avatar" style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">
+                        {{ strtoupper(substr(Auth::user()->nama ?? Auth::user()->username ?? 'ADM', 0, 3)) }}
                     </div>
                 </div>
             </div>
@@ -828,6 +995,10 @@
                 </div>
             </div>
         </div>
+
+        <div class="page-footer">
+            &copy; 2026 Dinas Perikanan Kabupaten Subang | Neutron Tech Solutions
+        </div>
     </div>
 
     <!-- Modal Tambah User -->
@@ -861,13 +1032,21 @@
                 <div class="form-row">
                     <div class="form-group-modal">
                         <label>PASSWORD *</label>
-                        <input type="password" id="password" name="password" placeholder="Masukkan password"
-                            required>
+                        <div class="password-input-wrapper" style="position: relative; display: flex; align-items: center;">
+                            <input type="password" id="password" name="password" placeholder="Masukkan password" required style="width: 100%; padding-right: 40px;">
+                            <span class="password-toggle-icon" id="togglePassword" style="position: absolute; right: 12px; cursor: pointer; color: #94a3bb; transition: color 0.3s;" onclick="toggleFieldVisibility('password', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
                     </div>
                     <div class="form-group-modal">
                         <label>KONFIRMASI PASSWORD *</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation"
-                            placeholder="Konfirmasi password" required>
+                        <div class="password-input-wrapper" style="position: relative; display: flex; align-items: center;">
+                            <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi password" required style="width: 100%; padding-right: 40px;">
+                            <span class="password-toggle-icon" id="togglePasswordConfirm" style="position: absolute; right: 12px; cursor: pointer; color: #94a3bb; transition: color 0.3s;" onclick="toggleFieldVisibility('password_confirmation', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -1005,63 +1184,137 @@
         }
 
         function deactivateUser(userId, userName) {
-            if (confirm(`Nonaktifkan akun "${userName}"?`)) {
-                fetch(`{{ route('admin.user.update-status') }}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                        },
-                        body: JSON.stringify({
-                            user_id: userId,
-                            is_active: false
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Akun berhasil dinonaktifkan!');
-                            location.reload();
-                        } else {
-                            alert(data.message || 'Gagal menonaktifkan akun!');
+            Swal.fire({
+                title: 'Konfirmasi Nonaktifkan',
+                text: `Apakah Anda yakin ingin menonaktifkan akun "${userName}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#0a3b99',
+                confirmButtonText: 'Ya, Nonaktifkan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Sedang menonaktifkan akun',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan: ' + error);
                     });
-            }
+
+                    fetch(`{{ route('admin.user.update-status') }}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                            },
+                            body: JSON.stringify({
+                                user_id: userId,
+                                is_active: false
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Akun berhasil dinonaktifkan!',
+                                    confirmButtonColor: '#0a3b99'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: data.message || 'Gagal menonaktifkan akun!',
+                                    confirmButtonColor: '#0a3b99'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan',
+                                text: 'Terjadi kesalahan: ' + error,
+                                confirmButtonColor: '#0a3b99'
+                            });
+                        });
+                }
+            });
         }
 
         function activateUser(userId, userName) {
-            if (confirm(`Aktifkan akun "${userName}"?`)) {
-                fetch(`{{ route('admin.user.update-status') }}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                        },
-                        body: JSON.stringify({
-                            user_id: userId,
-                            is_active: true
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Akun berhasil diaktifkan!');
-                            location.reload();
-                        } else {
-                            alert(data.message || 'Gagal mengaktifkan akun!');
+            Swal.fire({
+                title: 'Konfirmasi Aktifkan',
+                text: `Apakah Anda yakin ingin mengaktifkan kembali akun "${userName}"?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#0a3b99',
+                confirmButtonText: 'Ya, Aktifkan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Sedang mengaktifkan akun',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan: ' + error);
                     });
-            }
+
+                    fetch(`{{ route('admin.user.update-status') }}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                            },
+                            body: JSON.stringify({
+                                user_id: userId,
+                                is_active: true
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Akun berhasil diaktifkan!',
+                                    confirmButtonColor: '#0a3b99'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: data.message || 'Gagal mengaktifkan akun!',
+                                    confirmButtonColor: '#0a3b99'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan',
+                                text: 'Terjadi kesalahan: ' + error,
+                                confirmButtonColor: '#0a3b99'
+                            });
+                        });
+                }
+            });
         }
 
         function updateRoleFields() {
@@ -1070,8 +1323,8 @@
             const wilayah_input = document.getElementById('wilayah_input');
             const wilayah_required = document.getElementById('wilayah_required');
 
-            // Show asal TPI field only for juruRekap role
-            if (role === 'juruRekap') {
+            // Show asal TPI field for staff, juruRekap, and admin roles
+            if (role === 'juruRekap' || role === 'staff' || role === 'admin') {
                 asal_tpi_field.style.display = 'grid';
                 wilayah_input.setAttribute('required', 'required');
                 wilayah_required.style.display = 'inline';
@@ -1107,8 +1360,38 @@
         // Close modal when clicking outside of it
         window.onclick = function(event) {
             const modal = document.getElementById('tambahUserModal');
+            const profileModal = document.getElementById('adminProfileModal');
             if (event.target == modal) {
                 closeModal();
+            }
+            if (event.target == profileModal) {
+                closeAdminProfileModal();
+            }
+        }
+
+        function openAdminProfileModal() {
+            document.getElementById('adminProfileModal').classList.add('active');
+        }
+
+        function closeAdminProfileModal() {
+            document.getElementById('adminProfileModal').classList.remove('active');
+        }
+
+        function toggleFieldVisibility(fieldId, element) {
+            const input = document.getElementById(fieldId);
+            const icon = element.querySelector('i');
+            if (input && icon) {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                    element.style.color = '#0a3b99';
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                    element.style.color = '#94a3bb';
+                }
             }
         }
 
@@ -1120,14 +1403,30 @@
             const pwdConfirm = document.getElementById('password_confirmation')?.value || '';
 
             if (pwd !== pwdConfirm) {
-                alert('Password dan konfirmasi password tidak cocok.');
-                document.getElementById('password_confirmation').focus();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Password Tidak Cocok',
+                    text: 'Password dan konfirmasi password tidak cocok.',
+                    confirmButtonColor: '#0a3b99',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    document.getElementById('password_confirmation').focus();
+                });
                 return;
             }
 
             const submitBtn = document.getElementById('submitTambahUser');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Menyimpan...';
+
+            Swal.fire({
+                title: 'Memproses...',
+                text: 'Sedang menyimpan data user baru',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             const formData = new FormData(this);
 
@@ -1144,20 +1443,37 @@
                     submitBtn.textContent = 'Tambah User';
 
                     if (data.success) {
-                        alert('User berhasil ditambahkan!');
-                        closeModal();
-                        location.reload();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'User berhasil ditambahkan!',
+                            confirmButtonColor: '#0a3b99',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            closeModal();
+                            location.reload();
+                        });
                     } else {
                         let errorMsg = data.message || 'Gagal menambahkan user';
+                        let htmlContent = '';
                         if (data.errors) {
-                            errorMsg += '\n\nDetail Error:\n';
+                            htmlContent = '<div style="text-align: left; margin-top: 10px; padding: 10px; background: #fee2e2; border-radius: 8px; border: 1px solid #fca5a5;">';
                             for (let field in data.errors) {
                                 if (Array.isArray(data.errors[field])) {
-                                    errorMsg += '• ' + field + ': ' + data.errors[field].join(', ') + '\n';
+                                    htmlContent += '<div style="margin-bottom: 5px; color: #991b1b; font-size: 13px; font-weight: 500;">• ' + data.errors[field].join(', ') + '</div>';
                                 }
                             }
+                            htmlContent += '</div>';
                         }
-                        alert(errorMsg);
+                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Menambah User',
+                            text: data.errors ? undefined : errorMsg,
+                            html: data.errors ? `<div style="font-weight: 600; margin-bottom: 10px;">${errorMsg}</div>${htmlContent}` : undefined,
+                            confirmButtonColor: '#0a3b99',
+                            confirmButtonText: 'OK'
+                        });
                         console.error('Validation Errors:', data.errors);
                     }
                 })
@@ -1165,10 +1481,94 @@
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Tambah User';
                     console.error('Error:', error);
-                    alert('Terjadi kesalahan: ' + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan',
+                        text: 'Terjadi kesalahan saat menyimpan data: ' + error,
+                        confirmButtonColor: '#0a3b99',
+                        confirmButtonText: 'OK'
+                    });
                 });
         });
     </script>
+
+    @if (session('welcome'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil Masuk',
+                    text: "Selamat datang Admin Dinas",
+                    confirmButtonColor: '#0a3b99',
+                    confirmButtonText: 'Lanjutkan'
+                });
+            });
+        </script>
+    @endif
+    <!-- Modal Profil Admin -->
+    <div id="adminProfileModal" class="modal">
+        <div class="modal-content" style="max-width: 450px; padding: 30px; position: relative;">
+            <div class="profile-modal-header-bg">
+                <button class="modal-close" onclick="closeAdminProfileModal()" style="position: absolute; right: 15px; top: 15px; color: white;">&times;</button>
+            </div>
+            
+            <div class="profile-modal-avatar-container">
+                <div class="profile-modal-avatar" style="font-size: 32px; font-weight: 800; letter-spacing: 0.5px;">
+                    {{ strtoupper(substr(Auth::user()->nama ?? Auth::user()->username ?? 'ADM', 0, 3)) }}
+                </div>
+                <h3 class="profile-modal-name">{{ Auth::user()->nama ?? Auth::user()->username }}</h3>
+                <span class="profile-modal-badge">{{ Auth::user()->role ?? 'Admin' }}</span>
+            </div>
+
+            <div class="profile-details-grid">
+                <div class="profile-detail-card">
+                    <div class="profile-detail-label">No. Induk / ID</div>
+                    <div class="profile-detail-value">
+                        <i class="fas fa-id-badge"></i> {{ Auth::user()->no_induk ?? '-' }}
+                    </div>
+                </div>
+                
+                <div class="profile-detail-card">
+                    <div class="profile-detail-label">Username</div>
+                    <div class="profile-detail-value">
+                        <i class="fas fa-user"></i> {{ Auth::user()->username ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="profile-detail-card">
+                    <div class="profile-detail-label">Jenis Kelamin</div>
+                    <div class="profile-detail-value">
+                        <i class="fas fa-venus-mars"></i> {{ Auth::user()->jenis_kelamin ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="profile-detail-card">
+                    <div class="profile-detail-label">No. Telepon</div>
+                    <div class="profile-detail-value">
+                        <i class="fas fa-phone"></i> {{ Auth::user()->no_telepon ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="profile-detail-card full-width">
+                    <div class="profile-detail-label">Wilayah Tugas</div>
+                    <div class="profile-detail-value">
+                        <i class="fas fa-map-marker-alt"></i> {{ Auth::user()->wilayah ?? 'Dinas Pusat (Subang)' }}
+                    </div>
+                </div>
+
+                <div class="profile-detail-card full-width">
+                    <div class="profile-detail-label">Alamat</div>
+                    <div class="profile-detail-value">
+                        <i class="fas fa-home"></i> {{ Auth::user()->alamat ?? '-' }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                <button type="button" class="btn-cancel" onclick="closeAdminProfileModal()" style="width: 100%; text-align: center;">Tutup</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
