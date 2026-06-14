@@ -262,4 +262,45 @@ class ValidasiController extends Controller
 
         return redirect()->route('staff.validasi')->with('success', 'Data terpilih berhasil divalidasi massal');
     }
+
+    /**
+     * Polling endpoint: returns current pending count & latest ID
+     * Used by the frontend for real-time notification without WebSockets
+     */
+    public function pollPending(Request $request)
+    {
+        $currentUser = Auth::user();
+        $tpiOptions  = ['Patimban', 'Genteng', 'Mayangan', 'Cirewang', 'Muara Ciasem', 'Blanakan', 'Rawameneng', 'Cilamaya Girang'];
+
+        $query = Tangkapan::whereIn('status', ['Draft', 'Menunggu Validasi']);
+
+        if ($currentUser->role === 'staff') {
+            if (
+                strpos($currentUser->wilayah, 'Pusat') === false &&
+                strpos($currentUser->wilayah, 'pusat') === false &&
+                !empty($currentUser->wilayah)
+            ) {
+                $query->whereHas('user', function ($q) use ($currentUser) {
+                    $q->where('wilayah', 'LIKE', '%' . $currentUser->wilayah . '%');
+                });
+            }
+        }
+
+        $pending   = $query->count();
+        $latestId  = $query->max('id') ?? 0;
+
+        // Get the 3 most recent new laporan for the toast detail
+        $recent = $query->orderBy('id', 'desc')->limit(3)->get(['id', 'jenis_ikan', 'berat', 'created_at']);
+
+        return response()->json([
+            'pending'   => $pending,
+            'latest_id' => $latestId,
+            'recent'    => $recent->map(fn ($t) => [
+                'id'        => $t->id,
+                'jenis_ikan'=> $t->jenis_ikan,
+                'berat'     => $t->berat,
+                'waktu'     => $t->created_at ? $t->created_at->diffForHumans() : '-',
+            ]),
+        ]);
+    }
 }

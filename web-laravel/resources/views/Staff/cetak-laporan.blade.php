@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Cetak Laporan - SIPETANG</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -17,8 +20,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #eef2ff 0%, #f0f9ff 50%, #f5f3ff 100%);
             color: #24374a;
             min-height: 100vh;
             display: flex;
@@ -367,8 +370,10 @@
 
         .page-title h1 {
             font-size: 32px;
-            color: #102a43;
+            font-weight: 800;
+            color: #0d2640;
             margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .page-title p {
@@ -376,6 +381,22 @@
             font-size: 14px;
             color: #556a82;
             line-height: 1.7;
+        }
+
+        .page-title-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(10, 59, 153, 0.08) 0%, rgba(29, 101, 208, 0.12) 100%);
+            border: 1px solid rgba(10, 59, 153, 0.15);
+            color: #0a3b99;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
         .layout-grid {
@@ -387,10 +408,13 @@
         }
 
         .card {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 22px;
             padding: 28px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08), 0 1px 0 rgba(255,255,255,0.8) inset;
+            border: 1px solid rgba(255, 255, 255, 0.7);
         }
 
         .section-title {
@@ -457,7 +481,7 @@
         }
 
         .frequency-card {
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc 0%, #f0f4ff 100%);
             border: 1px solid #e6ecf6;
             border-radius: 20px;
             padding: 22px;
@@ -470,20 +494,24 @@
             justify-content: space-between;
             align-items: center;
             background: #fff;
-            border: 1px solid #dce1e9;
+            border: 1.5px solid #dce1e9;
             border-radius: 18px;
             padding: 16px;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
+            transition: all 0.3s ease;
             cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
         .frequency-option.active-laporan {
             border-color: #0d2640;
-            background: #edf2ff;
+            background: linear-gradient(135deg, #edf2ff 0%, #e8f0fe 100%);
+            box-shadow: 0 4px 16px rgba(10, 59, 153, 0.12);
         }
 
         .frequency-option:hover {
             border-color: #1a4d7d;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(10, 59, 153, 0.1);
         }
 
         .frequency-option input {
@@ -528,43 +556,49 @@
         }
 
         .format-button {
-            border: 1px solid #dce1e9;
+            border: 1.5px solid #dce1e9;
             border-radius: 12px;
             background: #fff;
             color: #102a43;
             padding: 10px 18px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
         }
 
         .format-button.active {
-            background: #0d2640;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
             color: #fff;
-            border-color: #0d2640;
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(10, 59, 153, 0.3);
         }
 
         .button-primary {
-            background: #0d2640;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
             color: #fff;
-            border: 1px solid #0d2640;
+            border: none;
             padding: 10px 18px;
             border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(10, 59, 153, 0.25);
         }
 
         .button-primary:hover {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(10, 59, 153, 0.35);
         }
 
         .metric-card {
-            background: #fff;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
             border-radius: 24px;
             padding: 26px;
             margin-bottom: 24px;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08), 0 1px 0 rgba(255,255,255,0.8) inset;
+            border: 1px solid rgba(255,255,255,0.7);
         }
 
         .metric-top {
@@ -607,9 +641,17 @@
             align-items: center;
             justify-content: space-between;
             gap: 14px;
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc 0%, #f0f4ff 100%);
             border-radius: 18px;
             padding: 16px 18px;
+            border: 1px solid rgba(220, 225, 233, 0.5);
+            transition: all 0.25s ease;
+        }
+
+        .report-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(10, 59, 153, 0.08);
+            border-color: rgba(29, 101, 208, 0.2);
         }
 
         .report-item .report-info {
@@ -624,9 +666,10 @@
             border-radius: 14px;
             display: grid;
             place-items: center;
-            background: #0d2640;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
             color: #fff;
             font-size: 16px;
+            box-shadow: 0 4px 10px rgba(10, 59, 153, 0.2);
         }
 
         .report-text {
@@ -652,29 +695,82 @@
         }
 
         .table-card {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+            padding: 0;
+            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08), 0 1px 0 rgba(255,255,255,0.8) inset;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            overflow: hidden;
         }
 
         .table-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
+            padding: 22px 26px 18px;
             gap: 10px;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 60%, #3b82f6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .table-header::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 50%;
+        }
+
+        .table-header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 40%;
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 50%;
         }
 
         .table-header h2 {
-            font-size: 16px;
-            color: #102a43;
+            font-size: 17px;
+            color: #ffffff;
             font-weight: 700;
+            letter-spacing: -0.2px;
         }
 
         .table-header .info-text {
             font-size: 12px;
-            color: #64748b;
+            color: rgba(255,255,255,0.75);
+        }
+
+        .table-header-icon {
+            width: 38px;
+            height: 38px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            margin-right: 12px;
+        }
+
+        .table-header-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .table-body-wrapper {
+            padding: 20px 24px 24px;
         }
 
         .report-table {
@@ -700,22 +796,29 @@
             background: transparent;
         }
 
+        .report-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
         .report-table tbody tr:hover {
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+            transform: scale(1.001);
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 8px 14px;
+            gap: 5px;
+            padding: 6px 12px;
             border-radius: 999px;
             font-size: 11px;
-            color: #102a43;
-            background: #e6f0ff;
+            color: #1e40af;
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.04em;
+            border: 1px solid rgba(59, 130, 246, 0.15);
         }
 
         .action-link {
@@ -737,23 +840,32 @@
             width: 36px;
             height: 36px;
             border-radius: 12px;
-            border: 1px solid #dce1e9;
+            border: 1.5px solid #dce1e9;
             background: #fff;
             color: #102a43;
             cursor: pointer;
             font-weight: 700;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .pagination button:hover:not(:disabled) {
+            border-color: #1d65d0;
+            color: #1d65d0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(29, 101, 208, 0.15);
         }
 
         .pagination button:disabled {
             cursor: not-allowed;
-            opacity: 0.5;
+            opacity: 0.4;
         }
 
         .pagination button.active {
-            background: #0d2640;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
             color: #fff;
-            border-color: #0d2640;
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(10, 59, 153, 0.3);
         }
 
         /* Modal styles */
@@ -1110,16 +1222,610 @@
         /* Footer */
         .page-footer {
             text-align: center;
-            font-size: 14px;
-            color: #777;
+            font-size: 13px;
+            color: #94a3b8;
             margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
+            padding: 20px 0;
+            border-top: 1px solid rgba(220, 225, 233, 0.6);
+        }
+
+        /* Form card enhanced */
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 28px;
+            border-radius: 22px;
+            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08), 0 1px 0 rgba(255,255,255,0.8) inset;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            height: fit-content;
+        }
+
+        .form-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 26px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #f0f4ff;
+        }
+
+        .form-card-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 6px 16px rgba(10, 59, 153, 0.25);
+            flex-shrink: 0;
+        }
+
+        .form-card-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #102a43;
+            letter-spacing: -0.2px;
+        }
+
+        .form-card-subtitle {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .form-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-section-label::before {
+            content: '';
+            width: 3px;
+            height: 12px;
+            background: linear-gradient(180deg, #0a3b99 0%, #1d65d0 100%);
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .form-input-styled {
+            width: 100%;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 13.5px;
+            background: #f8fafc;
+            color: #102a43;
+            outline: none;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+
+        .form-input-styled:focus {
+            border-color: #1d65d0;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(29, 101, 208, 0.1);
+        }
+
+        .form-select-styled {
+            width: 100%;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 40px 12px 16px;
+            font-size: 13.5px;
+            background-color: #f8fafc;
+            color: #102a43;
+            outline: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="%231d65d0" d="M5.5 7.5l4.5 4.5 4.5-4.5"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 14px;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .form-select-styled:focus {
+            border-color: #1d65d0;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(29, 101, 208, 0.1);
+        }
+
+        .radio-option-styled {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .radio-option-styled:hover {
+            border-color: #1d65d0;
+            background: #f0f4ff;
+            transform: translateX(3px);
+            box-shadow: 0 4px 12px rgba(29, 101, 208, 0.1);
+        }
+
+        .radio-option-styled.selected {
+            border-color: #0a3b99;
+            background: linear-gradient(135deg, #edf2ff 0%, #e8f0fe 100%);
+            box-shadow: 0 4px 14px rgba(10, 59, 153, 0.12);
+        }
+
+        .radio-option-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .radio-harian .radio-option-icon {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #d97706;
+        }
+
+        .radio-bulanan .radio-option-icon {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #059669;
+        }
+
+        .radio-tahunan .radio-option-icon {
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+            color: #7c3aed;
+        }
+
+        .radio-option-text .title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #102a43;
+        }
+
+        .radio-option-text .desc {
+            font-size: 11.5px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .format-btn-pdf {
+            flex: 1;
+            padding: 13px;
+            border: 1.5px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .format-btn-pdf:hover {
+            border-color: #dc2626;
+            color: #dc2626;
+            background: #fef2f2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.12);
+        }
+
+        .format-btn-pdf.selected {
+            border-color: #dc2626;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #dc2626;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.2);
+        }
+
+        .format-btn-excel {
+            flex: 1;
+            padding: 13px;
+            border: 1.5px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .format-btn-excel:hover {
+            border-color: #16a34a;
+            color: #16a34a;
+            background: #f0fdf4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(22, 163, 74, 0.12);
+        }
+
+        .format-btn-excel.selected {
+            border-color: #16a34a;
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            color: #16a34a;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.2);
+        }
+
+        .btn-reset {
+            flex: 1;
+            padding: 13px;
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-reset:hover {
+            background: #e2e8f0;
+            color: #475569;
+            transform: translateY(-1px);
+        }
+
+        .btn-download-main {
+            flex: 1;
+            padding: 13px;
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(10, 59, 153, 0.3);
+        }
+
+        .btn-download-main:hover {
+            background: linear-gradient(135deg, #0d2640 0%, #0a3b99 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(10, 59, 153, 0.4);
+        }
+
+        .btn-download-main:active {
+            transform: translateY(0);
+        }
+
+        .sub-section-card {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+            border: 1.5px solid rgba(29, 101, 208, 0.15);
+            border-radius: 14px;
+            padding: 16px;
+            margin-top: 6px;
+        }
+
+        .sub-section-card .btn-preview {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: #0a3b99;
+            border: 1.5px solid rgba(29, 101, 208, 0.2);
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(29, 101, 208, 0.08);
+            margin-top: 10px;
+        }
+
+        .sub-section-card .btn-preview:hover {
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(10, 59, 153, 0.25);
+        }
+
+        /* Loading state */
+        .loading-state {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .loading-state .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #1d65d0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            color: #cbd5e1;
+        }
+
+        /* Action buttons in table */
+        .tbl-btn-detail {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+            color: #1d65d0;
+            padding: 7px 14px;
+            border: 1.5px solid rgba(29, 101, 208, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11.5px;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tbl-btn-detail:hover {
+            background: linear-gradient(135deg, #1d65d0 0%, #0a3b99 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(29, 101, 208, 0.25);
+        }
+
+        .tbl-btn-download {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            color: #0a3b99;
+            padding: 7px 14px;
+            border: 1.5px solid rgba(10, 59, 153, 0.15);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11.5px;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tbl-btn-download:hover {
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(10, 59, 153, 0.25);
+        }
+
+        /* Keyframes */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeSlideIn 0.4s ease forwards;
+        }
+
+        /* DARK MODE STYLES & VARIABLES */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar, .header, .card, .metric-card, .table-card, .frequency-card, .frequency-option, .report-item, .modal-content, .modal-footer, .form-input-styled, .form-select-styled, .radio-option-styled, .format-button, .btn-reset, input, select {
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: #0f172a; /* Slate 900 */
+            color: #f1f5f9; /* Slate 100 */
+        }
+
+        body.dark-mode .sidebar {
+            background: linear-gradient(180deg, #020617 0%, #0b1e3f 100%);
+            box-shadow: 4px 0 36px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .header {
+            background: #1e293b; /* Slate 800 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            border-color: #334155;
+        }
+
+        body.dark-mode .header-icon {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        body.dark-mode .header-icon:hover {
+            background: #475569;
+        }
+
+        body.dark-mode .header-profile-btn {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        }
+
+        body.dark-mode .header-profile-avatar {
+            border-color: #1e293b;
+        }
+
+        body.dark-mode .page-title h1,
+        body.dark-mode .section-title h2,
+        body.dark-mode .metric-top .metric-value,
+        body.dark-mode .report-name,
+        body.dark-mode .report-size,
+        body.dark-mode .option-title,
+        body.dark-mode .profile-item-value,
+        body.dark-mode td,
+        body.dark-mode .detail-value.large,
+        body.dark-mode .detail-value {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .page-title p,
+        body.dark-mode .section-title span,
+        body.dark-mode .metric-top h3,
+        body.dark-mode .metric-note,
+        body.dark-mode .report-meta,
+        body.dark-mode .option-desc,
+        body.dark-mode .form-label,
+        body.dark-mode .form-section-label,
+        body.dark-mode .profile-item-label,
+        body.dark-mode th,
+        body.dark-mode .detail-label,
+        body.dark-mode .detail-section-title,
+        body.dark-mode .detail-notes p {
+            color: #94a3bb !important;
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .metric-card,
+        body.dark-mode .table-card,
+        body.dark-mode .frequency-option,
+        body.dark-mode .report-item,
+        body.dark-mode .profile-modal-content,
+        body.dark-mode .detail-notes,
+        body.dark-mode .modal-content {
+            background: #1e293b; /* Slate 800 */
+            border-color: #334155;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .frequency-card,
+        body.dark-mode .modal-footer {
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        body.dark-mode .frequency-option.active-laporan {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            border-color: #3b82f6;
+        }
+
+        body.dark-mode .reports-table thead,
+        body.dark-mode .report-table th {
+            background: #1e293b;
+        }
+
+        body.dark-mode .report-table tbody tr:hover {
+            background: #273549;
+        }
+
+        body.dark-mode .form-input-styled,
+        body.dark-mode .form-select-styled,
+        body.dark-mode .radio-option-styled,
+        body.dark-mode .format-button,
+        body.dark-mode .btn-reset,
+        body.dark-mode .modal-button.close-btn {
+            background-color: #334155 !important;
+            border-color: #475569 !important;
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .form-input-styled:focus,
+        body.dark-mode .form-select-styled:focus {
+            border-color: #3b82f6 !important;
+            background-color: #1e293b !important;
+        }
+
+        body.dark-mode .format-button.active {
+            background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%);
+            border-color: transparent !important;
+            color: white !important;
+        }
+
+        body.dark-mode .report-item {
+            border-color: #334155;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        body.dark-mode .report-icon {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+        }
+
+        body.dark-mode .report-table td,
+        body.dark-mode .report-table th,
+        body.dark-mode .profile-item,
+        body.dark-mode .frequency-option {
+            border-color: #334155 !important;
+        }
+
+        body.dark-mode .profile-modal-header {
+            background: linear-gradient(135deg, #020617 0%, #0b1e3f 100%);
+        }
+
+        body.dark-mode .profile-item-icon {
+            background: #0b1e3f;
+            color: #38bdf8;
+        }
+
+        body.dark-mode .page-footer {
+            border-top-color: #334155;
+            color: #64748b;
         }
     </style>
 </head>
 
 <body>
+    <script>
+        if (localStorage.getItem('staffDarkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
     @include('components.sidebar-menu')
 
     <main class="main-content">
@@ -1144,17 +1850,23 @@
         <!-- Main Content Grid -->
         <div style="display: grid; grid-template-columns: 1fr; gap: 30px; margin-bottom: 30px;">
             <!-- Form Laporan -->
-            <div
-                style="background: white; padding: 28px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); height: fit-content;">
+            <div class="form-card animate-in">
+
+                <div class="form-card-header">
+                    <div class="form-card-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Parameter Laporan</div>
+                        <div class="form-card-subtitle">Atur filter untuk menghasilkan laporan</div>
+                    </div>
+                </div>
 
                 <form id="filterForm" method="GET" action="{{ route('staff.cetak') }}">
                     <!-- Asal TPI -->
                     <div style="margin-bottom: 20px;">
-                        <label
-                            style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Asal
-                            TPI</label>
-                        <select id="filterTpi" name="tpi" onchange="triggerFilter()"
-                            style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
+                        <div class="form-section-label">Asal TPI</div>
+                        <select id="filterTpi" name="tpi" onchange="triggerFilter()" class="form-select-styled">
                             <option value="">Semua TPI</option>
                             @foreach ($tpiList as $tpi)
                                 <option value="{{ $tpi->id }}" @if ($tpiFilter == $tpi->id) selected @endif>
@@ -1166,169 +1878,132 @@
 
                     <!-- Date Range -->
                     <div style="margin-bottom: 20px;">
+                        <div class="form-section-label">Rentang Tanggal</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             <div>
-                                <label
-                                    style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Mulai
-                                    Dari</label>
+                                <label style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px;">Mulai Dari</label>
                                 <input type="date" id="filterStartDate" name="start_date" onchange="triggerFilter()"
-                                    value="{{ $startDate }}"
-                                    style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 12px; font-size: 12px; background: #f8fafc; color: #102a43; outline: none;">
+                                    value="{{ $startDate }}" class="form-input-styled">
                             </div>
                             <div>
-                                <label
-                                    style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Sampai
-                                    Dengan</label>
+                                <label style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px;">Sampai Dengan</label>
                                 <input type="date" id="filterEndDate" name="end_date" onchange="triggerFilter()"
-                                    value="{{ $endDate }}"
-                                    style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 12px; font-size: 12px; background: #f8fafc; color: #102a43; outline: none;">
+                                    value="{{ $endDate }}" class="form-input-styled">
                             </div>
                         </div>
                     </div>
 
                     <!-- Jenis Laporan -->
                     <div style="margin-bottom: 22px;">
-                        <label
-                            style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 12px;">Jenis
-                            Laporan Berkala</label>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <label
-                                style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border: 1px solid #dce1e9; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                                <input type="radio" id="jenisLaporanHarian" name="jenis_laporan" value="harian"
-                                    onchange="triggerFilter()" style="cursor: pointer;">
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Harian</div>
-                                </div>
-                            </label>
-                            <label
-                                style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border: 1px solid #dce1e9; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                                <input type="radio" id="jenisLaporanBulanan" name="jenis_laporan" value="bulanan"
-                                    onchange="triggerFilter()" style="cursor: pointer;">
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Bulanan
-                                    </div>
-                                </div>
-                            </label>
-                            <label
-                                style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border: 1px solid #dce1e9; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                                <input type="radio" id="jenisLaporanTahunan" name="jenis_laporan" value="tahunan"
-                                    onchange="triggerFilter()" style="cursor: pointer;">
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; color: #102a43; font-size: 13px;">Laporan Tahunan
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
+                        <div class="form-section-label">Jenis Laporan Berkala</div>
+                        <label class="radio-option-styled radio-harian">
+                            <input type="radio" id="jenisLaporanHarian" name="jenis_laporan" value="harian"
+                                onchange="triggerFilter()" style="cursor: pointer; accent-color: #0a3b99;">
+                            <div class="radio-option-icon">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div class="radio-option-text">
+                                <div class="title">Laporan Harian</div>
+                                <div class="desc">Data per hari berdasarkan rentang tanggal</div>
+                            </div>
+                        </label>
+                        <label class="radio-option-styled radio-bulanan">
+                            <input type="radio" id="jenisLaporanBulanan" name="jenis_laporan" value="bulanan"
+                                onchange="triggerFilter()" style="cursor: pointer; accent-color: #0a3b99;">
+                            <div class="radio-option-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="radio-option-text">
+                                <div class="title">Laporan Bulanan</div>
+                                <div class="desc">Rekap total dalam satu bulan penuh</div>
+                            </div>
+                        </label>
+                        <label class="radio-option-styled radio-tahunan" style="margin-bottom: 0;">
+                            <input type="radio" id="jenisLaporanTahunan" name="jenis_laporan" value="tahunan"
+                                onchange="triggerFilter()" style="cursor: pointer; accent-color: #0a3b99;">
+                            <div class="radio-option-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="radio-option-text">
+                                <div class="title">Laporan Tahunan</div>
+                                <div class="desc">Rangkuman data sepanjang satu tahun</div>
+                            </div>
+                        </label>
                     </div>
 
                     <!-- Laporan Harian Detail (hanya untuk Laporan Harian) -->
                     <div id="harian-section" style="margin-bottom: 22px; display: none;">
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-                            <div>
-                                <button type="button" onclick="triggerPaperPreview('harian')"
-                                    style="width: 100%; padding: 12px; background: white; color: #102a43; border: 1px solid #dce1e9; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
-                                    onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#102a43';"
-                                    onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
-                                    <i class="fas fa-file-alt"></i> Lihat Detail Laporan
-                                </button>
-                            </div>
+                        <div class="sub-section-card">
+                            <button type="button" onclick="triggerPaperPreview('harian')" class="btn-preview">
+                                <i class="fas fa-eye"></i> Lihat Detail Laporan
+                            </button>
                         </div>
                     </div>
 
                     <!-- Pilih Bulan (hanya untuk Laporan Bulanan) -->
                     <div id="bulanan-section" style="margin-bottom: 22px; display: none;">
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-                            <div>
-                                <label
-                                    style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Pilih
-                                    Bulan</label>
-                                <select id="filterBulan" name="bulan" onchange="triggerFilter()"
-                                    style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
-                                    <option value="">-- Pilih Bulan --</option>
-                                    <option value="1">Januari</option>
-                                    <option value="2">Februari</option>
-                                    <option value="3">Maret</option>
-                                    <option value="4">April</option>
-                                    <option value="5">Mei</option>
-                                    <option value="6">Juni</option>
-                                    <option value="7">Juli</option>
-                                    <option value="8">Agustus</option>
-                                    <option value="9">September</option>
-                                    <option value="10">Oktober</option>
-                                    <option value="11">November</option>
-                                    <option value="12">Desember</option>
-                                </select>
-                                <button type="button" onclick="triggerPaperPreview('bulanan')"
-                                    style="margin-top: 10px; width: 100%; padding: 12px; background: white; color: #102a43; border: 1px solid #dce1e9; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
-                                    onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#102a43';"
-                                    onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
-                                    <i class="fas fa-file-alt"></i> Lihat Detail Laporan
-                                </button>
-                            </div>
+                        <div class="sub-section-card">
+                            <div class="form-section-label" style="margin-bottom: 8px;">Pilih Bulan</div>
+                            <select id="filterBulan" name="bulan" onchange="triggerFilter()" class="form-select-styled">
+                                <option value="">-- Pilih Bulan --</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                            <button type="button" onclick="triggerPaperPreview('bulanan')" class="btn-preview">
+                                <i class="fas fa-eye"></i> Lihat Detail Laporan
+                            </button>
                         </div>
                     </div>
 
                     <!-- Pilih Tahun (hanya untuk Laporan Tahunan) -->
                     <div id="tahunan-section" style="margin-bottom: 22px; display: none;">
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-                            <div>
-                                <label
-                                    style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 8px;">Pilih
-                                    Tahun</label>
-                                <select id="filterTahun" name="tahun" onchange="triggerFilter()"
-                                    style="width: 100%; border: 1px solid #dce1e9; border-radius: 8px; padding: 11px 14px; font-size: 13px; background: #f8fafc; color: #102a43; outline: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><path fill=%22%237a869a%22 d=%22M5.5 7.5l4.5 4.5 4.5-4.5%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; padding-right: 36px;">
-                                    <option value="">-- Pilih Tahun --</option>
-                                    @php
-                                        $currentYear = date('Y');
-                                        for ($year = $currentYear; $year >= $currentYear - 5; $year--) {
-                                            echo '<option value="' . $year . '">' . $year . '</option>';
-                                        }
-                                    @endphp
-                                </select>
-                                <button type="button" onclick="triggerPaperPreview('tahunan')"
-                                    style="margin-top: 10px; width: 100%; padding: 12px; background: white; color: #102a43; border: 1px solid #dce1e9; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
-                                    onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#102a43';"
-                                    onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
-                                    <i class="fas fa-file-alt"></i> Lihat Detail Laporan
-                                </button>
-                            </div>
+                        <div class="sub-section-card">
+                            <div class="form-section-label" style="margin-bottom: 8px;">Pilih Tahun</div>
+                            <select id="filterTahun" name="tahun" onchange="triggerFilter()" class="form-select-styled">
+                                <option value="">-- Pilih Tahun --</option>
+                                @php
+                                    $currentYear = date('Y');
+                                    for ($year = $currentYear; $year >= $currentYear - 5; $year--) {
+                                        echo '<option value="' . $year . '">' . $year . '</option>';
+                                    }
+                                @endphp
+                            </select>
+                            <button type="button" onclick="triggerPaperPreview('tahunan')" class="btn-preview">
+                                <i class="fas fa-eye"></i> Lihat Detail Laporan
+                            </button>
                         </div>
                     </div>
 
                     <!-- Format Output -->
                     <div style="margin-bottom: 22px;">
-                        <label
-                            style="font-size: 12px; font-weight: 600; color: #7a869a; text-transform: uppercase; display: block; margin-bottom: 12px;">Format
-                            Output</label>
+                        <div class="form-section-label">Format Output</div>
                         <div style="display: flex; gap: 10px;">
-                            <button type="button" id="btnFormatPdf" onclick="selectFormat('pdf')"
-                                style="flex: 1; padding: 12px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
-                                onmouseover="this.style.background='#fef2f2'; this.style.borderColor='#dc2626';"
-                                onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
-                                <i class="fas fa-file-pdf"></i> PDF
+                            <button type="button" id="btnFormatPdf" onclick="selectFormat('pdf')" class="format-btn-pdf">
+                                <i class="fas fa-file-pdf" style="font-size: 16px;"></i> PDF
                             </button>
-                            <button type="button" id="btnFormatExcel" onclick="selectFormat('excel')"
-                                style="flex: 1; padding: 12px; border: 1px solid #dce1e9; background: white; color: #102a43; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
-                                onmouseover="this.style.background='#f0fdf4'; this.style.borderColor='#16a34a';"
-                                onmouseout="this.style.background='white'; this.style.borderColor='#dce1e9';">
-                                <i class="fas fa-file-excel"></i> EXCEL
+                            <button type="button" id="btnFormatExcel" onclick="selectFormat('excel')" class="format-btn-excel">
+                                <i class="fas fa-file-excel" style="font-size: 16px;"></i> EXCEL
                             </button>
                         </div>
                     </div>
 
-                    <!-- Preview Button -->
+                    <!-- Action Buttons -->
                     <div style="display: flex; gap: 10px;">
-                        <button type="button" onclick="resetFilters()"
-                            style="flex: 1; padding: 12px; background: #f0f0f0; color: #102a43; border: 1px solid #dce1e9; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
-                            onmouseover="this.style.background='#e0e0e0';"
-                            onmouseout="this.style.background='#f0f0f0';">
-                            <i class="fas fa-redo"></i> Reset Filter
+                        <button type="button" onclick="resetFilters()" class="btn-reset">
+                            <i class="fas fa-rotate-left"></i> Reset Filter
                         </button>
-                        <button type="button" onclick="triggerDownload()"
-                            style="flex: 1; padding: 12px; background: #0a1f3b; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;"
-                            onmouseover="this.style.background='#132d4f';"
-                            onmouseout="this.style.background='#0a1f3b';">
-                            <i class="fas fa-download"></i> Download Laporan
+                        <button type="button" onclick="triggerDownload()" class="btn-download-main">
+                            <i class="fas fa-cloud-arrow-down"></i> Download Laporan
                         </button>
                     </div>
                 </form>
@@ -1336,87 +2011,98 @@
         </div>
 
         <!-- Table Section -->
-        <div class="table-card" id="laporan-tabel">
+        <div class="table-card animate-in" id="laporan-tabel" style="animation-delay: 0.1s;">
             <div class="table-header">
-                <h2 style="font-size: 18px; font-weight: 700; color: #102a43;">Tabel Arsip Laporan Cetak</h2>
-                <div id="filterStatus" style="font-size: 12px; color: #64748b; display: none;">Hasil Filter: <span
-                        id="filterCount">0</span> data</div>
+                <div class="table-header-title">
+                    <div class="table-header-icon">
+                        <i class="fas fa-table-list"></i>
+                    </div>
+                    <div>
+                        <h2>Tabel Arsip Laporan Cetak</h2>
+                        <div class="info-text">Riwayat semua laporan yang telah tervalidasi</div>
+                    </div>
+                </div>
+                <div id="filterStatus" style="display: none;">
+                    <span style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); color: white; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 999px; letter-spacing: 0.04em;">
+                        <i class="fas fa-filter" style="margin-right: 5px;"></i>
+                        <span id="filterCount">0</span> data ditemukan
+                    </span>
+                </div>
             </div>
 
-            <!-- Loading Indicator -->
-            <div id="loadingIndicator" style="display: none; text-align: center; padding: 40px; color: #999;">
-                <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 15px; display: block;"></i>
-                <p style="font-size: 14px;">Memuat data...</p>
-            </div>
+            <div class="table-body-wrapper">
+                <!-- Loading Indicator -->
+                <div id="loadingIndicator" style="display: none;">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p style="font-size: 14px; color: #64748b; font-weight: 600;">Memuat data...</p>
+                    </div>
+                </div>
 
-            <!-- Empty State -->
-            <div id="emptyState" style="display: none; text-align: center; padding: 60px 20px; color: #999;">
-                <i class="fas fa-inbox"
-                    style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
-                <p style="font-size: 14px;">Belum ada data laporan yang tervalidasi</p>
-            </div>
-
-            <!-- Table Container -->
-            <div id="tableContainer">
-                @if ($laporans->count() > 0)
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th>ID LAPORAN</th>
-                                <th>TANGGAL DIBUAT</th>
-                                <th>CAKUPAN DATA</th>
-                                <th>DIBUAT OLEH</th>
-                                <th>AKSI</th>
-                            </tr>
-                        </thead>
-                        <tbody id="laporanTableBody">
-                            @foreach ($laporans as $laporan)
+                <!-- Table Container -->
+                <div id="tableContainer">
+                    @if ($laporans->count() > 0)
+                        <table class="report-table">
+                            <thead>
                                 <tr>
-                                    <td><strong>#LAP-{{ str_pad($laporan->id, 4, '0', STR_PAD_LEFT) }}</strong></td>
-                                    <td>{{ $laporan->created_at->format('d M Y, H:i') }}</td>
-                                    <td>
-                                        <span
-                                            style="background: #e3f2fd; color: #0d2640; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">
-                                            @if ($laporan->user)
-                                                TPI {{ $laporan->user->wilayah ?: $laporan->user->nama }}
-                                            @else
-                                                N/A
-                                            @endif
-                                        </span>
-                                    </td>
-                                    <td>{{ $laporan->user ? $laporan->user->nama : 'N/A' }}</td>
-                                    <td style="display: flex; gap: 8px; align-items: center;">
-                                        <button type="button" class="action-btn btn-detail"
-                                            data-id="{{ $laporan->id }}"
-                                            style="background: #f0f4f8; color: #1a4d7d; padding: 6px 12px; border: 1px solid #dce1e9; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
-                                            onmouseover="this.style.background='#1a4d7d'; this.style.color='white'; this.style.borderColor='#1a4d7d';"
-                                            onmouseout="this.style.background='#f0f4f8'; this.style.color='#1a4d7d'; this.style.borderColor='#dce1e9';">
-                                            <i class="fas fa-eye"></i> Detail
-                                        </button>
-                                        <button type="button" class="action-btn btn-download"
-                                            data-id="{{ $laporan->id }}"
-                                            style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
-                                            onmouseover="this.style.background='#0d2640'; this.style.color='white';"
-                                            onmouseout="this.style.background='#e3f2fd'; this.style.color='#0d2640';">
-                                            <i class="fas fa-download"></i> Download
-                                        </button>
-                                    </td>
+                                    <th>ID Laporan</th>
+                                    <th>Tanggal Dibuat</th>
+                                    <th>Cakupan Data</th>
+                                    <th>Dibuat Oleh</th>
+                                    <th>Aksi</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody id="laporanTableBody">
+                                @foreach ($laporans as $laporan)
+                                    <tr>
+                                        <td>
+                                            <span style="background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.03em;">
+                                                #LAP-{{ str_pad($laporan->id, 4, '0', STR_PAD_LEFT) }}
+                                            </span>
+                                        </td>
+                                        <td style="color: #64748b; font-size: 13px;">{{ $laporan->created_at->format('d M Y, H:i') }}</td>
+                                        <td>
+                                            <span class="badge">
+                                                <i class="fas fa-map-marker-alt" style="font-size: 10px;"></i>
+                                                @if ($laporan->user)
+                                                    TPI {{ $laporan->user->wilayah ?: $laporan->user->nama }}
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </span>
+                                        </td>
+                                        <td style="font-weight: 600; color: #334155; font-size: 13px;">{{ $laporan->user ? $laporan->user->nama : 'N/A' }}</td>
+                                        <td>
+                                            <div style="display: flex; gap: 8px; align-items: center;">
+                                                <button type="button" class="action-btn btn-detail tbl-btn-detail"
+                                                    data-id="{{ $laporan->id }}">
+                                                    <i class="fas fa-eye"></i> Detail
+                                                </button>
+                                                <button type="button" class="action-btn btn-download tbl-btn-download"
+                                                    data-id="{{ $laporan->id }}">
+                                                    <i class="fas fa-cloud-arrow-down"></i> Download
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
 
-                    <!-- Pagination -->
-                    <div style="margin-top: 20px; display: flex; justify-content: flex-end;" id="paginationContainer">
-                        {{ $laporans->links('pagination.custom') }}
-                    </div>
-                @else
-                    <div style="text-align: center; padding: 60px 20px; color: #999;">
-                        <i class="fas fa-inbox"
-                            style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
-                        <p style="font-size: 14px;">Belum ada data laporan yang tervalidasi</p>
-                    </div>
-                @endif
+                        <!-- Pagination -->
+                        <div style="margin-top: 20px; display: flex; justify-content: flex-end;" id="paginationContainer">
+                            {{ $laporans->links('pagination.custom') }}
+                        </div>
+                    @else
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <p style="font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 6px;">Belum Ada Laporan</p>
+                            <p style="font-size: 13px; color: #94a3b8;">Data laporan yang tervalidasi akan muncul di sini</p>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
 
@@ -1526,29 +2212,30 @@
             data.forEach(laporan => {
                 html += `
                     <tr>
-                        <td><strong>${laporan.id_laporan}</strong></td>
-                        <td>${laporan.tanggal_dibuat}</td>
                         <td>
-                            <span style="background: #e3f2fd; color: #0d2640; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">
+                            <span style="background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.03em;">
+                                ${laporan.id_laporan}
+                            </span>
+                        </td>
+                        <td style="color: #64748b; font-size: 13px;">${laporan.tanggal_dibuat}</td>
+                        <td>
+                            <span class="badge">
+                                <i class="fas fa-map-marker-alt" style="font-size: 10px;"></i>
                                 TPI ${laporan.tpi}
                             </span>
                         </td>
-                        <td>${laporan.dibuat_oleh}</td>
-                        <td style="display: flex; gap: 8px; align-items: center;">
-                            <button type="button" class="action-btn btn-detail"
-                                data-id="${laporan.id}"
-                                style="background: #f0f4f8; color: #1a4d7d; padding: 6px 12px; border: 1px solid #dce1e9; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
-                                onmouseover="this.style.background='#1a4d7d'; this.style.color='white'; this.style.borderColor='#1a4d7d';"
-                                onmouseout="this.style.background='#f0f4f8'; this.style.color='#1a4d7d'; this.style.borderColor='#dce1e9';">
-                                <i class="fas fa-eye"></i> Detail
-                            </button>
-                            <button type="button" class="action-btn btn-download"
-                                data-id="${laporan.id}"
-                                style="background: #e3f2fd; color: #0d2640; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;"
-                                onmouseover="this.style.background='#0d2640'; this.style.color='white';"
-                                onmouseout="this.style.background='#e3f2fd'; this.style.color='#0d2640';">
-                                <i class="fas fa-download"></i> Download
-                            </button>
+                        <td style="font-weight: 600; color: #334155; font-size: 13px;">${laporan.dibuat_oleh}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button type="button" class="action-btn btn-detail tbl-btn-detail"
+                                    data-id="${laporan.id}">
+                                    <i class="fas fa-eye"></i> Detail
+                                </button>
+                                <button type="button" class="action-btn btn-download tbl-btn-download"
+                                    data-id="${laporan.id}">
+                                    <i class="fas fa-cloud-arrow-down"></i> Download
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -1657,9 +2344,14 @@
             if (tbody) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 60px 20px; color: #999;">
-                            <i class="fas fa-inbox" style="font-size: 48px; color: #ddd; margin-bottom: 15px; display: block;"></i>
-                            <p style="font-size: 14px;">${message}</p>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-folder-open"></i>
+                                </div>
+                                <p style="font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 6px;">Tidak Ada Data</p>
+                                <p style="font-size: 13px; color: #94a3b8;">${message}</p>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -1833,172 +2525,9 @@
             });
         }
 
-        // Preview collective report details before download
-        function previewCollectiveReport(jenisLaporan, tpi, startDate, endDate, bulan, tahun) {
-            // Validate first
-            if (jenisLaporan === 'bulanan' && !bulan) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Bulan Belum Dipilih',
-                    text: 'Silakan pilih bulan untuk laporan bulanan!',
-                    confirmButtonColor: '#0a3b99',
-                    confirmButtonText: 'Mengerti'
-                });
-                return;
-            }
-            if (jenisLaporan === 'tahunan' && !tahun) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Tahun Belum Dipilih',
-                    text: 'Silakan pilih tahun untuk laporan tahunan!',
-                    confirmButtonColor: '#0a3b99',
-                    confirmButtonText: 'Mengerti'
-                });
-                return;
-            }
-
-            // Show loading
-            Swal.fire({
-                title: 'Menghitung Ringkasan Laporan...',
-                text: 'Silakan tunggu sebentar.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            // Build query params
-            const params = new URLSearchParams();
-            if (tpi) params.append('tpi', tpi);
-            if (startDate) params.append('start_date', startDate);
-            if (endDate) params.append('end_date', endDate);
-            if (jenisLaporan) params.append('jenis_laporan', jenisLaporan);
-            if (bulan) params.append('bulan', bulan);
-            if (tahun) params.append('tahun', tahun);
-
-            fetch(`{{ route('staff.cetak.filter') }}?${params.toString()}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const totalData = data.pagination.total;
-                    const totalBerat = data.total_berat || 0;
-                    const totalNilai = data.total_nilai || 0;
-
-                    if (totalData === 0) {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'Tidak Ada Data',
-                            text: 'Tidak ada data laporan yang sesuai dengan filter yang dipilih.',
-                            confirmButtonColor: '#0a3b99',
-                            confirmButtonText: 'Tutup'
-                        });
-                        return;
-                    }
-
-                    // Format values
-                    const formatBerat = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(totalBerat);
-                    const formatNilai = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNilai);
-                    
-                    let periodText = '';
-                    if (jenisLaporan === 'bulanan') {
-                        const bulanNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-                        periodText = `${bulanNames[parseInt(bulan) - 1]} ${tahun}`;
-                    } else if (jenisLaporan === 'tahunan') {
-                        periodText = `Tahun ${tahun}`;
-                    } else {
-                        periodText = 'Kustom';
-                    }
-
-                    const tpiSelect = document.getElementById('filterTpi');
-                    const tpiText = tpi ? tpiSelect.options[tpiSelect.selectedIndex].text : 'Semua TPI';
-
-                    Swal.fire({
-                        title: `<span style="font-size: 20px; font-weight: 700; color: #102a43;">Ringkasan Laporan Berkala</span>`,
-                        html: `
-                            <div style="text-align: left; margin-top: 15px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 14px;">
-                                <div style="background: #f7fafc; border-radius: 8px; padding: 12px; margin-bottom: 15px; border: 1px solid #edf2f7;">
-                                    <div style="margin-bottom: 6px;"><strong style="color: #7a869a;">Jenis Laporan:</strong> <span style="color: #102a43; font-weight: 600;">Laporan ${jenisLaporan.charAt(0).toUpperCase() + jenisLaporan.slice(1)}</span></div>
-                                    <div style="margin-bottom: 6px;"><strong style="color: #7a869a;">Periode:</strong> <span style="color: #102a43; font-weight: 600;">${periodText}</span></div>
-                                    <div><strong style="color: #7a869a;">Asal TPI:</strong> <span style="color: #102a43; font-weight: 600;">${tpiText}</span></div>
-                                </div>
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tr style="border-bottom: 1px solid #edf2f7;">
-                                        <td style="padding: 10px 0; font-weight: 600; color: #7a869a;">Total Jumlah Data</td>
-                                        <td style="padding: 10px 0; color: #102a43; font-weight: bold; text-align: right;">${totalData} Laporan</td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid #edf2f7;">
-                                        <td style="padding: 10px 0; font-weight: 600; color: #7a869a;">Total Volume Ikan</td>
-                                        <td style="padding: 10px 0; color: #102a43; font-weight: bold; text-align: right;">${formatBerat} kg</td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid #edf2f7;">
-                                        <td style="padding: 10px 0; font-weight: 600; color: #7a869a;">Total Nilai Hasil Tangkap</td>
-                                        <td style="padding: 10px 0; color: #16a34a; font-weight: bold; text-align: right;">${formatNilai}</td>
-                                    </tr>
-                                </table>
-                                <p style="font-size: 12px; color: #7a869a; margin-top: 15px; line-height: 1.4;">
-                                    *Silakan periksa kembali ringkasan di atas sebelum mengunduh berkas laporan Anda.
-                                </p>
-                            </div>
-                        `,
-                        icon: 'info',
-                        showCancelButton: true,
-                        showDenyButton: true,
-                        confirmButtonText: '<i class="fas fa-file-pdf"></i> Download PDF',
-                        denyButtonText: '<i class="fas fa-file-excel"></i> Download Excel',
-                        cancelButtonText: 'Batal',
-                        confirmButtonColor: '#dc2626', // Red for PDF
-                        denyButtonColor: '#16a34a', // Green for Excel
-                        cancelButtonColor: '#6e7881'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            selectFormat('pdf');
-                            downloadLaporan('pdf');
-                        } else if (result.isDenied) {
-                            selectFormat('excel');
-                            downloadLaporan('excel');
-                        }
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Terjadi Kesalahan',
-                        text: data.message || 'Gagal mengambil ringkasan laporan.',
-                        confirmButtonColor: '#dc3545'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Kesalahan Koneksi',
-                    text: 'Terjadi kesalahan saat menghubungi server.',
-                    confirmButtonColor: '#dc3545'
-                });
-            });
-        }
 
         // Download laporan function
         function triggerDownload() {
-            const tpi = document.getElementById('filterTpi').value;
-            const startDate = document.getElementById('filterStartDate').value;
-            const endDate = document.getElementById('filterEndDate').value;
-            const jenisLaporan = document.querySelector('input[name="jenis_laporan"]:checked')?.value || '';
-            const bulan = document.getElementById('filterBulan').value;
-            const tahun = document.getElementById('filterTahun').value;
-
-            // Jika laporan bulanan atau tahunan, tunjukkan ringkasan terlebih dahulu
-            if (jenisLaporan === 'bulanan' || jenisLaporan === 'tahunan') {
-                previewCollectiveReport(jenisLaporan, tpi, startDate, endDate, bulan, tahun);
-                return;
-            }
-
             if (!selectedFormat) {
                 Swal.fire({
                     title: 'Pilih Format Output',
@@ -2009,8 +2538,8 @@
                     confirmButtonText: '<i class="fas fa-file-pdf"></i> PDF',
                     denyButtonText: '<i class="fas fa-file-excel"></i> EXCEL',
                     cancelButtonText: 'Batal',
-                    confirmButtonColor: '#dc2626', // Red for PDF
-                    denyButtonColor: '#16a34a', // Green for Excel
+                    confirmButtonColor: '#dc2626',
+                    denyButtonColor: '#16a34a',
                     cancelButtonColor: '#6e7881'
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -2266,84 +2795,19 @@
             // Toggle selection if clicked again
             if (selectedFormat === format) {
                 selectedFormat = null;
-
-                btnPdf.style.background = 'white';
-                btnPdf.style.border = '1px solid #dce1e9';
-                btnPdf.style.color = '#102a43';
-                btnPdf.dataset.selected = 'false';
-
-                btnExcel.style.background = 'white';
-                btnExcel.style.border = '1px solid #dce1e9';
-                btnExcel.style.color = '#102a43';
-                btnExcel.dataset.selected = 'false';
-
-                btnPdf.onmouseout = function() {
-                    this.style.background = 'white';
-                    this.style.borderColor = '#dce1e9';
-                };
-                btnExcel.onmouseout = function() {
-                    this.style.background = 'white';
-                    this.style.borderColor = '#dce1e9';
-                };
+                btnPdf.classList.remove('selected');
+                btnExcel.classList.remove('selected');
                 return;
             }
 
             selectedFormat = format;
 
             if (format === 'pdf') {
-                btnPdf.style.background = '#fee';
-                btnPdf.style.border = '2px solid #dc2626';
-                btnPdf.style.color = '#dc2626';
-                btnPdf.dataset.selected = 'true';
-
-                btnExcel.style.background = 'white';
-                btnExcel.style.border = '1px solid #dce1e9';
-                btnExcel.style.color = '#102a43';
-                btnExcel.dataset.selected = 'false';
-
-                // Override mouseout for PDF to keep color
-                btnPdf.onmouseout = function() {
-                    if (selectedFormat === 'pdf') {
-                        this.style.background = '#fee';
-                        this.style.borderColor = '#dc2626';
-                    } else {
-                        this.style.background = 'white';
-                        this.style.borderColor = '#dce1e9';
-                    }
-                };
-
-                // Reset mouseout for EXCEL
-                btnExcel.onmouseout = function() {
-                    this.style.background = 'white';
-                    this.style.borderColor = '#dce1e9';
-                };
+                btnPdf.classList.add('selected');
+                btnExcel.classList.remove('selected');
             } else {
-                btnPdf.style.background = 'white';
-                btnPdf.style.border = '1px solid #dce1e9';
-                btnPdf.style.color = '#102a43';
-                btnPdf.dataset.selected = 'false';
-
-                btnExcel.style.background = '#f0fdf4';
-                btnExcel.style.border = '2px solid #16a34a';
-                btnExcel.style.color = '#16a34a';
-                btnExcel.dataset.selected = 'true';
-
-                // Reset mouseout for PDF
-                btnPdf.onmouseout = function() {
-                    this.style.background = 'white';
-                    this.style.borderColor = '#dce1e9';
-                };
-
-                // Override mouseout for EXCEL to keep color
-                btnExcel.onmouseout = function() {
-                    if (selectedFormat === 'excel') {
-                        this.style.background = '#f0fdf4';
-                        this.style.borderColor = '#16a34a';
-                    } else {
-                        this.style.background = 'white';
-                        this.style.borderColor = '#dce1e9';
-                    }
-                };
+                btnPdf.classList.remove('selected');
+                btnExcel.classList.add('selected');
             }
         }
 
@@ -2362,14 +2826,12 @@
                     // Reset all labels to default style
                     radioButtons.forEach(rb => {
                         const lbl = rb.closest('label');
-                        lbl.style.background = '#f8fafc';
-                        lbl.style.border = '1px solid #dce1e9';
+                        lbl.classList.remove('selected');
                     });
 
                     // Style the selected label
                     if (this.checked) {
-                        label.style.background = '#edf2ff';
-                        label.style.border = '2px solid #0d2640';
+                        label.classList.add('selected');
                         lastSelected = this.value;
 
                         // Tampilkan/sembunyikan section berdasarkan jenis laporan
@@ -2404,8 +2866,7 @@
                     if (lastSelected === this.value && this.checked) {
                         // If clicking the same option, uncheck it
                         this.checked = false;
-                        label.style.background = '#f8fafc';
-                        label.style.border = '1px solid #dce1e9';
+                        label.classList.remove('selected');
                         lastSelected = null;
                         harianSection.style.display = 'none';
                         bulananSection.style.display = 'none';
@@ -2510,6 +2971,17 @@
             </div>
         </div>
     </div>
+    <!-- Dark Mode Initializer Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeSetting = localStorage.getItem('staffDarkMode');
+            if (darkModeSetting === 'enabled') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -924,10 +924,224 @@
             background: white;
             color: #0a3b99;
         }
+        /* DARK MODE STYLES & VARIABLES */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar, .header, .chart-card, .insight-card, .detail-card, .region-card, .map-card, .meta-pill, .insight-item, .region-list li, .progress-bar, .date-selector, #map {
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: #0f172a; /* Slate 900 */
+            color: #f1f5f9; /* Slate 100 */
+        }
+
+        body.dark-mode .sidebar {
+            background: linear-gradient(180deg, #020617 0%, #0b1e3f 100%);
+            box-shadow: 4px 0 36px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .header {
+            background: #1e293b; /* Slate 800 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            border-color: #334155;
+        }
+
+        body.dark-mode .header-icon {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        body.dark-mode .header-icon:hover {
+            background: #475569;
+        }
+
+        body.dark-mode .header-profile-btn {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        }
+
+        body.dark-mode .header-profile-avatar {
+            border-color: #1e293b;
+        }
+
+        body.dark-mode .page-title h1,
+        body.dark-mode .chart-header h2,
+        body.dark-mode .key-card .value,
+        body.dark-mode .insight-card h3,
+        body.dark-mode .insight-meta strong,
+        body.dark-mode .region-info h2,
+        body.dark-mode .region-status,
+        body.dark-mode .profile-item-value,
+        body.dark-mode td,
+        body.dark-mode .tpi-item-name,
+        body.dark-mode .tpi-detail-title {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .page-title p,
+        body.dark-mode .date-selector,
+        body.dark-mode .chart-header span,
+        body.dark-mode .meta-pill,
+        body.dark-mode .key-card .label,
+        body.dark-mode .key-card .note,
+        body.dark-mode .profile-item-label,
+        body.dark-mode th,
+        body.dark-mode .region-info p,
+        body.dark-mode .tpi-item-district,
+        body.dark-mode .tpi-detail-label {
+            color: #94a3bb !important;
+        }
+
+        body.dark-mode .chart-card,
+        body.dark-mode .insight-card,
+        body.dark-mode .detail-card,
+        body.dark-mode .region-card,
+        body.dark-mode .map-card,
+        body.dark-mode .key-card,
+        body.dark-mode .insight-item,
+        body.dark-mode .region-list li,
+        body.dark-mode .profile-modal-content,
+        body.dark-mode .tpi-sidebar-item {
+            background: #1e293b; /* Slate 800 */
+            border-color: #334155;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .meta-pill,
+        body.dark-mode .insight-item,
+        body.dark-mode .region-list li,
+        body.dark-mode .date-selector {
+            background: #334155;
+            border-color: #475569;
+        }
+        
+        body.dark-mode .insight-item:hover,
+        body.dark-mode .region-list li:hover {
+            background: #475569;
+        }
+
+        body.dark-mode .progress-bar {
+            background: #334155;
+        }
+        
+        body.dark-mode .progress-fill {
+            background: linear-gradient(90deg, #38bdf8, #3b82f6);
+        }
+
+        body.dark-mode .profile-modal-header {
+            background: linear-gradient(135deg, #020617 0%, #0b1e3f 100%);
+        }
+
+        body.dark-mode .profile-item-icon {
+            background: #0b1e3f;
+            color: #38bdf8;
+        }
+
+        body.dark-mode .page-footer {
+            border-top-color: #334155;
+            color: #64748b;
+        }
+
+        body.dark-mode .region-status {
+            background: #1e3a8a;
+        }
+
+        /* Leaflet Dark Theme styling */
+        body.dark-mode .leaflet-tile {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+        body.dark-mode .leaflet-popup-content-wrapper {
+            background: #1e293b !important;
+            color: #f8fafc !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        }
+        body.dark-mode .leaflet-popup-tip {
+            background: #1e293b !important;
+        }
+        body.dark-mode .leaflet-control-zoom-in,
+        body.dark-mode .leaflet-control-zoom-out {
+            background: #1e293b !important;
+            color: #f8fafc !important;
+            border-color: #334155 !important;
+        }
+        body.dark-mode .leaflet-control-attribution {
+            background: rgba(30, 41, 59, 0.8) !important;
+            color: #94a3bb !important;
+        }
+        body.dark-mode .leaflet-control-attribution a {
+            color: #38bdf8 !important;
+        }
+
+        /* Chart Area dark theme background override */
+        body.dark-mode .chart-area {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+        }
+
+        /* Additional improvements for dark mode visibility */
+        body.dark-mode .insight-meta small {
+            color: #38bdf8 !important; /* Brighter percentage text (Sky 400) */
+        }
+
+        body.dark-mode .meta-pill i {
+            color: #38bdf8 !important; /* Brighter metadata icon */
+        }
+
+        body.dark-mode .key-card .value span {
+            color: #94a3bb !important; /* Brighter 'Ton' unit text */
+        }
+
+        body.dark-mode .insight-card > small {
+            color: #94a3bb !important; /* Brighter 'Terakhir diperbarui' text */
+        }
+
+        body.dark-mode .region-list li {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .region-list li a {
+            color: #38bdf8 !important; /* Brighter 'Buka di Maps' icon and text */
+        }
+
+        body.dark-mode .region-list li a:hover {
+            color: #60a5fa !important;
+        }
+
+        body.dark-mode .key-card .label i.fa-anchor {
+            color: #38bdf8 !important;
+        }
+
+        body.dark-mode .key-card .label i.fa-chart-column {
+            color: #4ade80 !important;
+        }
+
+        /* Leaflet popup dark theme content visibility */
+        body.dark-mode .leaflet-popup-content-wrapper div[style*="color:#0d2640"] {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .leaflet-popup-content-wrapper div[style*="color:#64748b"] {
+            color: #94a3bb !important;
+        }
+
+        body.dark-mode .leaflet-popup-content-wrapper span[style*="background:#eff6ff"] {
+            background: #1e3a8a !important;
+            color: #38bdf8 !important;
+        }
+
+        body.dark-mode .leaflet-popup-content-wrapper div[style*="border-top:1px solid #f0f0f0"] {
+            border-top-color: #334155 !important;
+        }
     </style>
 </head>
 
 <body>
+    <script>
+        if (localStorage.getItem('staffDarkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
     @include('components.sidebar-menu')
 
     <div class="main-content">
@@ -1014,53 +1228,69 @@
                 <p>Data lengkap 8 Tempat Pelelangan Ikan di Kabupaten Subang. Pantau aktivitas perikanan secara
                     geografis untuk mengambil keputusan alokasi sumber daya dan logistik.</p>
                 <ul class="region-list" style="margin-top: 20px;">
-                    <li>
-                        <a href="https://maps.app.goo.gl/jE3csyQ4sE2A2xX47" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                    <li style="cursor: pointer;" onclick="focusTpiMarker(0)">
+                        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
                             <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Patimban</span>
-                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
-                        </a>
+                            <a href="https://maps.app.goo.gl/jE3csyQ4sE2A2xX47" target="_blank" style="font-size:11px;color:#0a3b99;font-weight:700;text-decoration:none;" onclick="event.stopPropagation();">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
                     </li>
-                    <li>
-                        <a href="https://www.google.com/maps?q=-6.2125,107.8468" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                    <li style="cursor: pointer;" onclick="focusTpiMarker(1)">
+                        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
                             <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Genteng</span>
-                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
-                        </a>
+                            <a href="https://maps.app.goo.gl/Qk6TGW8yvdycJpYW6" target="_blank" style="font-size:11px;color:#0a3b99;font-weight:700;text-decoration:none;" onclick="event.stopPropagation();">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
                     </li>
-                    <li>
-                        <a href="https://www.google.com/maps?q=-6.1968,107.7962" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                    <li style="cursor: pointer;" onclick="focusTpiMarker(2)">
+                        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
                             <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Mayangan</span>
-                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
-                        </a>
+                            <a href="https://maps.app.goo.gl/Co5gNYgTJaRgD9D26" target="_blank" style="font-size:11px;color:#0a3b99;font-weight:700;text-decoration:none;" onclick="event.stopPropagation();">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
                     </li>
-                    <li>
-                        <a href="https://www.google.com/maps?q=-6.1811,107.8320" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                    <li style="cursor: pointer;" onclick="focusTpiMarker(3)">
+                        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
                             <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Cirewang</span>
-                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
-                        </a>
+                            <a href="https://maps.app.goo.gl/CRv2C4Q6YqhCQmieA" target="_blank" style="font-size:11px;color:#0a3b99;font-weight:700;text-decoration:none;" onclick="event.stopPropagation();">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
                     </li>
-                    <li>
-                        <a href="https://www.google.com/maps?q=-6.2178,107.7125" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                    <li style="cursor: pointer;" onclick="focusTpiMarker(4)">
+                        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
                             <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Muara Ciasem</span>
-                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
-                        </a>
+                            <a href="https://maps.app.goo.gl/nbqTKQJVeyZw5mpP9" target="_blank" style="font-size:11px;color:#0a3b99;font-weight:700;text-decoration:none;" onclick="event.stopPropagation();">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
                     </li>
-                    <li>
-                        <a href="https://www.google.com/maps?q=-6.2548,107.6598" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                    <li style="cursor: pointer;" onclick="focusTpiMarker(5)">
+                        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
                             <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Blanakan</span>
-                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
-                        </a>
+                            <a href="https://maps.app.goo.gl/QiATawQ5mXx91bBQ7" target="_blank" style="font-size:11px;color:#0a3b99;font-weight:700;text-decoration:none;" onclick="event.stopPropagation();">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
                     </li>
-                    <li>
-                        <a href="https://www.google.com/maps?q=-6.2315,107.6418" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                    <li style="cursor: pointer;" onclick="focusTpiMarker(6)">
+                        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
                             <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Rawameneng</span>
-                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
-                        </a>
+                            <a href="https://maps.app.goo.gl/oo8KwdSWDkQ81y2K6" target="_blank" style="font-size:11px;color:#0a3b99;font-weight:700;text-decoration:none;" onclick="event.stopPropagation();">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
                     </li>
-                    <li>
-                        <a href="https://www.google.com/maps?q=-6.2088,107.6145" target="_blank" style="text-decoration:none;color:inherit;display:flex;justify-content:space-between;align-items:center;width:100%;">
+                    <li style="cursor: pointer;" onclick="focusTpiMarker(7)">
+                        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
                             <span><i class="fas fa-map-marker-alt" style="color: #ea4335; margin-right: 8px;"></i> Cilamaya Girang</span>
-                            <span style="font-size:11px;color:#0a3b99;font-weight:700;"><i class="fas fa-external-link-alt"></i></span>
-                        </a>
+                            <a href="https://maps.app.goo.gl/B33Wbtd2VkcbNBGq7" target="_blank" style="font-size:11px;color:#0a3b99;font-weight:700;text-decoration:none;" onclick="event.stopPropagation();">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -1079,10 +1309,23 @@
                 // Buat Chart
                 const ctx = document.getElementById('produksiChart').getContext('2d');
                 
+                const isDarkMode = localStorage.getItem('staffDarkMode') === 'enabled';
+                
+                // Colors based on theme
+                const chartColor = isDarkMode ? '#38bdf8' : '#0a3b99';
+                const chartHoverColor = isDarkMode ? '#60a5fa' : '#1d65d0';
+                const gridLineColor = isDarkMode ? 'rgba(51, 65, 85, 0.4)' : 'rgba(226, 232, 240, 0.5)';
+                const tickColor = isDarkMode ? '#94a3bb' : '#64748b';
+                
                 // Create a beautiful linear gradient fill
                 const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                gradient.addColorStop(0, 'rgba(10, 59, 153, 0.24)');
-                gradient.addColorStop(1, 'rgba(10, 59, 153, 0.00)');
+                if (isDarkMode) {
+                    gradient.addColorStop(0, 'rgba(56, 189, 248, 0.25)'); // Sky 400
+                    gradient.addColorStop(1, 'rgba(56, 189, 248, 0.00)');
+                } else {
+                    gradient.addColorStop(0, 'rgba(10, 59, 153, 0.24)');
+                    gradient.addColorStop(1, 'rgba(10, 59, 153, 0.00)');
+                }
 
                 const chart = new Chart(ctx, {
                     type: 'line',
@@ -1091,18 +1334,18 @@
                         datasets: [{
                             label: 'Produksi (Ton)',
                             data: values,
-                            borderColor: '#0a3b99',
+                            borderColor: chartColor,
                             backgroundColor: gradient,
                             borderWidth: 4,
                             fill: true,
                             tension: 0.45,
-                            pointBackgroundColor: '#0a3b99',
-                            pointBorderColor: '#ffffff',
+                            pointBackgroundColor: chartColor,
+                            pointBorderColor: isDarkMode ? '#1e293b' : '#ffffff',
                             pointBorderWidth: 2,
                             pointRadius: 6,
                             pointHoverRadius: 8,
-                            pointHoverBackgroundColor: '#1d65d0',
-                            pointHoverBorderColor: '#ffffff',
+                            pointHoverBackgroundColor: chartHoverColor,
+                            pointHoverBorderColor: isDarkMode ? '#1e293b' : '#ffffff',
                             pointHoverBorderWidth: 3,
                         }]
                     },
@@ -1119,9 +1362,9 @@
                             },
                             tooltip: {
                                 enabled: true,
-                                backgroundColor: 'rgba(10, 59, 153, 0.92)',
+                                backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.95)' : 'rgba(10, 59, 153, 0.92)',
                                 titleColor: '#ffffff',
-                                bodyColor: '#e0f0ff',
+                                bodyColor: isDarkMode ? '#38bdf8' : '#e0f0ff',
                                 titleFont: {
                                     size: 13,
                                     weight: 'bold'
@@ -1133,7 +1376,7 @@
                                 padding: 14,
                                 cornerRadius: 10,
                                 displayColors: false,
-                                borderColor: 'rgba(255,255,255,0.2)',
+                                borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)',
                                 borderWidth: 1,
                                 callbacks: {
                                     title: function(items) {
@@ -1150,11 +1393,11 @@
                             y: {
                                 beginAtZero: true,
                                 grid: {
-                                    color: 'rgba(226, 232, 240, 0.5)',
+                                    color: gridLineColor,
                                     drawBorder: false
                                 },
                                 ticks: {
-                                    color: '#94a3b8',
+                                    color: tickColor,
                                     font: {
                                         size: 11
                                     },
@@ -1169,7 +1412,7 @@
                                     drawBorder: false
                                 },
                                 ticks: {
-                                    color: '#94a3b8',
+                                    color: tickColor,
                                     font: {
                                         size: 11
                                     }
@@ -1214,58 +1457,58 @@
                     {
                         name: 'TPI Genteng',
                         kecamatan: 'Kec. Legonkulon',
-                        lat: -6.2125,
-                        lng: 107.8468,
+                        lat: -6.2344311,
+                        lng: 107.8773191,
                         color: '#ea4335',
-                        mapsUrl: 'https://www.google.com/maps?q=-6.2125,107.8468&query=TPI+Genteng+Subang'
+                        mapsUrl: 'https://maps.app.goo.gl/Qk6TGW8yvdycJpYW6'
                     },
                     {
                         name: 'TPI Mayangan',
                         kecamatan: 'Kec. Legonkulon',
-                        lat: -6.1968,
-                        lng: 107.7962,
+                        lat: -6.212156,
+                        lng: 107.783512,
                         color: '#ea4335',
-                        mapsUrl: 'https://www.google.com/maps?q=-6.1968,107.7962&query=TPI+Mayangan+Subang'
+                        mapsUrl: 'https://maps.app.goo.gl/Co5gNYgTJaRgD9D26'
                     },
                     {
                         name: 'TPI Cirewang',
                         kecamatan: 'Kec. Legonkulon',
-                        lat: -6.1811,
-                        lng: 107.8320,
+                        lat: -6.1911136,
+                        lng: 107.8493557,
                         color: '#ea4335',
-                        mapsUrl: 'https://www.google.com/maps?q=-6.1811,107.8320&query=TPI+Cirewang+Subang'
+                        mapsUrl: 'https://maps.app.goo.gl/CRv2C4Q6YqhCQmieA'
                     },
                     {
                         name: 'TPI Muara Ciasem',
                         kecamatan: 'Kec. Ciasem',
-                        lat: -6.2178,
-                        lng: 107.7125,
+                        lat: -6.236964,
+                        lng: 107.7012623,
                         color: '#ea4335',
-                        mapsUrl: 'https://www.google.com/maps?q=-6.2178,107.7125&query=TPI+Muara+Ciasem+Subang'
+                        mapsUrl: 'https://maps.app.goo.gl/nbqTKQJVeyZw5mpP9'
                     },
                     {
                         name: 'TPI Blanakan',
                         kecamatan: 'Kec. Blanakan',
-                        lat: -6.2548,
-                        lng: 107.6598,
+                        lat: -6.2703712,
+                        lng: 107.6631992,
                         color: '#ea4335',
-                        mapsUrl: 'https://www.google.com/maps?q=-6.2548,107.6598&query=TPI+Blanakan+Subang'
+                        mapsUrl: 'https://maps.app.goo.gl/QiATawQ5mXx91bBQ7'
                     },
                     {
                         name: 'TPI Rawameneng',
                         kecamatan: 'Kec. Blanakan',
-                        lat: -6.2315,
-                        lng: 107.6418,
+                        lat: -6.2419525,
+                        lng: 107.6286837,
                         color: '#ea4335',
-                        mapsUrl: 'https://www.google.com/maps?q=-6.2315,107.6418&query=TPI+Rawameneng+Subang'
+                        mapsUrl: 'https://maps.app.goo.gl/oo8KwdSWDkQ81y2K6'
                     },
                     {
                         name: 'TPI Cilamaya Girang',
                         kecamatan: 'Kec. Cilamaya Wetan',
-                        lat: -6.2088,
-                        lng: 107.6145,
+                        lat: -6.2223626,
+                        lng: 107.6240459,
                         color: '#ea4335',
-                        mapsUrl: 'https://www.google.com/maps?q=-6.2088,107.6145&query=TPI+Cilamaya+Girang+Subang'
+                        mapsUrl: 'https://maps.app.goo.gl/B33Wbtd2VkcbNBGq7'
                     }
                 ];
 
@@ -1292,6 +1535,8 @@
                 // =============================================
                 // Pasang marker + popup informatif
                 // =============================================
+                const markerList = [];
+
                 tpiLocations.forEach(function(tpi, idx) {
                     var marker = L.marker([tpi.lat, tpi.lng], {
                         icon: createGooglePin(tpi.color),
@@ -1311,7 +1556,7 @@
                                 <div style="display:flex;gap:8px;align-items:center;padding-top:10px;border-top:1px solid #f0f0f0;">
                                     <span style="background:#eff6ff;color:#0a3b99;font-size:11px;font-weight:700;
                                                  padding:4px 10px;border-radius:999px;flex:1;text-align:center;">
-                                        ⚓ Aktif
+                                        ⚓ Pembuat
                                     </span>
                                     <a href="${tpi.mapsUrl}" target="_blank"
                                        style="display:inline-flex;align-items:center;gap:6px;
@@ -1341,7 +1586,26 @@
                     });
 
                     marker.addTo(map);
+                    markerList.push(marker);
                 });
+
+                // Global function to focus marker
+                window.focusTpiMarker = function(idx) {
+                    const tpi = tpiLocations[idx];
+                    const marker = markerList[idx];
+                    if (tpi && marker) {
+                        map.setView([tpi.lat, tpi.lng], 14);
+                        marker.openPopup();
+                        
+                        // Scroll smoothly to map if on mobile view
+                        if (window.innerWidth <= 1024) {
+                            const mapEl = document.getElementById('map');
+                            if (mapEl) {
+                                mapEl.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }
+                    }
+                };
 
                 // Fit map ke semua marker
                 var bounds = tpiLocations.map(t => [t.lat, t.lng]);
@@ -1444,6 +1708,17 @@
             </div>
         </div>
     </div>
+    <!-- Dark Mode Initializer Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeSetting = localStorage.getItem('staffDarkMode');
+            if (darkModeSetting === 'enabled') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    </script>
 </body>
 
 </html>

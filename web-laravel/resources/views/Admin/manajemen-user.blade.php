@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Manajemen User - SIPETANG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -18,10 +21,11 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
             display: flex;
             min-height: 100vh;
+            color: #1e293b;
         }
 
         /* Sidebar */
@@ -207,17 +211,21 @@
 
         /* Content Components */
         .content-header {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .content-header h2 {
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: 800;
             color: #0d2640;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
         }
 
         .content-header p {
-            color: #666;
-            font-size: 14px;
+            color: #64748b;
+            font-size: 14.5px;
+            font-weight: 500;
         }
 
         /* Filter Row */
@@ -231,29 +239,45 @@
         .total-card {
             background: #0d2640;
             color: white;
-            padding: 20px;
-            border-radius: 12px;
-            min-width: 150px;
+            padding: 22px 26px;
+            border-radius: 16px;
+            min-width: 170px;
+            box-shadow: 0 10px 25px -5px rgba(13, 38, 64, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .total-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(13, 38, 64, 0.35);
         }
 
         .total-card small {
-            font-size: 10px;
-            opacity: 0.7;
+            font-size: 11px;
+            opacity: 0.85;
             text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: block;
         }
 
         .total-card h2 {
-            font-size: 32px;
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
         }
 
         .filter-form {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
+            padding: 22px 26px;
+            border-radius: 16px;
             display: flex;
-            gap: 15px;
+            gap: 18px;
             flex: 1;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 1px 0 rgba(255,255,255,0.8) inset;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            align-items: flex-end;
         }
 
         .form-group {
@@ -263,46 +287,87 @@
         .form-group label {
             display: block;
             font-size: 11px;
-            color: #888;
+            color: #64748b;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
         }
 
         .form-group select,
         .form-group input {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #eee;
-            border-radius: 6px;
-            background: #fcfcfc;
-            font-size: 13px;
+            padding: 11px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f8fafc;
+            font-size: 13.5px;
+            color: #1e293b;
+            outline: none;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 12px 22px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 13.5px;
+            font-weight: 700;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-primary {
             background: #2563eb;
             color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
         }
 
         .btn-dark {
             background: #0d2640;
             color: white;
+            box-shadow: 0 4px 12px rgba(13, 38, 64, 0.15);
+        }
+
+        .btn-dark:hover {
+            background: #0a1c30;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(13, 38, 64, 0.25);
+        }
+
+        .btn-dark:active {
+            transform: translateY(0);
         }
 
         /* Table User */
         .table-container {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04), 0 1px 0 rgba(255,255,255,0.8) inset;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            overflow: hidden;
         }
 
         table {
@@ -312,11 +377,13 @@
 
         th {
             text-align: left;
-            padding: 12px;
-            font-size: 12px;
-            color: #888;
-            border-bottom: 1px solid #eee;
+            padding: 16px 14px;
+            font-size: 11px;
+            color: #64748b;
+            border-bottom: 1.5px solid #e2e8f0;
             text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
         }
 
         th:last-child {
@@ -324,39 +391,53 @@
         }
 
         td {
-            padding: 15px 12px;
-            font-size: 13px;
-            border-bottom: 1px solid #eee;
+            padding: 16px 14px;
+            font-size: 13.5px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
         }
 
         td:last-child {
             text-align: center;
         }
 
+        tr {
+            transition: background-color 0.2s ease;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
         .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
         .avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            letter-spacing: 0.05em;
         }
 
         .tpi-badge {
             background: #e0f2fe;
             color: #0369a1;
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 5px 12px;
+            border-radius: 999px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            display: inline-block;
         }
 
         /* Status Badges */
@@ -364,33 +445,42 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
         }
 
         .status-aktif {
             background: #dcfce7;
             color: #166534;
-            border: 1px solid #86efac;
+            border: 1.5px solid rgba(22, 163, 74, 0.15);
+        }
+
+        .status-aktif i {
+            font-size: 10px;
         }
 
         .status-nonaktif {
             background: #fee2e2;
             color: #991b1b;
-            border: 1px solid #fca5a5;
+            border: 1.5px solid rgba(220, 38, 38, 0.15);
+        }
+
+        .status-nonaktif i {
+            font-size: 10px;
         }
 
         /* Action Buttons */
         .btn-aksi {
             padding: 6px 12px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-weight: 500;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 5px;
@@ -420,14 +510,15 @@
 
         /* Action Menu with Ellipsis */
         .btn-aksi-menu {
-            padding: 6px 10px;
+            width: 34px;
+            height: 34px;
             border: none;
             background: none;
-            color: #666;
-            font-size: 18px;
+            color: #64748b;
+            font-size: 16px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border-radius: 4px;
+            transition: all 0.25s ease;
+            border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -435,22 +526,28 @@
         }
 
         .btn-aksi-menu:hover {
-            background: #f0f0f0;
+            background: #f1f5f9;
             color: #0d2640;
         }
 
         .action-dropdown {
             position: absolute;
-            top: 100%;
-            right: 0;
+            top: calc(100% - 5px);
+            right: 15px;
             background: white;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
             z-index: 200;
             min-width: 160px;
             overflow: hidden;
             margin-top: 5px;
+            animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes dropdownFadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .dropdown-item {
@@ -458,19 +555,19 @@
             align-items: center;
             gap: 10px;
             width: 100%;
-            padding: 10px 15px;
+            padding: 12px 16px;
             border: none;
             background: none;
-            color: #333;
-            font-size: 12px;
-            font-weight: 500;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
             text-align: left;
             transition: all 0.2s ease;
         }
 
         .dropdown-item:hover {
-            background: #f5f5f5;
+            background: #f8fafc;
             color: #0d2640;
         }
 
@@ -483,32 +580,49 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 24px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 20px;
         }
 
         .page-info {
-            font-size: 12px;
-            color: #888;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
         }
 
         .page-nav {
             display: flex;
-            gap: 5px;
+            gap: 6px;
         }
 
         .page-link {
-            padding: 5px 10px;
-            border: 1px solid #eee;
-            border-radius: 4px;
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             text-decoration: none;
-            color: #334155;
-            font-size: 12px;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .page-link:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+            color: #0f172a;
         }
 
         .page-link.active {
             background: #0d2640;
             color: white;
             border-color: #0d2640;
+            box-shadow: 0 4px 12px rgba(13, 38, 64, 0.2);
         }
 
         @media (max-width: 768px) {
@@ -624,30 +738,31 @@
         }
 
         .form-group-modal label {
-            font-size: 12px;
-            color: #0d2640;
+            font-size: 11px;
+            color: #64748b;
             font-weight: 700;
             margin-bottom: 8px;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .form-group-modal input,
         .form-group-modal select,
         .form-group-modal textarea {
-            padding: 11px 14px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
             font-size: 13.5px;
             font-family: inherit;
             background: #f8fafc;
             transition: all 0.25s ease;
-            color: #334155;
+            color: #1e293b;
+            outline: none;
         }
 
         .form-group-modal input:focus,
         .form-group-modal select:focus,
         .form-group-modal textarea:focus {
-            outline: none;
             border-color: #2563eb;
             background: white;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
@@ -660,44 +775,48 @@
 
         .modal-footer {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: flex-end;
             margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
         }
 
         .btn-cancel {
-            padding: 10px 20px;
-            border: 1px solid #ddd;
+            padding: 11px 20px;
+            border: 1.5px solid #e2e8f0;
             background: white;
-            color: #666;
-            border-radius: 6px;
+            color: #64748b;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 13.5px;
+            font-weight: 700;
             transition: all 0.2s ease;
         }
 
         .btn-cancel:hover {
-            background: #f5f5f5;
-            border-color: #bbb;
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #334155;
         }
 
         .btn-submit {
-            padding: 10px 20px;
+            padding: 11px 22px;
             background: #2563eb;
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: background 0.2s ease;
+            font-size: 13.5px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
         .btn-submit:hover {
             background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
         }
 
         .btn-submit:disabled {
@@ -741,6 +860,31 @@
         .profile-icon-btn:hover .profile-avatar {
             background: white;
             color: #0a3b99;
+        }
+
+        /* Dark Mode Toggle Button Styling */
+        .dark-mode-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.15rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-right: 10px;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.08) rotate(15deg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: #e2e8f0;
+            color: #0f172a;
         }
 
         /* Profile Modal Specific Styles */
@@ -852,16 +996,200 @@
             padding-top: 20px;
             border-top: 1px solid #e0e0e0;
         }
+
+        /* DARK MODE STYLES & VARIABLES */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar, .header, .search-box, .total-card, .filter-form, .table-container, .btn-primary, .btn-dark, .modal-content, .modal-footer, input, select, textarea {
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: #0f172a; /* Slate 900 */
+            color: #f1f5f9; /* Slate 100 */
+        }
+
+        body.dark-mode .sidebar {
+            background: linear-gradient(180deg, #020617 0%, #0b1e3f 100%);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .header {
+            background: #1e293b; /* Slate 800 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            border-color: #334155;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: #334155;
+            color: #fbbf24; /* Amber-400 */
+            border-color: #475569;
+        }
+
+        body.dark-mode .dark-mode-toggle:hover {
+            background: #475569;
+            color: #f59e0b; /* Amber-500 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .search-box {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        body.dark-mode .search-box input {
+            color: #f8fafc;
+        }
+
+        body.dark-mode .header-icon {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        body.dark-mode .header-icon:hover {
+            background: #475569;
+        }
+
+        body.dark-mode .header-profile-btn {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        }
+
+        body.dark-mode .header-profile-avatar {
+            border-color: #1e293b;
+        }
+
+        body.dark-mode .content-header h2,
+        body.dark-mode .total-card h2,
+        body.dark-mode .profile-item-value,
+        body.dark-mode td,
+        body.dark-mode .modal-title,
+        body.dark-mode .user-info-name {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .content-header p,
+        body.dark-mode .total-card small,
+        body.dark-mode .form-group label,
+        body.dark-mode .profile-item-label,
+        body.dark-mode th,
+        body.dark-mode .user-info-username,
+        body.dark-mode .detail-label,
+        body.dark-mode .modal-body label {
+            color: #94a3bb !important;
+        }
+
+        body.dark-mode .total-card {
+            background: #020617;
+            border-color: #334155;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .total-card:hover {
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        body.dark-mode .filter-form,
+        body.dark-mode .table-container,
+        body.dark-mode .profile-modal-content,
+        body.dark-mode .modal-content {
+            background: #1e293b; /* Slate 800 */
+            border-color: #334155;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .modal-footer {
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        body.dark-mode .reports-table thead,
+        body.dark-mode th {
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode tbody tr:hover,
+        body.dark-mode td {
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode tbody tr:hover {
+            background: #273549;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #334155 !important;
+            border-color: #475569 !important;
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode input:focus,
+        body.dark-mode select:focus,
+        body.dark-mode textarea:focus {
+            border-color: #3b82f6 !important;
+            background-color: #1e293b !important;
+        }
+
+        body.dark-mode .btn-dark {
+            background: #020617;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .btn-dark:hover {
+            background: #0b1329;
+        }
+
+        body.dark-mode .profile-modal-header {
+            background: linear-gradient(135deg, #020617 0%, #0b1e3f 100%);
+        }
+
+        body.dark-mode .profile-item-icon {
+            background: #0b1e3f;
+            color: #38bdf8;
+        }
+
+        body.dark-mode .page-footer {
+            border-top-color: #334155;
+            color: #64748b;
+        }
+
+        body.dark-mode .user-menu-dropdown {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        }
+        
+        body.dark-mode .user-menu-dropdown a {
+            color: #f8fafc !important;
+        }
+        
+        body.dark-mode .user-menu-dropdown a:hover {
+            background-color: #334155 !important;
+        }
     </style>
 </head>
 
 <body>
+    <script>
+        if (localStorage.getItem('adminDarkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
     @include('components.sidebar-menu')
 
     <div class="main-content">
         <div class="header">
             <div style="flex: 1;"></div>
-            <div class="header-right">
+            <div class="header-right" style="display: flex; align-items: center; gap: 10px;">
+                <!-- Dark Mode Toggle Button -->
+                <div class="dark-mode-toggle" id="darkModeToggle" title="Ubah Tema" onclick="toggleDarkMode()">
+                    <i class="fas fa-moon dark-icon"></i>
+                    <i class="fas fa-sun light-icon" style="display: none;"></i>
+                </div>
+
                 <div class="profile-icon-btn" onclick="openAdminProfileModal()" title="Profil Saya">
                     <div class="profile-avatar" style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">
                         {{ strtoupper(substr(Auth::user()->nama ?? Auth::user()->username ?? 'ADM', 0, 3)) }}
@@ -1569,6 +1897,48 @@
             </div>
         </div>
     </div>
+    <!-- Dark Mode Initializer and Toggle Script -->
+    <script>
+        function toggleDarkMode() {
+            const body = document.body;
+            const toggleBtn = document.getElementById('darkModeToggle');
+            const darkIcon = toggleBtn.querySelector('.dark-icon');
+            const lightIcon = toggleBtn.querySelector('.light-icon');
+
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                darkIcon.style.display = 'block';
+                lightIcon.style.display = 'none';
+                localStorage.setItem('adminDarkMode', 'disabled');
+            } else {
+                body.classList.add('dark-mode');
+                darkIcon.style.display = 'none';
+                lightIcon.style.display = 'block';
+                localStorage.setItem('adminDarkMode', 'enabled');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeSetting = localStorage.getItem('adminDarkMode');
+            const body = document.body;
+            const toggleBtn = document.getElementById('darkModeToggle');
+            
+            if (toggleBtn) {
+                const darkIcon = toggleBtn.querySelector('.dark-icon');
+                const lightIcon = toggleBtn.querySelector('.light-icon');
+
+                if (darkModeSetting === 'enabled') {
+                    body.classList.add('dark-mode');
+                    darkIcon.style.display = 'none';
+                    lightIcon.style.display = 'block';
+                } else {
+                    body.classList.remove('dark-mode');
+                    darkIcon.style.display = 'block';
+                    lightIcon.style.display = 'none';
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

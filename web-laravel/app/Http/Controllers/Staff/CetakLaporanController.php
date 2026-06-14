@@ -171,7 +171,7 @@ class CetakLaporanController extends Controller
                 ], 200);
             }
 
-            $html = $this->generateHTML($laporan);
+            $html = $this->generateHTML($laporan, $validated['jenis_laporan'] ?? null, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
 
             return response()->json([
                 'success' => true,
@@ -270,7 +270,7 @@ class CetakLaporanController extends Controller
 
             // Generate file berdasarkan format
             if ($validated['format'] === 'pdf') {
-                return $this->generatePDF($laporan);
+                return $this->generatePDF($laporan, $validated['jenis_laporan'] ?? null, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
             } else {
                 return $this->generateExcel($laporan);
             }
@@ -291,10 +291,10 @@ class CetakLaporanController extends Controller
     /**
      * Generate PDF
      */
-    private function generatePDF($laporan)
+    private function generatePDF($laporan, $jenisLaporan = null, $bulan = null, $tahun = null)
     {
         $fileName = 'Laporan_' . now()->format('YmdHis') . '.pdf';
-        $html = $this->generateHTML($laporan);
+        $html = $this->generateHTML($laporan, $jenisLaporan, $bulan, $tahun);
 
         $pdf = Pdf::loadHTML($html);
         $pdf->setPaper('A4', 'landscape');
@@ -500,12 +500,33 @@ class CetakLaporanController extends Controller
         }
     }
 
-    private function generateHTML($laporan)
+    private function generateHTML($laporan, $jenisLaporan = null, $bulan = null, $tahun = null)
     {
         $totalBerat = $laporan->sum('berat');
         $totalNilai = $laporan->sum('harga_jual');
         $tanggalCetak = now()->format('d/m/Y H:i');
-        
+
+        // Build period label
+        $bulanNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+        $tahunVal = $tahun ?? date('Y');
+        if ($jenisLaporan === 'bulanan' && $bulan) {
+            $periodeLabel = 'Bulan: ' . ($bulanNames[(int)$bulan] ?? $bulan) . ' ' . $tahunVal;
+            $tipeLaporan  = 'Laporan Bulanan';
+        } elseif ($jenisLaporan === 'tahunan' && $tahun) {
+            $periodeLabel = 'Tahun: ' . $tahun;
+            $tipeLaporan  = 'Laporan Tahunan';
+        } elseif ($jenisLaporan === 'harian') {
+            $periodeLabel = 'Laporan Harian';
+            $tipeLaporan  = 'Laporan Harian';
+        } else {
+            $periodeLabel = null;
+            $tipeLaporan  = 'Laporan Hasil Tangkap';
+        }
+
         // Group by jenis_ikan (normalized to Title Case) and sum berat and harga_jual
         $groupedLaporan = $laporan->groupBy(function ($item) {
             return ucwords(strtolower(trim($item->jenis_ikan)));
@@ -519,6 +540,7 @@ class CetakLaporanController extends Controller
 
         $totalData = $groupedLaporan->count();
         $totalNilaiFormatted = number_format($totalNilai, 0, ',', '.');
+        $totalBeratFormatted = number_format($totalBerat, 2, ',', '.');
 
         $rows = '';
         foreach ($groupedLaporan as $item) {
@@ -529,6 +551,15 @@ class CetakLaporanController extends Controller
             </tr>';
         }
 
+        // Build period badge HTML
+        $periodeBadgeHtml = '';
+        if ($periodeLabel) {
+            $periodeBadgeHtml = '<div style="display:inline-block; background:#0a3b99; color:white; padding:5px 16px; border-radius:20px; font-size:13px; font-weight:bold; margin-bottom:10px; letter-spacing:0.04em;">' . $periodeLabel . '</div>';
+        }
+
+        // Build tipe laporan line
+        $tipeLaporanHtml = '<p style="text-align:center; color:#0a3b99; font-size:13px; font-weight:bold; margin-bottom:4px;">' . $tipeLaporan . '</p>';
+
         $html = <<<HTML
         <!DOCTYPE html>
         <html>
@@ -536,8 +567,9 @@ class CetakLaporanController extends Controller
             <meta charset="UTF-8">
             <style>
                 body { font-family: Arial, sans-serif; margin: 20px; }
-                h1 { text-align: center; color: #0a3b99; }
-                .info { margin-bottom: 20px; font-size: 12px; }
+                h1 { text-align: center; color: #0a3b99; margin-bottom: 4px; }
+                .periode-wrap { text-align: center; margin-bottom: 16px; }
+                .info { margin-bottom: 20px; font-size: 12px; background: #f4f8ff; border-left: 4px solid #0a3b99; padding: 10px 14px; border-radius: 4px; }
                 table { width: 100%; border-collapse: collapse; margin-top: 20px; }
                 th { background-color: #0a3b99; color: white; padding: 10px; text-align: left; font-size: 11px; }
                 .total { font-weight: bold; margin-top: 20px; font-size: 12px; }
@@ -546,11 +578,13 @@ class CetakLaporanController extends Controller
         </head>
         <body>
             <h1>LAPORAN HASIL TANGKAP</h1>
-            <p style="text-align: center; color: #666; font-size: 12px;">Sistem Informasi Pencatatan Hasil Tangkap (SIPETANG)</p>
-            
+            $tipeLaporanHtml
+            <p style="text-align: center; color: #666; font-size: 12px; margin-bottom: 8px;">Sistem Informasi Pencatatan Hasil Tangkap (SIPETANG)</p>
+            <div class="periode-wrap">$periodeBadgeHtml</div>
+
             <div class="info">
                 <p><strong>Tanggal Cetak:</strong> $tanggalCetak</p>
-                <p><strong>Total Data:</strong> $totalData</p>
+                <p><strong>Total Data:</strong> $totalData jenis ikan</p>
             </div>
 
             <table>
@@ -565,9 +599,9 @@ class CetakLaporanController extends Controller
                     $rows
                 </tbody>
             </table>
-            
+
             <div class="total">
-                <p>Total Berat: <strong>$totalBerat kg</strong></p>
+                <p>Total Berat: <strong>$totalBeratFormatted kg</strong></p>
                 <p>Total Nilai: <strong>Rp $totalNilaiFormatted</strong></p>
             </div>
 

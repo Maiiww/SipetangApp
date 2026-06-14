@@ -135,9 +135,27 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>LAPORAN DATA MARITIM SIPETANG</h1>
+            <h1>LAPORAN HASIL TANGKAP</h1>
             <p>Sistem Informasi Pengelolaan Data Tangkapan Ikan</p>
+            @php
+                $tipeLaporanLabel = match($laporan_type ?? '') {
+                    'daily'   => 'Laporan Harian',
+                    'monthly' => 'Laporan Bulanan',
+                    'custom'  => 'Laporan Kustom',
+                    default   => ucfirst(str_replace('_', ' ', $laporan_type ?? ''))
+                };
+            @endphp
+            <p style="margin-top:6px; font-size:13px; font-weight:bold; color:#0D2640;">{{ $tipeLaporanLabel }}</p>
         </div>
+
+        <!-- Period Badge (hanya ditampilkan jika ada info periode) -->
+        @if(!empty($periode_label))
+        <div style="text-align:center; margin-bottom: 18px;">
+            <span style="display:inline-block; background:#0D2640; color:white; padding:6px 20px; border-radius:20px; font-size:13px; font-weight:bold; letter-spacing:0.05em;">
+                <span style="margin-right:6px;">&#128197;</span>{{ $periode_label }}
+            </span>
+        </div>
+        @endif
 
         <!-- Summary -->
         <div class="summary">

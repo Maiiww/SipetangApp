@@ -113,12 +113,29 @@ class LaporanDownloadController extends Controller
     {
         $fileName = 'Laporan_' . $validated['laporan_type'] . '_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
+        $bulanNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+
+        $periodeLabel = null;
+        if ($validated['laporan_type'] === 'monthly') {
+            $bulanNow = (int) now()->month;
+            $periodeLabel = 'Bulan: ' . ($bulanNames[$bulanNow] ?? $bulanNow) . ' ' . now()->year;
+        } elseif ($validated['laporan_type'] === 'daily') {
+            $periodeLabel = 'Tanggal: ' . now()->format('d/m/Y');
+        } elseif ($validated['laporan_type'] === 'custom' && !empty($validated['start_date']) && !empty($validated['end_date'])) {
+            $periodeLabel = 'Periode: ' . \Carbon\Carbon::parse($validated['start_date'])->format('d/m/Y') . ' s/d ' . \Carbon\Carbon::parse($validated['end_date'])->format('d/m/Y');
+        }
+
         $data = [
-            'laporan' => $laporan,
-            'laporan_type' => $validated['laporan_type'],
-            'generated_date' => now()->format('d/m/Y H:i:s'),
+            'laporan'       => $laporan,
+            'laporan_type'  => $validated['laporan_type'],
+            'generated_date'=> now()->format('d/m/Y H:i:s'),
             'total_records' => $laporan->count(),
-            'total_berat' => $laporan->sum('beratTotal'),
+            'total_berat'   => $laporan->sum('beratTotal'),
+            'periode_label' => $periodeLabel,
         ];
 
         $pdf = Pdf::loadView('exports.laporan-pdf', $data)
@@ -146,12 +163,30 @@ class LaporanDownloadController extends Controller
     private function generateWord($laporan, $validated)
     {
         $fileName = 'Laporan_' . $validated['laporan_type'] . '_' . now()->format('Y-m-d_H-i-s') . '.doc';
+
+        $bulanNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+
+        $periodeLabel = null;
+        if ($validated['laporan_type'] === 'monthly') {
+            $bulanNow = (int) now()->month;
+            $periodeLabel = 'Bulan: ' . ($bulanNames[$bulanNow] ?? $bulanNow) . ' ' . now()->year;
+        } elseif ($validated['laporan_type'] === 'daily') {
+            $periodeLabel = 'Tanggal: ' . now()->format('d/m/Y');
+        } elseif ($validated['laporan_type'] === 'custom' && !empty($validated['start_date']) && !empty($validated['end_date'])) {
+            $periodeLabel = 'Periode: ' . \Carbon\Carbon::parse($validated['start_date'])->format('d/m/Y') . ' s/d ' . \Carbon\Carbon::parse($validated['end_date'])->format('d/m/Y');
+        }
+
         $data = [
-            'laporan' => $laporan,
-            'laporan_type' => $validated['laporan_type'],
-            'generated_date' => now()->format('d/m/Y H:i:s'),
+            'laporan'       => $laporan,
+            'laporan_type'  => $validated['laporan_type'],
+            'generated_date'=> now()->format('d/m/Y H:i:s'),
             'total_records' => $laporan->count(),
-            'total_berat' => $laporan->sum('beratTotal'),
+            'total_berat'   => $laporan->sum('beratTotal'),
+            'periode_label' => $periodeLabel,
         ];
 
         $html = view('exports.laporan-pdf', $data)->render();

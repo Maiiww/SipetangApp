@@ -58,51 +58,83 @@
             padding: 2.5rem; 
             height: 100%; 
             border: 1px solid #E2E8F0; 
-            transition: transform 0.3s, box-shadow 0.3s; 
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s; 
         }
 
         .bento-card:hover { 
-            transform: translateY(-5px); 
-            box-shadow: 0 15px 35px rgba(11, 45, 110, 0.08); 
+            transform: translateY(-6px); 
+            box-shadow: 0 20px 40px rgba(11, 45, 110, 0.08); 
+            border-color: rgba(11, 45, 110, 0.15);
         }
 
-        .bento-dark { background: var(--sipetang-navy); color: white; border: none; }
+        .bento-card .rounded-circle i {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .bento-card:hover .rounded-circle i {
+            transform: scale(1.2) rotate(6deg);
+        }
+
+        .bento-dark { 
+            background: var(--sipetang-navy); 
+            color: white; 
+            border: none; 
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bento-dark:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(11, 45, 110, 0.15);
+        }
         
-        /* TUPOKSI CARD (Elegan) */
+        /* TUPOKSI CARD (Elegan & Dinamis) */
         .tupoksi-card {
             background-color: white;
             border-left: 4px solid var(--sipetang-orange);
             border-radius: 12px;
             padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
             height: 100%;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .tupoksi-card:hover {
             background-color: var(--sipetang-light-blue);
             border-left: 4px solid var(--sipetang-navy);
             color: var(--sipetang-text) !important;
+            transform: translateX(6px);
+            box-shadow: 0 8px 20px rgba(11, 45, 110, 0.06);
         }
         .tupoksi-card:hover h6, .tupoksi-card:hover i { color: var(--sipetang-navy) !important; }
+        .tupoksi-card i {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .tupoksi-card:hover i {
+            transform: scale(1.25);
+        }
 
-        /* TPI AKTIF CARD */
+        /* TPI AKTIF CARD (Efek Zoom Gambar Premium) */
         .tpi-card {
             background-color: white;
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid #E2E8F0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;
         }
         .tpi-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 15px 35px rgba(59, 95, 161, 0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(11, 45, 110, 0.12);
+            border-color: rgba(11, 45, 110, 0.1);
         }
         .tpi-card .tpi-img {
             width: 100%;
             height: 160px;
             object-fit: cover;
             display: block;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tpi-card:hover .tpi-img {
+            transform: scale(1.08);
         }
         .tpi-card .tpi-badge {
             display: inline-block;
@@ -113,11 +145,94 @@
             padding: 3px 10px;
             border-radius: 50px;
             margin-bottom: 6px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tpi-card:hover .tpi-badge {
+            background-color: var(--sipetang-orange);
+            color: white;
         }
 
-        /* FAQ */
-        .accordion-button { font-weight: 700; color: var(--sipetang-text); box-shadow: none !important; }
-        .accordion-button:not(.collapsed) { color: var(--sipetang-navy); background-color: var(--sipetang-light-blue); }
+        /* FAQ & Accordion Modernization */
+        .accordion-item {
+            border: 1px solid #E2E8F0 !important;
+            margin-bottom: 12px;
+            border-radius: 12px !important;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .accordion-item:hover {
+            box-shadow: 0 8px 20px rgba(11, 45, 110, 0.04) !important;
+            border-color: rgba(11, 45, 110, 0.15) !important;
+        }
+        .accordion-button { 
+            font-weight: 700; 
+            color: var(--sipetang-text); 
+            box-shadow: none !important; 
+            padding: 1.25rem 1.5rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .accordion-button:not(.collapsed) { 
+            color: var(--sipetang-navy); 
+            background-color: var(--sipetang-light-blue); 
+        }
+
+        /* NAVBAR GLOW EFFECT */
+        .navbar-nav .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: var(--sipetang-orange);
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+        .navbar-nav .nav-link:hover::after {
+            width: 80%;
+            left: 10%;
+        }
+
+        /* HERO ELEMENTS ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .delay-100 { animation-delay: 0.15s; }
+        .delay-200 { animation-delay: 0.3s; }
+        .delay-300 { animation-delay: 0.45s; }
+
+        /* BUTTON PREMIUM STATES */
+        #btn-masuk-dashboard {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s, color 0.3s !important;
+        }
+        #btn-masuk-dashboard:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(255, 255, 255, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+            background-color: #f8fafc !important;
+        }
+        #btn-pelajari-sistem {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s, border-color 0.3s, color 0.3s !important;
+        }
+        #btn-pelajari-sistem:hover {
+            transform: translateY(-3px);
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(255, 255, 255, 0.8) !important;
+            color: #ffffff !important;
+        }
 
         /* SCROLL REVEAL ANIMATION */
         .reveal {
@@ -135,6 +250,120 @@
         .reveal-delay-2 { transition-delay: 0.2s; }
         .reveal-delay-3 { transition-delay: 0.3s; }
         .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* PAGE TRANSITION OVERLAY */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 99999;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .transition-overlay .panel {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, #04255f 0%, #0b3b80 100%);
+            transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .transition-overlay .panel-left {
+            left: 0;
+            transform: translateX(-100%);
+        }
+
+        .transition-overlay .panel-right {
+            right: 0;
+            transform: translateX(100%);
+        }
+
+        .transition-overlay.active {
+            pointer-events: all;
+        }
+
+        .transition-overlay.active .panel-left {
+            transform: translateX(0);
+        }
+
+        .transition-overlay.active .panel-right {
+            transform: translateX(0);
+        }
+
+        .transition-content {
+            position: relative;
+            z-index: 100000;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition-delay: 0.4s;
+            text-align: center;
+            color: white;
+        }
+
+        .transition-overlay.active .transition-content {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .transition-logo-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .transition-logo-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--sipetang-orange);
+            border-radius: 50%;
+            animation: spin-transition 1s linear infinite;
+        }
+
+        .transition-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+            background-color: white;
+            padding: 4px;
+            box-shadow: 0 8px 24px rgba(245, 166, 35, 0.35);
+        }
+
+        @keyframes spin-transition {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .transition-text {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            color: #ffffff;
+        }
+
+        .transition-subtext {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 6px;
+            letter-spacing: 1px;
+            color: var(--sipetang-light-blue);
+        }
     </style>
 </head>
 <body>
@@ -147,23 +376,23 @@
             <div class="row">
                 <div class="col-lg-8">
                     <!-- Tulisan SIPETANG Putih -->
-                    <h1 class="hero-title fw-bold text-shadow-custom text-white" style="font-size: 4.5rem; letter-spacing: 1px; margin-bottom: 0.5rem;">
+                    <h1 class="hero-title fw-bold text-shadow-custom text-white animate-fade-in-up" style="font-size: 4.5rem; letter-spacing: 1px; margin-bottom: 0.5rem;">
                         SIPETANG
                     </h1>
                     <!-- Tulisan Kepanjangan Biru Soft -->
-                    <h2 class="fw-light text-shadow-custom" style="font-size: 2.2rem; color: var(--sipetang-ice-blue); margin-bottom: 1.5rem; line-height: 1.3;">
+                    <h2 class="fw-light text-shadow-custom animate-fade-in-up delay-100" style="font-size: 2.2rem; color: var(--sipetang-ice-blue); margin-bottom: 1.5rem; line-height: 1.3;">
                         Sistem Informasi Pencatatan<br>Hasil Tangkap
                     </h2>
                     <!-- Deskripsi Diperkecil & Transparan -->
-                    <p class="hero-subtitle text-shadow-custom fw-normal" style="font-size: 1rem; margin-bottom: 3rem; max-width: 650px; line-height: 1.7; color: rgba(255, 255, 255, 0.8);">
+                    <p class="hero-subtitle text-shadow-custom fw-normal animate-fade-in-up delay-200" style="font-size: 1rem; margin-bottom: 3rem; max-width: 650px; line-height: 1.7; color: rgba(255, 255, 255, 0.8);">
                         Platform digital untuk pencatatan, pengelolaan, dan pelaporan data hasil tangkap ikan secara akurat dan terintegrasi guna mendukung pengambilan keputusan data perikanan tangkap di Kabupaten Subang.
                     </p>
-                    <div class="d-flex gap-3 flex-wrap">
+                    <div class="d-flex gap-3 flex-wrap animate-fade-in-up delay-300">
                         <!-- Button Background Putih -->
-                        <a href="{{ url('/login') }}" class="btn px-4 py-3 fw-bold border-0 shadow" style="background-color: white; color: var(--sipetang-navy); border-radius: 8px;">
+                        <a href="{{ url('/login') }}" id="btn-masuk-dashboard" class="btn px-4 py-3 fw-bold border-0 shadow" style="background-color: white; color: var(--sipetang-navy); border-radius: 8px;">
                             <i class="fas fa-sign-in-alt me-2"></i> Masuk ke Dashboard
                         </a>
-                        <a href="#faq" class="btn px-4 py-3 fw-bold shadow-sm" style="background-color: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 8px;">
+                        <a href="#faq" id="btn-pelajari-sistem" class="btn px-4 py-3 fw-bold shadow-sm" style="background-color: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 8px;">
                             Pelajari Sistem
                         </a>
                     </div>
@@ -518,6 +747,20 @@
 
     @include('layouts.footer')
 
+    <!-- Page Transition Overlay -->
+    <div class="transition-overlay" id="pageTransitionOverlay">
+        <div class="panel panel-left"></div>
+        <div class="panel panel-right"></div>
+        <div class="transition-content">
+            <div class="transition-logo-wrapper">
+                <div class="transition-logo-circle"></div>
+                <img src="{{ asset('assets/../../images/logo.png') }}" alt="SIPETANG" class="transition-logo">
+            </div>
+            <div class="transition-text">SIPETANG</div>
+            <div class="transition-subtext">Menghubungkan ke Dashboard...</div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- ── SCROLL REVEAL SCRIPT ── -->
@@ -538,6 +781,31 @@
             });
 
             revealEls.forEach((el) => observer.observe(el));
+        });
+    </script>
+
+    <!-- ── PAGE TRANSITION SCRIPT ── -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginLinks = document.querySelectorAll('a[href$="/login"], a[href*="login"]');
+            const overlay = document.getElementById('pageTransitionOverlay');
+
+            if (overlay) {
+                loginLinks.forEach(function(link) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetUrl = this.getAttribute('href');
+
+                        // Activate overlay to start sliding panels
+                        overlay.classList.add('active');
+
+                        // Redirect after animation completes
+                        setTimeout(function() {
+                            window.location.href = targetUrl;
+                        }, 1000); // 1000ms duration (leaves 400ms after text transition starts)
+                    });
+                });
+            }
         });
     </script>
 </body>

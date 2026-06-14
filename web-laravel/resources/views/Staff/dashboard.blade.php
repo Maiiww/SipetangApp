@@ -966,15 +966,181 @@
             padding-top: 20px;
             border-top: 1px solid #e0e0e0;
         }
+
+        /* DARK MODE STYLES & VARIABLES */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .sidebar, .header, .stat-card, .stat-card-large, .small-stat, .progress-stat-card, .sidebar-right, .table-container, .date-selector {
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode Toggle Button Styling */
+        .dark-mode-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.15rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.08) rotate(15deg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        body.dark-mode {
+            background: #0f172a; /* Slate 900 */
+            color: #f1f5f9; /* Slate 100 */
+        }
+
+        body.dark-mode .sidebar {
+            background: linear-gradient(180deg, #020617 0%, #0b1e3f 100%);
+            box-shadow: 4px 0 36px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .header {
+            background: #1e293b; /* Slate 800 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            border-color: #334155;
+        }
+
+        body.dark-mode .header-profile-btn {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        }
+
+        body.dark-mode .header-profile-avatar {
+            border-color: #1e293b;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: #334155;
+            color: #fbbf24; /* Amber-400 */
+            border-color: #475569;
+        }
+
+        body.dark-mode .dark-mode-toggle:hover {
+            background: #475569;
+            color: #f59e0b; /* Amber-500 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .content-header-top h2,
+        body.dark-mode .content-header-left h2,
+        body.dark-mode .sidebar-right-header h3,
+        body.dark-mode .stat-info span,
+        body.dark-mode .stat-card-large .number,
+        body.dark-mode .small-stat .value,
+        body.dark-mode .table-header h3,
+        body.dark-mode .activity-name,
+        body.dark-mode .profile-item-value,
+        body.dark-mode td {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .content-header-left p,
+        body.dark-mode .date-selector,
+        body.dark-mode .activity-location,
+        body.dark-mode .small-stat label,
+        body.dark-mode .stat-info h4,
+        body.dark-mode .stat-card-large h4,
+        body.dark-mode .profile-item-label,
+        body.dark-mode th {
+            color: #94a3bb !important;
+        }
+
+        body.dark-mode .stat-card,
+        body.dark-mode .stat-card-large,
+        body.dark-mode .small-stat,
+        body.dark-mode .progress-stat-card,
+        body.dark-mode .sidebar-right,
+        body.dark-mode .table-container,
+        body.dark-mode .profile-modal-content {
+            background: #1e293b; /* Slate 800 */
+            border-color: #334155;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .date-selector {
+            background: #334155;
+            border-color: #475569;
+        }
+        
+        body.dark-mode .date-selector:hover {
+            background: #475569;
+        }
+
+        body.dark-mode .activity-item,
+        body.dark-mode .sidebar-right-header,
+        body.dark-mode .profile-item,
+        body.dark-mode td,
+        body.dark-mode th {
+            border-color: #334155 !important;
+        }
+
+        body.dark-mode .stat-icon-blue {
+            background: #0369a1;
+            color: #e0f2fe;
+        }
+
+        body.dark-mode .stat-icon-green {
+            background: #166534;
+            color: #dcfce7;
+        }
+
+        body.dark-mode .stat-icon-orange {
+            background: #991b1b;
+            color: #fee2e2;
+        }
+
+        body.dark-mode .progress-bar {
+            background: #334155;
+        }
+
+        body.dark-mode .profile-modal-header {
+            background: linear-gradient(135deg, #020617 0%, #0b1e3f 100%);
+        }
+
+        body.dark-mode .profile-item-icon {
+            background: #0b1e3f;
+            color: #38bdf8;
+        }
+
+        body.dark-mode .page-footer {
+            border-top-color: #334155;
+            color: #64748b;
+        }
     </style>
 </head>
 
 <body>
+    <script>
+        if (localStorage.getItem('staffDarkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
     @include('components.sidebar-menu')
 
     <div class="main-content">
         <div class="header">
-            <div class="header-right">
+            <div class="header-right" style="gap: 15px;">
+                <!-- Dark Mode Toggle Button -->
+                <div class="dark-mode-toggle" id="darkModeToggle" title="Ubah Tema" onclick="toggleDarkMode()">
+                    <i class="fas fa-moon dark-icon"></i>
+                    <i class="fas fa-sun light-icon" style="display: none;"></i>
+                </div>
+
                 <div class="header-profile-btn" onclick="openProfileModal(event)" title="Profil Saya">
                     <div class="header-profile-avatar">
                         STF
@@ -1205,6 +1371,50 @@
                 closeProfileModal();
             }
         }
+    </script>
+
+    <!-- Dark Mode Toggle Script -->
+    <script>
+        function toggleDarkMode() {
+            const body = document.body;
+            const toggleBtn = document.getElementById('darkModeToggle');
+            const darkIcon = toggleBtn.querySelector('.dark-icon');
+            const lightIcon = toggleBtn.querySelector('.light-icon');
+
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                darkIcon.style.display = 'block';
+                lightIcon.style.display = 'none';
+                localStorage.setItem('staffDarkMode', 'disabled');
+            } else {
+                body.classList.add('dark-mode');
+                darkIcon.style.display = 'none';
+                lightIcon.style.display = 'block';
+                localStorage.setItem('staffDarkMode', 'enabled');
+            }
+        }
+
+        // Initialize dark mode on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeSetting = localStorage.getItem('staffDarkMode');
+            const body = document.body;
+            const toggleBtn = document.getElementById('darkModeToggle');
+            
+            if (toggleBtn) {
+                const darkIcon = toggleBtn.querySelector('.dark-icon');
+                const lightIcon = toggleBtn.querySelector('.light-icon');
+
+                if (darkModeSetting === 'enabled') {
+                    body.classList.add('dark-mode');
+                    darkIcon.style.display = 'none';
+                    lightIcon.style.display = 'block';
+                } else {
+                    body.classList.remove('dark-mode');
+                    darkIcon.style.display = 'block';
+                    lightIcon.style.display = 'none';
+                }
+            }
+        });
     </script>
 
     @if (session('welcome'))

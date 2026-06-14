@@ -716,6 +716,202 @@
             border-top: 1px solid #e0e0e0;
         }
 
+        /* DARK MODE STYLES & VARIABLES */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .sidebar, .header, .stat-card, .filters-section, .table-section, .page-footer, .date-selector, input, select, textarea, .trend-stat, .trend-section {
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode Toggle Button Styling */
+        .dark-mode-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.15rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.08) rotate(15deg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        body.dark-mode {
+            background: #0f172a; /* Slate 900 */
+            color: #f1f5f9; /* Slate 100 */
+        }
+
+        body.dark-mode .sidebar {
+            background: linear-gradient(180deg, #020617 0%, #0b1e3f 100%);
+            box-shadow: 4px 0 36px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .header {
+            background: #1e293b; /* Slate 800 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            border-color: #334155;
+        }
+
+        body.dark-mode .header-icon {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        body.dark-mode .header-icon:hover {
+            background: #475569;
+        }
+
+        body.dark-mode .header-profile-btn {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        }
+
+        body.dark-mode .header-profile-avatar {
+            border-color: #1e293b;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: #334155;
+            color: #fbbf24; /* Amber-400 */
+            border-color: #475569;
+        }
+
+        body.dark-mode .dark-mode-toggle:hover {
+            background: #475569;
+            color: #f59e0b; /* Amber-500 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .page-title h1,
+        body.dark-mode .stat-value,
+        body.dark-mode .table-title,
+        body.dark-mode .volume-cell,
+        body.dark-mode .tpi-name,
+        body.dark-mode .profile-item-value,
+        body.dark-mode td,
+        body.dark-mode .trend-stat-value,
+        body.dark-mode #rejectModal div h3 {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .page-title p,
+        body.dark-mode .stat-label,
+        body.dark-mode .profile-item-label,
+        body.dark-mode th,
+        body.dark-mode .trend-stat-label,
+        body.dark-mode .trend-description {
+            color: #94a3bb !important;
+        }
+
+        body.dark-mode .stat-card,
+        body.dark-mode .filters-section,
+        body.dark-mode .table-section,
+        body.dark-mode .profile-modal-content,
+        body.dark-mode #rejectModal > div,
+        body.dark-mode .trend-stat,
+        body.dark-mode .trend-section {
+            background: #1e293b; /* Slate 800 */
+            border-color: #334155;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .reports-table thead {
+            background: #1e293b;
+        }
+
+        body.dark-mode .reports-table tbody tr:hover {
+            background: #273549;
+        }
+
+        body.dark-mode .btn-filter {
+            background: #334155;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        body.dark-mode .btn-filter:hover {
+            background: #475569;
+            color: white;
+        }
+
+        body.dark-mode .btn-filter.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #334155 !important;
+            border-color: #475569 !important;
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode input:focus,
+        body.dark-mode select:focus,
+        body.dark-mode textarea:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
+        }
+
+        body.dark-mode .activity-item,
+        body.dark-mode .profile-item,
+        body.dark-mode td,
+        body.dark-mode th {
+            border-color: #334155 !important;
+        }
+
+        body.dark-mode .stat-icon-pending {
+            background: #3f2e0b;
+        }
+
+        body.dark-mode .stat-icon-validated {
+            background: #0b3f1c;
+        }
+
+        body.dark-mode .fish-badge {
+            background: #0f3e5f;
+            color: #38bdf8;
+            border-color: #0c4a6e;
+        }
+
+        body.dark-mode .profile-modal-header {
+            background: linear-gradient(135deg, #020617 0%, #0b1e3f 100%);
+        }
+
+        body.dark-mode .profile-item-icon {
+            background: #0b1e3f;
+            color: #38bdf8;
+        }
+
+        body.dark-mode .page-footer {
+            border-top-color: #334155;
+            color: #64748b;
+        }
+
+        body.dark-mode #notificationDropdown {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4) !important;
+        }
+        body.dark-mode #notificationDropdown div {
+            border-bottom-color: #334155 !important;
+            color: #f1f5f9 !important;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -1075,6 +1271,11 @@
 </head>
 
 <body>
+    <script>
+        if (localStorage.getItem('staffDarkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
     <!-- Sidebar -->
     @include('components.sidebar-menu')
 
@@ -1642,6 +1843,336 @@
             </div>
         </div>
     </div>
-</body>
 
+    <!-- ============================================================ -->
+    <!-- REAL-TIME NOTIFICATION SYSTEM                                 -->
+    <!-- ============================================================ -->
+    <style>
+        /* Live Notification Toast */
+        #liveToast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            min-width: 330px;
+            max-width: 400px;
+            background: linear-gradient(135deg, #0a3b99 0%, #1a5ec8 100%);
+            color: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(10,59,153,0.35), 0 0 0 2px rgba(255,255,255,0.12);
+            padding: 0;
+            overflow: hidden;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease;
+            pointer-events: none;
+        }
+        #liveToast.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+        .toast-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+        .toast-bell {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0;
+            animation: bellRing 0.6s ease 0.2s;
+        }
+        @keyframes bellRing {
+            0%   { transform: rotate(0); }
+            20%  { transform: rotate(-18deg); }
+            40%  { transform: rotate(18deg); }
+            60%  { transform: rotate(-10deg); }
+            80%  { transform: rotate(8deg); }
+            100% { transform: rotate(0); }
+        }
+        .toast-title {
+            font-weight: 800;
+            font-size: 14px;
+            flex: 1;
+        }
+        .toast-close {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+        .toast-close:hover { color: white; }
+        .toast-body {
+            padding: 12px 18px 16px;
+            font-size: 13px;
+        }
+        .toast-count {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+        .toast-sub {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-bottom: 12px;
+        }
+        .toast-items {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .toast-item {
+            background: rgba(255,255,255,0.12);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast-item-icon { opacity: 0.75; }
+        .toast-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: white;
+            color: #0a3b99;
+            border: none;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .toast-btn:hover {
+            background: #e8f0fe;
+            transform: translateY(-1px);
+        }
+        /* Pulse badge animation */
+        @keyframes pulseBadge {
+            0%   { box-shadow: 0 0 0 0 rgba(220,53,69,0.7); }
+            70%  { box-shadow: 0 0 0 8px rgba(220,53,69,0); }
+            100% { box-shadow: 0 0 0 0 rgba(220,53,69,0); }
+        }
+        .notification-badge.pulse {
+            animation: pulseBadge 1.2s ease infinite;
+        }
+    </style>
+
+    <!-- Toast Element -->
+    <div id="liveToast">
+        <div class="toast-header">
+            <div class="toast-bell"><i class="fas fa-bell"></i></div>
+            <div class="toast-title">Laporan Masuk!</div>
+            <button class="toast-close" onclick="dismissToast()">&#x2715;</button>
+        </div>
+        <div class="toast-body">
+            <div class="toast-count" id="toastCount">0 Laporan Baru</div>
+            <div class="toast-sub" id="toastSub">Menunggu validasi dari juru rekap</div>
+            <div class="toast-items" id="toastItems"></div>
+            <button class="toast-btn" onclick="window.location.href='{{ route('staff.validasi') }}'">
+                <i class="fas fa-clipboard-check"></i>&nbsp; Lihat & Validasi Sekarang
+            </button>
+        </div>
+    </div>
+
+    <script>
+    // =====================================================
+    // REAL-TIME POLLING NOTIFICATION SYSTEM
+    // =====================================================
+    (function () {
+        const POLL_URL      = '{{ route("staff.validasi.poll") }}';
+        const POLL_INTERVAL = 10000; // 10 seconds
+        let lastKnownId     = {{ \App\Models\Tangkapan::whereIn('status', ['Draft','Menunggu Validasi'])->max('id') ?? 0 }};
+        let lastPending     = {{ $stats['pending'] }};
+        let toastTimer      = null;
+        let audioCtx        = null;
+
+        // --- Web Audio notification beep ---
+        function playNotificationSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+                // Three-tone ascending beep: pleasant, professional
+                const tones = [
+                    { freq: 523.25, start: 0,    dur: 0.14 }, // C5
+                    { freq: 659.25, start: 0.15,  dur: 0.14 }, // E5
+                    { freq: 783.99, start: 0.30,  dur: 0.22 }, // G5
+                ];
+
+                tones.forEach(({ freq, start, dur }) => {
+                    const osc  = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type      = 'sine';
+                    osc.frequency.value = freq;
+                    const t = audioCtx.currentTime + start;
+                    gain.gain.setValueAtTime(0, t);
+                    gain.gain.linearRampToValueAtTime(0.35, t + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+                    osc.start(t);
+                    osc.stop(t + dur + 0.05);
+                });
+            } catch (e) {
+                console.warn('Audio not available:', e);
+            }
+        }
+
+        // --- Show toast notification ---
+        function showToast(pending, newCount, recent) {
+            const toast = document.getElementById('liveToast');
+            document.getElementById('toastCount').textContent =
+                newCount + ' Laporan Baru Masuk';
+            document.getElementById('toastSub').textContent =
+                'Total ' + pending + ' laporan menunggu validasi Anda';
+
+            // Render recent items
+            const itemsEl = document.getElementById('toastItems');
+            itemsEl.innerHTML = '';
+            if (recent && recent.length > 0) {
+                recent.forEach(function (r) {
+                    const div = document.createElement('div');
+                    div.className = 'toast-item';
+                    div.innerHTML =
+                        '<span class="toast-item-icon"><i class="fas fa-fish"></i></span>' +
+                        '<span><strong>' + (r.jenis_ikan || '-') + '</strong> &bull; ' +
+                        (r.berat || 0) + ' kg &bull; <em>' + (r.waktu || '-') + '</em></span>';
+                    itemsEl.appendChild(div);
+                });
+            }
+
+            // Auto-dismiss after 12 seconds
+            if (toastTimer) clearTimeout(toastTimer);
+            toast.classList.add('show');
+            toastTimer = setTimeout(dismissToast, 12000);
+        }
+
+        function dismissToast() {
+            document.getElementById('liveToast').classList.remove('show');
+            if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+        }
+
+        // --- Update notification badge ---
+        function updateBadge(pending) {
+            // Header bell badge
+            let badge = document.querySelector('#notificationToggle .notification-badge');
+            if (pending > 0) {
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'notification-badge pulse';
+                    document.getElementById('notificationToggle').appendChild(badge);
+                }
+                badge.textContent = pending;
+                badge.classList.add('pulse');
+            } else if (badge) {
+                badge.remove();
+            }
+
+            // Sidebar badge (inside <li> for staff.validasi)
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+            sidebarLinks.forEach(function (link) {
+                if (link.href && link.href.includes('validasi-laporan')) {
+                    let sbBadge = link.querySelector('span[data-notif]');
+                    if (pending > 0) {
+                        if (!sbBadge) {
+                            sbBadge = document.createElement('span');
+                            sbBadge.setAttribute('data-notif', '1');
+                            sbBadge.style.cssText =
+                                'margin-left:auto;background:#dc3545;color:#fff;font-size:0.72rem;' +
+                                'min-width:20px;height:20px;display:inline-flex;align-items:center;' +
+                                'justify-content:center;border-radius:999px;padding:0 5px;' +
+                                'position:absolute;right:12px;top:50%;transform:translateY(-50%);font-weight:700;';
+                            link.appendChild(sbBadge);
+                        }
+                        sbBadge.textContent = pending;
+                    } else if (sbBadge) {
+                        sbBadge.remove();
+                    }
+                }
+            });
+
+            // Update dropdown text
+            const dropdownContent = document.querySelector('#notificationDropdown > div:last-child');
+            if (dropdownContent) {
+                if (pending > 0) {
+                    dropdownContent.innerHTML =
+                        '<p style="margin:0 0 10px;">Terdapat <strong>' + pending + '</strong> laporan menunggu validasi.</p>' +
+                        '<div style="display:flex;gap:8px;">' +
+                        '<button type="button" onclick="showPending()" class="btn-filter" style="background:#1a4d7d;color:white;">Tampilkan</button>' +
+                        '<button type="button" onclick="closeNotificationDropdown()" class="btn-filter" style="background:#e0e0e0;color:#0d2640;">Tutup</button>' +
+                        '</div>';
+                } else {
+                    dropdownContent.innerHTML = '<p style="margin:0;color:#666;">Tidak ada notifikasi baru.</p>';
+                }
+            }
+        }
+
+        // --- Main poll function ---
+        function poll() {
+            fetch(POLL_URL, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                const newLatestId = data.latest_id || 0;
+                const pending     = data.pending   || 0;
+
+                // Detect new laporan: latest_id increased
+                if (newLatestId > lastKnownId && lastKnownId > 0) {
+                    const newCount = pending - lastPending;
+                    playNotificationSound();
+                    showToast(pending, Math.max(newCount, 1), data.recent || []);
+                }
+
+                // Always update badge with current pending count
+                updateBadge(pending);
+
+                lastKnownId  = newLatestId;
+                lastPending  = pending;
+            })
+            .catch(function (e) {
+                console.warn('Poll error:', e);
+            });
+        }
+
+        // Start polling after 3s delay (give page time to settle)
+        setTimeout(function () {
+            poll(); // First immediate poll
+            setInterval(poll, POLL_INTERVAL);
+        }, 3000);
+    })();
+    </script>
+
+    <!-- Dark Mode Initializer Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeSetting = localStorage.getItem('staffDarkMode');
+            if (darkModeSetting === 'enabled') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    </script>
+</body>
 </html>
