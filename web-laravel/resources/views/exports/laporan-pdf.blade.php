@@ -14,65 +14,142 @@
         body {
             font-family: Arial, sans-serif;
             color: #333;
+            line-height: 1.4;
         }
         
         .container {
-            padding: 20px;
+            padding: 10px 20px;
         }
         
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #0D2640;
-            padding-bottom: 15px;
-        }
-        
-        .header h1 {
-            font-size: 24px;
-            color: #0D2640;
+        /* Kop Surat Styles */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 5px;
         }
         
-        .header p {
-            font-size: 12px;
-            color: #666;
+        .kop-table td {
+            border: none !important;
+            padding: 0 !important;
+            background: transparent !important;
+            vertical-align: middle;
         }
         
-        .summary {
-            margin-bottom: 25px;
-            padding: 15px;
-            background: #f8fafc;
-            border-radius: 5px;
+        .kop-logo-left {
+            width: 12%;
+            text-align: left;
         }
         
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 12px;
+        .kop-logo-left img {
+            height: 75px;
+            width: auto;
         }
         
-        .summary-item label {
+        .kop-logo-right {
+            width: 12%;
+            text-align: right;
+        }
+        
+        .kop-logo-right img {
+            height: 75px;
+            width: auto;
+        }
+        
+        .kop-text {
+            width: 76%;
+            text-align: center;
+        }
+        
+        .kop-pemda {
+            font-size: 14px;
             font-weight: bold;
-            color: #0D2640;
+            color: #000;
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
         }
         
-        .summary-item span {
+        .kop-dinas {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+        
+        .kop-alamat {
+            font-size: 10px;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .kop-kontak {
+            font-size: 10px;
             color: #333;
         }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .double-line {
+            border-top: 2px solid #000;
+            border-bottom: 1px solid #000;
+            height: 2px;
+            margin-top: 6px;
+            margin-bottom: 20px;
         }
         
-        table thead {
+        .report-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #0A3B99;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Metadata Styles */
+        .metadata-table {
+            width: auto;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        
+        .metadata-table td {
+            border: none !important;
+            padding: 3px 5px !important;
+            background: transparent !important;
+        }
+        
+        .meta-label {
+            width: 100px;
+            color: #333;
+            font-weight: normal;
+        }
+        
+        .meta-colon {
+            width: 10px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .meta-value {
+            color: #333;
+            font-weight: normal;
+        }
+        
+        /* Data Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .data-table thead {
             background: #0D2640;
             color: white;
         }
         
-        table th {
+        .data-table th {
             padding: 10px;
             text-align: left;
             font-size: 11px;
@@ -80,17 +157,17 @@
             border: 1px solid #0D2640;
         }
         
-        table td {
+        .data-table td {
             padding: 10px;
             border: 1px solid #ddd;
             font-size: 11px;
         }
         
-        table tbody tr:nth-child(even) {
+        .data-table tbody tr:nth-child(even) {
             background: #f8fafc;
         }
         
-        table tbody tr:hover {
+        .data-table tbody tr:hover {
             background: #e6f0ff;
         }
         
@@ -132,50 +209,128 @@
     </style>
 </head>
 <body>
+    @php
+        $logoSubangPath = public_path('kabupaten-subang-logo.png');
+        $logoDinasPath = public_path('images/logo.png');
+
+        $logoSubangBase64 = '';
+        $logoDinasBase64 = '';
+
+        if (file_exists($logoSubangPath)) {
+            $logoSubangData = file_get_contents($logoSubangPath);
+            $logoSubangBase64 = 'data:image/png;base64,' . base64_encode($logoSubangData);
+        }
+
+        if (file_exists($logoDinasPath)) {
+            $logoDinasData = file_get_contents($logoDinasPath);
+            $logoDinasBase64 = 'data:image/png;base64,' . base64_encode($logoDinasData);
+        }
+
+        // Determine Asal TPI
+        $tpiList = $laporan->map(function($item) {
+            if (isset($item->user) && isset($item->user->wilayah)) {
+                return $item->user->wilayah;
+            }
+            return $item->namaTPI ?? $item->nama_tpi ?? null;
+        })->filter()->unique();
+
+        $asalTpi = $tpiList->count() === 1 ? $tpiList->first() : 'Semua TPI';
+
+        // Determine Jenis Laporan
+        $tipeLaporanLabel = match($laporan_type ?? '') {
+            'daily', 'harian'   => 'Laporan Harian',
+            'monthly', 'bulanan' => 'Laporan Bulanan',
+            'tahunan'           => 'Laporan Tahunan',
+            'custom'            => 'Laporan Kustom',
+            default             => ucfirst(str_replace('_', ' ', $laporan_type ?? ''))
+        };
+
+        // Determine Periode Label Only
+        $periodeLabelOnly = $periode_label ?? '';
+        $periodeLabelOnly = preg_replace('/^(Bulan|Tanggal|Tahun|Periode):\s*/i', '', $periodeLabelOnly);
+        
+        if (empty($periodeLabelOnly)) {
+            if (($laporan_type === 'monthly' || $laporan_type === 'bulanan') && isset($bulan)) {
+                $bulanNames = [
+                    1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                    5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                    9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                ];
+                $periodeLabelOnly = ($bulanNames[(int)$bulan] ?? $bulan) . ' ' . ($tahun ?? date('Y'));
+            } elseif ($laporan_type === 'tahunan' && isset($tahun)) {
+                $periodeLabelOnly = $tahun;
+            } elseif ($laporan_type === 'daily' || $laporan_type === 'harian') {
+                $periodeLabelOnly = now()->format('d/m/Y');
+            } else {
+                $periodeLabelOnly = $tahun ?? now()->year;
+            }
+        }
+
+        // Format Tanggal Cetak
+        $generated_date_short = isset($generated_date) ? explode(' ', $generated_date)[0] : now()->format('d/m/Y');
+    @endphp
+
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>LAPORAN HASIL TANGKAP</h1>
-            <p>Sistem Informasi Pengelolaan Data Tangkapan Ikan</p>
-            @php
-                $tipeLaporanLabel = match($laporan_type ?? '') {
-                    'daily'   => 'Laporan Harian',
-                    'monthly' => 'Laporan Bulanan',
-                    'custom'  => 'Laporan Kustom',
-                    default   => ucfirst(str_replace('_', ' ', $laporan_type ?? ''))
-                };
-            @endphp
-            <p style="margin-top:6px; font-size:13px; font-weight:bold; color:#0D2640;">{{ $tipeLaporanLabel }}</p>
-        </div>
+        <!-- Kop Surat -->
+        <table class="kop-table">
+            <tr>
+                <td class="kop-logo-left">
+                    @if(!empty($logoSubangBase64))
+                        <img src="{{ $logoSubangBase64 }}" alt="Logo Subang">
+                    @endif
+                </td>
+                <td class="kop-text">
+                    <div class="kop-pemda">PEMERINTAH KABUPATEN SUBANG</div>
+                    <div class="kop-dinas">DINAS KELAUTAN DAN PERIKANAN</div>
+                    <div class="kop-alamat">Jl. A. Nata Sukarya No. 28, Kabupaten Subang, 41211</div>
+                    <div class="kop-kontak">Telepon: (0260) 411325 | Email: dinasperikanan@gmail.com</div>
+                </td>
+                <td class="kop-logo-right">
+                    @if(!empty($logoDinasBase64))
+                        <img src="{{ $logoDinasBase64 }}" alt="Logo Dinas">
+                    @endif
+                </td>
+            </tr>
+        </table>
+        
+        <div class="double-line"></div>
 
-        <!-- Period Badge (hanya ditampilkan jika ada info periode) -->
-        @if(!empty($periode_label))
-        <div style="text-align:center; margin-bottom: 18px;">
-            <span style="display:inline-block; background:#0D2640; color:white; padding:6px 20px; border-radius:20px; font-size:13px; font-weight:bold; letter-spacing:0.05em;">
-                <span style="margin-right:6px;">&#128197;</span>{{ $periode_label }}
-            </span>
-        </div>
-        @endif
+        <!-- Title -->
+        <div class="report-title">LAPORAN HASIL TANGKAP</div>
 
-        <!-- Summary -->
-        <div class="summary">
-            <div class="summary-item">
-                <label>Tipe Laporan:</label>
-                <span>{{ ucfirst(str_replace('_', ' ', $laporan_type)) }}</span>
-            </div>
-            <div class="summary-item">
-                <label>Total Record:</label>
-                <span>{{ $total_records }} laporan</span>
-            </div>
-            <div class="summary-item">
-                <label>Total Berat:</label>
-                <span>{{ number_format($total_berat, 2, ',', '.') }} kg</span>
-            </div>
-            <div class="summary-item">
-                <label>Tanggal Generate:</label>
-                <span>{{ $generated_date }}</span>
-            </div>
-        </div>
+        <!-- Metadata -->
+        <table class="metadata-table">
+            <tr>
+                <td class="meta-label">Asal TPI</td>
+                <td class="meta-colon">:</td>
+                <td class="meta-value">{{ $asalTpi }}</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Jenis Laporan</td>
+                <td class="meta-colon">:</td>
+                <td class="meta-value">{{ $tipeLaporanLabel }}</td>
+            </tr>
+            <tr>
+                <td class="meta-label">
+                    @if($laporan_type === 'daily' || $laporan_type === 'harian')
+                        Tanggal
+                    @elseif($laporan_type === 'monthly' || $laporan_type === 'bulanan')
+                        Bulan/Tahun
+                    @elseif($laporan_type === 'custom')
+                        Periode
+                    @else
+                        Tahun
+                    @endif
+                </td>
+                <td class="meta-colon">:</td>
+                <td class="meta-value">{{ $periodeLabelOnly }}</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Tanggal Cetak</td>
+                <td class="meta-colon">:</td>
+                <td class="meta-value">{{ $generated_date_short }}</td>
+            </tr>
+        </table>
 
         <!-- Data Table -->
         @php
@@ -191,7 +346,7 @@
                 ];
             });
         @endphp
-        <table>
+        <table class="data-table">
             <thead>
                 <tr>
                     <th>Jenis Ikan</th>

@@ -272,7 +272,7 @@ class CetakLaporanController extends Controller
             if ($validated['format'] === 'pdf') {
                 return $this->generatePDF($laporan, $validated['jenis_laporan'] ?? null, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
             } else {
-                return $this->generateExcel($laporan);
+                return $this->generateExcel($laporan, $validated['jenis_laporan'] ?? null, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -297,37 +297,157 @@ class CetakLaporanController extends Controller
         $html = $this->generateHTML($laporan, $jenisLaporan, $bulan, $tahun);
 
         $pdf = Pdf::loadHTML($html);
-        $pdf->setPaper('A4', 'landscape');
+        $pdf->setPaper('A4', 'portrait');
 
         return $pdf->download($fileName);
     }
 
-    private function generateExcel($laporan)
+    private function generateExcel($laporan, $jenisLaporan = null, $bulan = null, $tahun = null)
     {
         $fileName = 'Laporan_' . now()->format('YmdHis') . '.xlsx';
 
-        // Create simple Excel with data using Spreadsheet
+        // Create Excel with data using Spreadsheet
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Header
-        $sheet->setCellValue('A1', 'LAPORAN HASIL TANGKAP - SIPETANG');
+        // Calculate metadata
+        $bulanNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+
+        // Determine Asal TPI
+        $tpiList = $laporan->map(function($item) {
+            if (isset($item->user) && isset($item->user->wilayah)) {
+                return $item->user->wilayah;
+            }
+            return $item->namaTPI ?? $item->nama_tpi ?? null;
+        })->filter()->unique();
+        $asalTpi = $tpiList->count() === 1 ? $tpiList->first() : 'Semua TPI';
+
+        // Determine Jenis Laporan
+        $tipeLaporanLabel = match($jenisLaporan ?? '') {
+            'daily', 'harian'   => 'Laporan Harian',
+            'monthly', 'bulanan' => 'Laporan Bulanan',
+            'tahunan'           => 'Laporan Tahunan',
+            'custom'            => 'Laporan Kustom',
+            default             => ucfirst(str_replace('_', ' ', $jenisLaporan ?? ''))
+        };
+
+        // Determine Periode Label
+        $tahunVal = $tahun ?? date('Y');
+        $periodeLabelOnly = '';
+        if ($jenisLaporan === 'bulanan' && $bulan) {
+            $periodeLabelOnly = ($bulanNames[(int)$bulan] ?? $bulan) . ' ' . $tahunVal;
+        } elseif ($jenisLaporan === 'tahunan' && $tahun) {
+            $periodeLabelOnly = $tahun;
+        } elseif ($jenisLaporan === 'harian') {
+            if ($laporan->isNotEmpty()) {
+                $dates = $laporan->map(function($item) {
+                    return $item->created_at->format('d/m/Y');
+                })->unique();
+                if ($dates->count() === 1) {
+                    $periodeLabelOnly = $dates->first();
+                } else {
+                    $sortedDates = $laporan->pluck('created_at')->sort();
+                    $startDate = $sortedDates->first()->format('d/m/Y');
+                    $endDate = $sortedDates->last()->format('d/m/Y');
+                    $periodeLabelOnly = $startDate . ' s/d ' . $endDate;
+                }
+            } else {
+                $periodeLabelOnly = now()->format('d/m/Y');
+            }
+        } else {
+            $periodeLabelOnly = $tahunVal;
+        }
+
+        $tanggalCetak = now()->format('d/m/Y');
+
+        // --- RENDER HEADER (KOP SURAT) ---
+        $sheet->setCellValue('A1', 'PEMERINTAH KABUPATEN SUBANG');
         $sheet->mergeCells('A1:C1');
-        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-        $sheet->setCellValue('A2', 'Tanggal Cetak: ' . now()->format('d/m/Y H:i'));
+        $sheet->setCellValue('A2', 'DINAS KELAUTAN DAN PERIKANAN');
         $sheet->mergeCells('A2:C2');
+        $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
+        $sheet->setCellValue('A3', 'Jl. A. Nata Sukarya No. 28, Kabupaten Subang, 41211');
+        $sheet->mergeCells('A3:C3');
+        $sheet->getStyle('A3')->getFont()->setSize(9);
+        $sheet->getStyle('A3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        $sheet->setCellValue('A4', 'Telepon: (0260) 411325 | Email: dinasperikanan@gmail.com');
+        $sheet->mergeCells('A4:C4');
+        $sheet->getStyle('A4')->getFont()->setSize(9);
+        $sheet->getStyle('A4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        // Double border line separator (under row 4)
+        $sheet->getStyle('A4:C4')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
+
+        // --- RENDER TITLE ---
+        $sheet->setCellValue('A6', 'LAPORAN HASIL TANGKAP');
+        $sheet->mergeCells('A6:C6');
+        $sheet->getStyle('A6')->getFont()->setBold(true)->setSize(13)->getColor()->setARGB('FF0A3B99');
+        $sheet->getStyle('A6')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        // --- RENDER METADATA ---
+        $sheet->setCellValue('A8', 'Asal TPI');
+        $sheet->setCellValue('B8', ':');
+        $sheet->setCellValue('C8', $asalTpi);
+
+        $sheet->setCellValue('A9', 'Jenis Laporan');
+        $sheet->setCellValue('B9', ':');
+        $sheet->setCellValue('C9', $tipeLaporanLabel);
+
+        $periodLabelName = match($jenisLaporan ?? '') {
+            'daily', 'harian'   => 'Tanggal',
+            'monthly', 'bulanan' => 'Bulan/Tahun',
+            'custom'            => 'Periode',
+            default             => 'Tahun'
+        };
+        $sheet->setCellValue('A10', $periodLabelName);
+        $sheet->setCellValue('B10', ':');
+        $sheet->setCellValue('C10', $periodeLabelOnly);
+
+        $sheet->setCellValue('A11', 'Tanggal Cetak');
+        $sheet->setCellValue('B11', ':');
+        $sheet->setCellValue('C11', $tanggalCetak);
+
+        // Styling metadata alignment
+        $sheet->getStyle('A8:B11')->getFont()->setBold(true);
+        $sheet->getStyle('A8:C11')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
+        // --- RENDER DATA TABLE ---
         // Column headers
         $headers = ['Jenis Ikan', 'Berat (kg)', 'Harga Jual'];
         $col = 'A';
-        $row = 4;
+        $row = 13;
         foreach ($headers as $header) {
             $sheet->setCellValue($col . $row, $header);
-            $sheet->getStyle($col . $row)->getFont()->setBold(true);
-            $sheet->getStyle($col . $row)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFD3D3D3');
             $col++;
         }
+        
+        // Style Table Header
+        $headerStyle = [
+            'font' => [
+                'bold' => true,
+                'color' => ['argb' => 'FFFFFFFF'],
+                'size' => 10,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FF0D2640'],
+            ],
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+        $sheet->getStyle('A13:C13')->applyFromArray($headerStyle);
+        $sheet->getStyle('B13:C13')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
         // Group by jenis_ikan (normalized to Title Case) and sum berat and harga_jual
         $groupedLaporan = $laporan->groupBy(function ($item) {
@@ -341,21 +461,57 @@ class CetakLaporanController extends Controller
         });
 
         // Data rows
-        $row = 5;
+        $startRow = 14;
+        $row = 14;
         foreach ($groupedLaporan as $item) {
             $sheet->setCellValue('A' . $row, $item->jenis_ikan);
             $sheet->setCellValue('B' . $row, $item->berat);
-            $sheet->setCellValue('C' . $row, 'Rp ' . number_format($item->harga_jual, 0, ',', '.'));
+            $sheet->setCellValue('C' . $row, $item->harga_jual);
+            
+            // Format numbers
+            $sheet->getStyle('B' . $row)->getNumberFormat()->setFormatCode('#,##0.00');
+            $sheet->getStyle('C' . $row)->getNumberFormat()->setFormatCode('"Rp " #,##0');
+            
+            // Zebra striping
+            if ($row % 2 === 0) {
+                $sheet->getStyle('A' . $row . ':C' . $row)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFF8FAFC');
+            }
+            
             $row++;
         }
 
         // Add TOTAL row at the bottom
         $sheet->setCellValue('A' . $row, 'TOTAL:');
-        $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-        $sheet->setCellValue('B' . $row, $groupedLaporan->sum('berat'));
-        $sheet->getStyle('B' . $row)->getFont()->setBold(true);
-        $sheet->setCellValue('C' . $row, 'Rp ' . number_format($groupedLaporan->sum('harga_jual'), 0, ',', '.'));
-        $sheet->getStyle('C' . $row)->getFont()->setBold(true);
+        $sheet->setCellValue('B' . $row, '=SUM(B' . $startRow . ':B' . ($row - 1) . ')');
+        $sheet->setCellValue('C' . $row, '=SUM(C' . $startRow . ':C' . ($row - 1) . ')');
+
+        // Style TOTAL row
+        $totalStyle = [
+            'font' => [
+                'bold' => true,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FFF0F4F8'],
+            ],
+        ];
+        $sheet->getStyle('A' . $row . ':C' . $row)->applyFromArray($totalStyle);
+        $sheet->getStyle('B' . $row)->getNumberFormat()->setFormatCode('#,##0.00');
+        $sheet->getStyle('C' . $row)->getNumberFormat()->setFormatCode('"Rp " #,##0');
+        
+        // Borders for table grid
+        $borderStyle = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => 'FFDDDDDD'],
+                ],
+            ],
+        ];
+        $sheet->getStyle('A13:C' . $row)->applyFromArray($borderStyle);
+        
+        // Custom double border on top of total row
+        $sheet->getStyle('A' . $row . ':C' . $row)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 
         // Auto fit columns
         foreach (range('A', 'C') as $col) {
@@ -502,118 +658,49 @@ class CetakLaporanController extends Controller
 
     private function generateHTML($laporan, $jenisLaporan = null, $bulan = null, $tahun = null)
     {
-        $totalBerat = $laporan->sum('berat');
-        $totalNilai = $laporan->sum('harga_jual');
-        $tanggalCetak = now()->format('d/m/Y H:i');
-
-        // Build period label
         $bulanNames = [
             1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
             5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
             9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
         ];
+        
         $tahunVal = $tahun ?? date('Y');
+        $periodeLabel = null;
+        
         if ($jenisLaporan === 'bulanan' && $bulan) {
             $periodeLabel = 'Bulan: ' . ($bulanNames[(int)$bulan] ?? $bulan) . ' ' . $tahunVal;
-            $tipeLaporan  = 'Laporan Bulanan';
         } elseif ($jenisLaporan === 'tahunan' && $tahun) {
             $periodeLabel = 'Tahun: ' . $tahun;
-            $tipeLaporan  = 'Laporan Tahunan';
         } elseif ($jenisLaporan === 'harian') {
-            $periodeLabel = 'Laporan Harian';
-            $tipeLaporan  = 'Laporan Harian';
-        } else {
-            $periodeLabel = null;
-            $tipeLaporan  = 'Laporan Hasil Tangkap';
+            if ($laporan->isNotEmpty()) {
+                $dates = $laporan->map(function($item) {
+                    return $item->created_at->format('d/m/Y');
+                })->unique();
+                if ($dates->count() === 1) {
+                    $periodeLabel = 'Tanggal: ' . $dates->first();
+                } else {
+                    $sortedDates = $laporan->pluck('created_at')->sort();
+                    $startDate = $sortedDates->first()->format('d/m/Y');
+                    $endDate = $sortedDates->last()->format('d/m/Y');
+                    $periodeLabel = 'Periode: ' . $startDate . ' s/d ' . $endDate;
+                }
+            } else {
+                $periodeLabel = 'Tanggal: ' . now()->format('d/m/Y');
+            }
         }
 
-        // Group by jenis_ikan (normalized to Title Case) and sum berat and harga_jual
-        $groupedLaporan = $laporan->groupBy(function ($item) {
-            return ucwords(strtolower(trim($item->jenis_ikan)));
-        })->map(function ($items, $jenisIkan) {
-            return (object) [
-                'jenis_ikan' => $jenisIkan,
-                'berat' => $items->sum('berat'),
-                'harga_jual' => $items->sum('harga_jual'),
-            ];
-        });
+        $data = [
+            'laporan'        => $laporan,
+            'laporan_type'   => $jenisLaporan ?: 'custom',
+            'generated_date' => now()->format('d/m/Y H:i:s'),
+            'total_records'  => $laporan->count(),
+            'total_berat'    => $laporan->sum('berat'),
+            'periode_label'  => $periodeLabel,
+            'bulan'          => $bulan,
+            'tahun'          => $tahun,
+        ];
 
-        $totalData = $groupedLaporan->count();
-        $totalNilaiFormatted = number_format($totalNilai, 0, ',', '.');
-        $totalBeratFormatted = number_format($totalBerat, 2, ',', '.');
-
-        $rows = '';
-        foreach ($groupedLaporan as $item) {
-            $rows .= '<tr>
-                <td style="padding: 10px; border: 1px solid #000;">' . $item->jenis_ikan . '</td>
-                <td style="padding: 10px; border: 1px solid #000; text-align: right;">' . number_format($item->berat, 2) . '</td>
-                <td style="padding: 10px; border: 1px solid #000; text-align: right;">Rp ' . number_format($item->harga_jual, 0, ',', '.') . '</td>
-            </tr>';
-        }
-
-        // Build period badge HTML
-        $periodeBadgeHtml = '';
-        if ($periodeLabel) {
-            $periodeBadgeHtml = '<div style="display:inline-block; background:#0a3b99; color:white; padding:5px 16px; border-radius:20px; font-size:13px; font-weight:bold; margin-bottom:10px; letter-spacing:0.04em;">' . $periodeLabel . '</div>';
-        }
-
-        // Build tipe laporan line
-        $tipeLaporanHtml = '<p style="text-align:center; color:#0a3b99; font-size:13px; font-weight:bold; margin-bottom:4px;">' . $tipeLaporan . '</p>';
-
-        $html = <<<HTML
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                h1 { text-align: center; color: #0a3b99; margin-bottom: 4px; }
-                .periode-wrap { text-align: center; margin-bottom: 16px; }
-                .info { margin-bottom: 20px; font-size: 12px; background: #f4f8ff; border-left: 4px solid #0a3b99; padding: 10px 14px; border-radius: 4px; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                th { background-color: #0a3b99; color: white; padding: 10px; text-align: left; font-size: 11px; }
-                .total { font-weight: bold; margin-top: 20px; font-size: 12px; }
-                .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #666; border-top: 1px solid #ccc; padding-top: 10px; }
-            </style>
-        </head>
-        <body>
-            <h1>LAPORAN HASIL TANGKAP</h1>
-            $tipeLaporanHtml
-            <p style="text-align: center; color: #666; font-size: 12px; margin-bottom: 8px;">Sistem Informasi Pencatatan Hasil Tangkap (SIPETANG)</p>
-            <div class="periode-wrap">$periodeBadgeHtml</div>
-
-            <div class="info">
-                <p><strong>Tanggal Cetak:</strong> $tanggalCetak</p>
-                <p><strong>Total Data:</strong> $totalData jenis ikan</p>
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Jenis Ikan</th>
-                        <th style="text-align: right;">Berat (kg)</th>
-                        <th style="text-align: right;">Harga Jual</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    $rows
-                </tbody>
-            </table>
-
-            <div class="total">
-                <p>Total Berat: <strong>$totalBeratFormatted kg</strong></p>
-                <p>Total Nilai: <strong>Rp $totalNilaiFormatted</strong></p>
-            </div>
-
-            <div class="footer">
-                <p>Laporan ini dicetak secara otomatis dari Sistem SIPETANG</p>
-                <p>© 2026 Sistem Informasi Pencatatan Hasil Tangkap</p>
-            </div>
-        </body>
-        </html>
-HTML;
-
-        return $html;
+        return view('exports.laporan-pdf', $data)->render();
     }
 
     /**
