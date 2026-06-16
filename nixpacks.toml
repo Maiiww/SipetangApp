@@ -1,0 +1,16 @@
+[providers]
+  php = "8.2"
+
+[phases.setup]
+  nixPkgs = ['php82', 'php82Packages.composer', 'nodejs_20', 'npm']
+
+[phases.build]
+  cmds = [
+    'cd web-laravel && mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/logs bootstrap/cache',
+    'cd web-laravel && composer install --optimize-autoloader --no-dev',
+    'cd web-laravel && npm install',
+    'cd web-laravel && npm run build'
+  ]
+
+[start]
+  cmd = 'cd web-laravel && php artisan serve --host=0.0.0.0 --port=$PORT'
