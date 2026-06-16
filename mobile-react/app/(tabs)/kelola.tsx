@@ -11,7 +11,8 @@ import {
     View,
     Alert,
     ActivityIndicator,
-    Platform
+    Platform,
+    RefreshControl
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -81,6 +82,14 @@ export default function KelolaScreen() {
         }, [currentPage, selectedDate])
     );
 
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchData(currentPage, selectedDate);
+        setRefreshing(false);
+    }, [currentPage, selectedDate]);
+
     const onChangeDate = (event: any, date?: Date) => {
         setShowDatePicker(Platform.OS === 'ios');
         if (date) {
@@ -125,7 +134,11 @@ export default function KelolaScreen() {
 
     const handleSendToStaff = async () => {
         try {
-            const formattedDate = selectedDate.toISOString().split('T')[0];
+            const year = selectedDate.getFullYear();
+            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+            const day = String(selectedDate.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+
             const userId = await AsyncStorage.getItem('user_id');
 
             const response = await fetch(`${API_URL}/tangkapan/kirim`, {
@@ -157,7 +170,13 @@ export default function KelolaScreen() {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <ScrollView 
+                contentContainerStyle={styles.scrollContent} 
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[COLORS.primary]} />
+                }
+            >
            
                 <View style={styles.header}>
                     <View>

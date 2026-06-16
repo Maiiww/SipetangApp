@@ -18,6 +18,7 @@ Route::post('/tangkapan', [TangkapanController::class, 'store']);
 Route::get('/ikan', [TangkapanController::class, 'getIkan']);
 
 Route::get('/tangkapan/tren', [TangkapanController::class, 'trenProduksi']);
+Route::get('/tangkapan/tren-per-ikan', [TangkapanController::class, 'trenProduksiPerIkan']);
 
 Route::get('/dashboard-stats', [TangkapanController::class, 'getStatsForDashboard']);
 

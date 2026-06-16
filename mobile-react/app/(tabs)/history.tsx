@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   Platform,
   StatusBar,
-  TextInput
+  TextInput,
+  RefreshControl
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -95,6 +96,14 @@ export default function HistoryScreen() {
             fetchHistory();
         }, [])
     );
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchHistory();
+        setRefreshing(false);
+    }, []);
 
     const onDateChange = (event: any, selectedDate?: Date) => {
         setShowDatePicker(Platform.OS === 'ios');
@@ -258,6 +267,9 @@ export default function HistoryScreen() {
                     }}
                     ListEmptyComponent={
                         <Text style={styles.emptyText}>Tidak ada riwayat saat ini.</Text>
+                    }
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[COLORS.primary]} />
                     }
                 />
             )}

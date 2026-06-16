@@ -10,7 +10,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  RefreshControl
 } from 'react-native';
 import API_URL from '../../config';
 
@@ -44,8 +45,8 @@ export default function HomeScreen() {
   };
 
   const [cuacaData, setCuacaData] = useState({
-      peringatan: 'Memuat data cuaca...',
-      cuaca: '-',
+    peringatan: 'Memuat data cuaca...',
+    cuaca: '-',
   });
 
   const [produksiData, setProduksiData] = useState({
@@ -72,16 +73,16 @@ export default function HomeScreen() {
     }
   };
 
-    const fetchTotalProduksi = async () => {
-    try { 
+  const fetchTotalProduksi = async () => {
+    try {
       const response = await fetch(`${API_URL}/total-produksi`);
       const json = await response.json();
 
       if (json.status === 'success') {
-        const TARGET_PRODUKSI = 200; 
+        const TARGET_PRODUKSI = 200;
 
         let hitungPersen = (json.data.total_ton / TARGET_PRODUKSI) * 100;
-        
+
         if (hitungPersen > 100) hitungPersen = 100;
 
         setProduksiData({
@@ -90,26 +91,44 @@ export default function HomeScreen() {
           persentase: hitungPersen
         });
       }
-    } catch (error) { 
+    } catch (error) {
       console.log('Gagal memuat total produksi', error);
       setProduksiData((prev) => ({ ...prev, lastUpdate: 'Gagal memuat' }));
     }
   };
 
   useFocusEffect(
-  useCallback(() => {
-    fetchCuaca();
-    fetchTotalProduksi();
-    fetchNotifikasiRevisi();
-  }, [])
-);
+    useCallback(() => {
+      fetchCuaca();
+      fetchTotalProduksi();
+      fetchNotifikasiRevisi();
+    }, [])
+  );
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await Promise.all([
+      fetchCuaca(),
+      fetchTotalProduksi(),
+      fetchNotifikasiRevisi()
+    ]);
+    setRefreshing(false);
+  }, []);
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
-      
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        
+
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[COLORS.primary]} />
+        }
+      >
+
         <View style={styles.headerBackground}>
           <View style={styles.headerTop}>
             <View style={styles.logoContainer}>
@@ -121,8 +140,8 @@ export default function HomeScreen() {
               <Text style={styles.logoText}>SIPETANG</Text>
             </View>
 
-            <TouchableOpacity 
-              style={styles.notificationBtn} 
+            <TouchableOpacity
+              style={styles.notificationBtn}
               onPress={() => router.push('/history')}
             >
               <Ionicons name="notifications-outline" size={24} color={COLORS.primary} />
@@ -135,7 +154,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
           </View>
-          
+
           <Text style={styles.welcomeText}>Selamat Datang,,,</Text>
           <Text style={styles.descText}>
             Di Sistem Informasi Pencatatan Hasil Tangkap{"\n"}
@@ -174,11 +193,11 @@ export default function HomeScreen() {
               <Text style={styles.infoCardDesc}>Panduan penggunaan aplikasi</Text>
             </View>
           </View>
-          <TouchableOpacity 
-              style={styles.lihatButton} 
-              onPress={() => router.push('../Panduan')} 
+          <TouchableOpacity
+            style={styles.lihatButton}
+            onPress={() => router.push('../Panduan')}
           >
-              <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat</Text>
+            <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat</Text>
           </TouchableOpacity>
         </View>
 
@@ -192,11 +211,11 @@ export default function HomeScreen() {
               <Text style={styles.infoCardDesc}>{cuacaData.peringatan}</Text>
             </View>
           </View>
-          <TouchableOpacity 
-              style={styles.lihatButton} 
-              onPress={() => router.push('../DetailCuaca')} 
+          <TouchableOpacity
+            style={styles.lihatButton}
+            onPress={() => router.push('../DetailCuaca')}
           >
-              <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat Detail</Text>
+            <Text style={[styles.lihatButtonText, { color: COLORS.primary }]}>Lihat Detail</Text>
           </TouchableOpacity>
         </View>
 
@@ -207,22 +226,22 @@ export default function HomeScreen() {
             </View>
             <View style={styles.infoCardTexts}>
               <Text style={styles.infoCardTitle}>Tren Produksi Ikan</Text>
-              <Text style={styles.infoCardDesc}>Produksi cakalang naik sekitar 12%</Text>
+              <Text style={styles.infoCardDesc}>Lihat volume tangkapan berdasarkan jenis ikan</Text>
             </View>
           </View>
-          <TouchableOpacity 
-              style={styles.lihatButton} 
-              onPress={() => router.push('../TrenProduksi')} 
+          <TouchableOpacity
+            style={styles.lihatButton}
+            onPress={() => router.push('../TrenProduksi')}
           >
-              <Text style={[styles.lihatButtonText, { color: COLORS.orange }]}>Lihat</Text>
+            <Text style={[styles.lihatButtonText, { color: COLORS.orange }]}>Lihat</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerTitle}>DINAS PERIKANAN KABUPATEN SUBANG</Text>
-          
+
           <View style={styles.footerLine} />
-          
+
           <View style={styles.footerContactRow}>
             <Ionicons name="location-outline" size={16} color={COLORS.grayText} />
             <Text style={styles.footerContactText}>Jl. A. Nata Sukarya No. 28, Subang, Jawa Barat, 41211</Text>
@@ -235,9 +254,9 @@ export default function HomeScreen() {
             <Ionicons name="mail-outline" size={16} color={COLORS.grayText} />
             <Text style={styles.footerContactText}>kabupatensubangdinasperikanan@gmail.com</Text>
           </View>
-          
+
           <View style={styles.footerLine} />
-          
+
           <Text style={styles.copyrightText}>
             © 2024 DINAS PERIKANAN KABUPATEN SUBANG. ALL RIGHTS RESERVED.
           </Text>
@@ -254,13 +273,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scrollContent: {
-    paddingBottom: 100, 
+    paddingBottom: 100,
   },
   headerBackground: {
     backgroundColor: COLORS.primary,
     paddingTop: 20,
     paddingHorizontal: 20,
-    paddingBottom: 70, 
+    paddingBottom: 70,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
   },
@@ -276,9 +295,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   logoImage: {
-    width: 35,         
-    height: 35,        
-    borderRadius: 18,  
+    width: 35,
+    height: 35,
+    borderRadius: 18,
   },
 
   logoContainer: {
@@ -334,7 +353,7 @@ const styles = StyleSheet.create({
   produksiCard: {
     backgroundColor: COLORS.white,
     marginHorizontal: 20,
-    marginTop: -40, 
+    marginTop: -40,
     borderRadius: 20,
     padding: 20,
     elevation: 5,
@@ -389,7 +408,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    // width: '80%', 
+    
     backgroundColor: COLORS.orange,
     borderRadius: 3,
   },

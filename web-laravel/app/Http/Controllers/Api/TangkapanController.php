@@ -260,6 +260,54 @@ class TangkapanController extends Controller
         ]);
     }
 
+    public function trenProduksiPerIkan(Request $request)
+    {
+        $userId = $request->query('user_id');
+
+        $query = Tangkapan::query();
+
+        if ($userId) {
+            $query->where('user_id', $userId);
+        }
+
+        $type = $request->query('type', 'bulanan');
+        $bulanIni = $request->query('bulan', Carbon::now()->month);
+        $tahunIni = $request->query('tahun', Carbon::now()->year);
+
+        $query->whereYear('created_at', $tahunIni);
+        
+        if ($type === 'bulanan') {
+            $query->whereMonth('created_at', $bulanIni);
+        }
+
+        $data = $query->selectRaw('jenis_ikan, SUM(berat) as total_berat')
+                      ->groupBy('jenis_ikan')
+                      ->orderByDesc('total_berat')
+                      ->get();
+
+        $labels = [];
+        $values = [];
+
+        foreach ($data as $item) {
+            $labels[] = $item->jenis_ikan;
+            $values[] = round($item->total_berat / 1000, 2); 
+        }
+
+        if (count($labels) === 0) {
+            $labels = ["Belum ada data"];
+            $values = [0];
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'labels' => $labels,
+                'values' => $values,
+                'satuan' => 'Ton'
+            ]
+        ]);
+    }
+
     /**
      * Get dashboard statistics for the welcome page
      * Returns: total weight and number of registered TPI
