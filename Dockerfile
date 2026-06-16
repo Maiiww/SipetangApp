@@ -32,8 +32,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy project files
-COPY . .
+# COPY ONLY THE LARAVEL FOLDER (Bypassing Dashboard Root Directory settings)
+COPY ./web-laravel .
 
 # Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev
