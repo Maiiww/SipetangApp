@@ -11,6 +11,7 @@ use App\Http\Controllers\Staff\CetakLaporanController;
 use App\Http\Controllers\Staff\StatistikController;
 use App\Models\User;
 use App\Http\Controllers\Staff\LaporanDownloadController;
+use App\Http\Controllers\JuruRekap\JuruRekapController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,8 +26,11 @@ Route::middleware('auth')->group(function () {
 
     // Logic Redirect Dashboard berdasarkan Role
     Route::get('/dashboard', function () {
-        if (strtolower(auth()->user()->role) === 'admin') {
+        $role = strtolower(auth()->user()->role);
+        if ($role === 'admin') {
             return redirect()->route('admin.manajemen.user')->with('welcome', session('welcome'));
+        } elseif ($role === 'jururekap') {
+            return redirect()->route('jururekap.dashboard')->with('welcome', session('welcome'));
         }
         return redirect()->route('staff.dashboard')->with('welcome', session('welcome'));
     })->name('dashboard');
@@ -69,6 +73,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile/create', function () {
             return view('Staff.profile-create');
         })->name('staff.profile.create');
+    });
+
+    // --- DAFTAR ROUTE JURU REKAP (WEB VERSION) ---
+    Route::prefix('jururekap')->group(function () {
+        Route::get('/dashboard', [JuruRekapController::class, 'dashboard'])->name('jururekap.dashboard');
+        Route::get('/kelola', [JuruRekapController::class, 'kelola'])->name('jururekap.kelola');
+        Route::post('/input', [JuruRekapController::class, 'storeCatch'])->name('jururekap.input.store');
+        Route::post('/kirim', [JuruRekapController::class, 'sendToStaff'])->name('jururekap.kirim');
+        Route::get('/riwayat', [JuruRekapController::class, 'riwayat'])->name('jururekap.riwayat');
+        Route::post('/revisi/{id}', [JuruRekapController::class, 'submitRevisi'])->name('jururekap.revisi.submit');
+        Route::get('/profile', [JuruRekapController::class, 'profile'])->name('jururekap.profile');
+        Route::post('/profile/update-foto', [JuruRekapController::class, 'updateFoto'])->name('jururekap.profile.update_foto');
     });
 
     // --- DAFTAR ROUTE ADMIN ---
