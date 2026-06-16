@@ -1,0 +1,10 @@
+[phases.setup]
+  nixPkgs = ['php82', 'php82Packages.composer', 'nodejs']
+
+[phases.build]
+  cmds = [
+    'mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/logs bootstrap/cache',
+    'composer install --optimize-autoloader --no-dev',
+    'npm install',
+    'npm run build'
+  ]
