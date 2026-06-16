@@ -8,9 +8,11 @@ import {
   FlatList,
   ActivityIndicator,
   Platform,
-  StatusBar
+  StatusBar,
+  TextInput
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_URL from '../../config';
@@ -42,6 +44,10 @@ export default function HistoryScreen() {
     const [historyData, setHistoryData] = useState({ perlu_revisi: [], semua_riwayat: [] });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('semua');
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filterDate, setFilterDate] = useState<Date | null>(null);
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     const params = useLocalSearchParams();
     React.useEffect(() => {
@@ -89,6 +95,19 @@ export default function HistoryScreen() {
             fetchHistory();
         }, [])
     );
+
+    const onDateChange = (event: any, selectedDate?: Date) => {
+        setShowDatePicker(Platform.OS === 'ios');
+        if (selectedDate) {
+            setFilterDate(selectedDate);
+        } else if (event.type === 'dismissed') {
+            setShowDatePicker(false);
+        }
+    };
+    
+    const clearDateFilter = () => {
+        setFilterDate(null);
+    };
 
     const renderCard = ({ item }: { item: RiwayatItem }) => {
         const isFailed = item.status === 'Ditolak';
@@ -139,9 +158,24 @@ export default function HistoryScreen() {
         );
     };
 
-    const displayData = activeTab === 'semua' 
+    const baseData = activeTab === 'semua' 
         ? historyData.semua_riwayat 
         : historyData.perlu_revisi;
+
+    const displayData = baseData.filter((item: RiwayatItem) => {
+        const matchesSearch = item.jenis_ikan.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              item.status.toLowerCase().includes(searchQuery.toLowerCase());
+        
+        let matchesDate = true;
+        if (filterDate) {
+            const itemDate = new Date(item.created_at);
+            matchesDate = itemDate.getFullYear() === filterDate.getFullYear() &&
+                          itemDate.getMonth() === filterDate.getMonth() &&
+                          itemDate.getDate() === filterDate.getDate();
+        }
+
+        return matchesSearch && matchesDate;
+    });
 
     return (
         <View style={styles.container}>
@@ -163,6 +197,52 @@ export default function HistoryScreen() {
                         Perlu Revisi ({historyData.perlu_revisi.length})
                     </Text>
                 </TouchableOpacity>
+            </View>
+
+            {/* Filter Section */}
+            <View style={styles.filterSection}>
+                <View style={styles.searchContainer}>
+                    <Ionicons name="search" size={20} color={COLORS.grayText} />
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Cari jenis ikan atau status..."
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        placeholderTextColor={COLORS.grayText}
+                    />
+                    {searchQuery.length > 0 && (
+                        <TouchableOpacity onPress={() => setSearchQuery('')}>
+                            <Ionicons name="close-circle" size={20} color={COLORS.grayText} />
+                        </TouchableOpacity>
+                    )}
+                </View>
+
+                <View style={styles.dateFilterContainer}>
+                    <TouchableOpacity 
+                        style={[styles.dateButton, filterDate && styles.dateButtonActive]} 
+                        onPress={() => setShowDatePicker(true)}
+                    >
+                        <Ionicons name="calendar" size={20} color={filterDate ? COLORS.white : COLORS.primary} />
+                        <Text style={[styles.dateButtonText, filterDate && styles.dateButtonTextActive]}>
+                            {filterDate ? filterDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Pilih Tanggal'}
+                        </Text>
+                    </TouchableOpacity>
+                    
+                    {filterDate && (
+                        <TouchableOpacity style={styles.clearDateButton} onPress={clearDateFilter}>
+                            <Ionicons name="close" size={20} color={COLORS.error} />
+                        </TouchableOpacity>
+                    )}
+                </View>
+
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={filterDate || new Date()}
+                        mode="date"
+                        display="default"
+                        onChange={onDateChange}
+                    />
+                )}
             </View>
 
             {loading ? (
@@ -216,6 +296,61 @@ const styles = StyleSheet.create({
     },
     activeTabText: {
         color: COLORS.primary,
+    },
+    filterSection: {
+        padding: 20,
+        backgroundColor: COLORS.background,
+        paddingBottom: 0,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: COLORS.white,
+        borderRadius: 12,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: COLORS.badgeBg,
+    },
+    searchInput: {
+        flex: 1,
+        marginLeft: 10,
+        fontSize: 14,
+        color: COLORS.textDark,
+        paddingVertical: 0, 
+    },
+    dateFilterContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    dateButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: COLORS.white,
+        borderWidth: 1,
+        borderColor: COLORS.primary,
+        borderRadius: 12,
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+    },
+    dateButtonActive: {
+        backgroundColor: COLORS.primary,
+    },
+    dateButtonText: {
+        marginLeft: 8,
+        color: COLORS.primary,
+        fontWeight: '500',
+        fontSize: 13,
+    },
+    dateButtonTextActive: {
+        color: COLORS.white,
+    },
+    clearDateButton: {
+        marginLeft: 10,
+        backgroundColor: COLORS.errorBg,
+        padding: 8,
+        borderRadius: 12,
     },
     cardContainer: {
         flexDirection: 'row',
