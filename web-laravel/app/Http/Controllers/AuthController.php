@@ -36,13 +36,6 @@ class AuthController extends Controller
                 ])->onlyInput('username');
             }
 
-            if (strtolower($user->role) === 'jururekap') {
-                \Log::warning('juruRekap attempted web login', ['username' => $request->username]);
-                return back()->withErrors([
-                    'username' => 'Role Juru Rekap hanya dapat login melalui aplikasi mobile.',
-                ])->onlyInput('username');
-            }
-
             Auth::login($user, $request->boolean('remember'));
             $request->session()->regenerate();
 
@@ -55,6 +48,8 @@ class AuthController extends Controller
 
             if ($role === 'admin') {
                 return redirect()->intended(route('admin.manajemen.user'))->with('welcome', 'Selamat datang Admin Dinas');
+            } elseif ($role === 'jururekap') {
+                return redirect()->intended(route('jururekap.dashboard'))->with('welcome', 'Selamat datang Juru Rekap');
             }
 
             return redirect()->intended(route('staff.dashboard'))->with('welcome', 'Selamat datang Staff Dinas');
