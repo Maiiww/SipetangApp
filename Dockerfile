@@ -24,8 +24,8 @@ WORKDIR /var/www/html
 # COPY ONLY THE LARAVEL FOLDER (Bypassing Dashboard Root Directory settings)
 COPY ./web-laravel .
 
-# Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev
+# Install PHP dependencies (Without --no-dev so Ignition error page works)
+RUN composer install --optimize-autoloader
 
 # Install Node dependencies and build assets
 RUN npm install && npm run build
@@ -34,5 +34,5 @@ RUN npm install && npm run build
 RUN mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/logs bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Start Laravel's built-in server (Simplest and most stable for Railway)
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+# Start Laravel's built-in server and Auto-Migrate Database
+CMD php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=$PORT
