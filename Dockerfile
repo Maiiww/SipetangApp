@@ -24,8 +24,8 @@ WORKDIR /var/www/html
 # COPY ONLY THE LARAVEL FOLDER (Bypassing Dashboard Root Directory settings)
 COPY ./web-laravel .
 
-# Install PHP dependencies (Without --no-dev so Ignition error page works)
-RUN composer install --optimize-autoloader
+# Install PHP dependencies (With --no-dev to fix build failure)
+RUN composer install --optimize-autoloader --no-dev
 
 # Install Node dependencies and build assets
 RUN npm install && npm run build
