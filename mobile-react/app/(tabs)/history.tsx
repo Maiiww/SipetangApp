@@ -118,34 +118,53 @@ export default function HistoryScreen() {
         setFilterDate(null);
     };
 
+    const getStatusProps = (status: string) => {
+        if (status === 'Ditolak') {
+            return {
+                color: COLORS.error,
+                bgColor: COLORS.errorBg,
+                icon: 'close' as const,
+                title: 'Ditolak / Gagal',
+                descPrefix: 'Gagal menambahkan'
+            };
+        }
+        
+        // Selain ditolak, semuanya hijau
+        return {
+            color: COLORS.success,
+            bgColor: COLORS.successBg,
+            icon: 'checkmark' as const,
+            title: 'Berhasil Input',
+            descPrefix: 'Menambahkan'
+        };
+    };
+
     const renderCard = ({ item }: { item: RiwayatItem }) => {
         const isFailed = item.status === 'Ditolak';
+        const props = getStatusProps(item.status);
 
         return (
             <View style={[
                 styles.cardContainer, 
-                { borderLeftColor: isFailed ? COLORS.error : COLORS.success }
+                { borderLeftColor: props.color }
             ]}>
                 <View style={[
                     styles.iconBox, 
-                    { backgroundColor: isFailed ? COLORS.errorBg : COLORS.successBg }
+                    { backgroundColor: props.bgColor }
                 ]}>
                     <Ionicons 
-                        name={isFailed ? "close" : "checkmark"} 
+                        name={props.icon} 
                         size={24} 
-                        color={isFailed ? COLORS.error : COLORS.success} 
+                        color={props.color} 
                     />
                 </View>
 
                 <View style={styles.textContainer}>
                     <Text style={styles.titleText}>
-                        {isFailed ? 'Gagal Input' : 'Berhasil Input'}
+                        {props.title}
                     </Text>
                     <Text style={styles.descText}>
-                        {isFailed 
-                            ? `Gagal menambahkan ${item.jenis_ikan} sebesar ${item.berat}KG`
-                            : `Menambahkan ${item.jenis_ikan} sebesar ${item.berat}KG`
-                        }
+                        {props.descPrefix} {item.jenis_ikan} ({item.berat}KG)
                     </Text>
                     
                     {isFailed && (

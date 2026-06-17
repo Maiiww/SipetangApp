@@ -52,10 +52,24 @@ export default function TrenProduksiScreen() {
   const [dataPoints, setDataPoints] = useState([0, 0, 0, 0, 0, 0]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [tpiName, setTpiName] = useState("");
 
   const fetchTrenProduksi = useCallback(async () => {
       try {
         const userId = await AsyncStorage.getItem('user_id');
+
+        if (!tpiName) {
+            try {
+                const profileRes = await fetch(`${API_URL}/profile/${userId}`);
+                const profileJson = await profileRes.json();
+                if (profileJson.status === 'success' && profileJson.data.wilayah) {
+                    setTpiName(profileJson.data.wilayah);
+                }
+            } catch (e) {
+                console.log('Gagal memuat profil untuk nama TPI:', e);
+            }
+        }
+
         const response = await fetch(`${API_URL}/tangkapan/tren-per-ikan?user_id=${userId}&type=${selectedPeriod.type}&bulan=${selectedPeriod.month}&tahun=${selectedPeriod.year}`);
         const json = await response.json();
 
@@ -80,10 +94,10 @@ export default function TrenProduksiScreen() {
   }, [fetchTrenProduksi]);
 
   const chartData = {
-    labels: labels.length > 0 ? labels.slice(0, 5) : ["-"],
+    labels: labels.length > 0 ? labels : ["-"],
     datasets: [
       {
-        data: dataPoints.length > 0 ? dataPoints.slice(0, 5) : [0],
+        data: dataPoints.length > 0 ? dataPoints : [0],
         color: (opacity = 1) => `rgba(255, 111, 32, ${opacity})`,
       }
     ]
@@ -106,7 +120,7 @@ export default function TrenProduksiScreen() {
       </View>
 
       <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>Tren Produksi Ikan</Text>
+        <Text style={styles.chartTitle}>Tren Produksi Ikan {tpiName ? tpiName : ''}</Text>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
           {periods.map((item) => (
@@ -125,54 +139,28 @@ export default function TrenProduksiScreen() {
         {loading ? (
           <View style={{ height: 220, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator size="large" color={COLORS.primary} />
-            <Text style={{ marginTop: 10, color: COLORS.grayText }}>Memuat grafik...</Text>
+            <Text style={{ marginTop: 10, color: COLORS.grayText }}>Memuat data...</Text>
+          </View>
+        ) : labels.length > 0 && labels[0] !== "Belum ada data" ? (
+          <View style={{ width: '100%', marginTop: 10 }}>
+            {labels.map((label, index) => (
+              <View key={index} style={styles.listItem}>
+                <View style={styles.listItemLeft}>
+                  <View style={styles.listNumberBadge}>
+                    <Text style={styles.listNumberText}>{index + 1}</Text>
+                  </View>
+                  <Text style={styles.listItemText}>{label}</Text>
+                </View>
+                <Text style={styles.listItemValue}>{dataPoints[index]} Ton</Text>
+              </View>
+            ))}
           </View>
         ) : (
-          <BarChart
-            data={chartData}
-            width={screenWidth - 40}
-            height={280}
-            yAxisLabel=""
-            yAxisSuffix=" T"
-            fromZero={true}
-            showValuesOnTopOfBars={true}
-            chartConfig={{
-              backgroundColor: COLORS.white,
-              backgroundGradientFrom: COLORS.white,
-              backgroundGradientTo: COLORS.white,
-              decimalPlaces: 1,
-              color: (opacity = 1) => `rgba(0, 45, 98, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(107, 114, 128, ${opacity})`,
-              style: {
-                borderRadius: 16
-              },
-              barPercentage: 0.6,
-            }}
-            style={{
-              marginVertical: 10,
-              borderRadius: 16
-            }}
-          />
+          <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+             <Text style={{ color: COLORS.grayText }}>Belum ada data produksi.</Text>
+          </View>
         )}
       </View>
-
-      {/* Daftar Lengkap */}
-      {!loading && labels.length > 0 && labels[0] !== "Belum ada data" && (
-        <View style={styles.listContainer}>
-          <Text style={styles.listTitle}>Daftar Lengkap Produksi Ikan</Text>
-          {labels.map((label, index) => (
-            <View key={index} style={styles.listItem}>
-              <View style={styles.listItemLeft}>
-                <View style={styles.listNumberBadge}>
-                  <Text style={styles.listNumberText}>{index + 1}</Text>
-                </View>
-                <Text style={styles.listItemText}>{label}</Text>
-              </View>
-              <Text style={styles.listItemValue}>{dataPoints[index]} Ton</Text>
-            </View>
-          ))}
-        </View>
-      )}
     </ScrollView>
   );
 }
@@ -242,24 +230,6 @@ const styles = StyleSheet.create({
   },
   filterChipTextActive: {
     color: COLORS.white,
-  },
-  listContainer: {
-    backgroundColor: COLORS.white,
-    marginHorizontal: 20,
-    marginBottom: 30,
-    padding: 15,
-    borderRadius: 15,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  listTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 15,
   },
   listItem: {
     flexDirection: 'row',

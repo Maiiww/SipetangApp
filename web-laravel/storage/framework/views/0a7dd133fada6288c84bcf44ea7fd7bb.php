@@ -510,7 +510,7 @@
             <div class="login-left-content">
                 <div class="logo-section">
                     <div class="logo-box">
-                        <img src="{{ asset('images/sipetang.jpg.png') }}" alt="SIPETANG Logo" class="sipetang-logo">
+                        <img src="<?php echo e(asset('images/sipetang.jpg.png')); ?>" alt="SIPETANG Logo" class="sipetang-logo">
                     </div>
                     <div class="logo-text">
                         <h1>SIPETANG</h1>
@@ -537,28 +537,29 @@
                     <p>Masuk untuk mengelola data maritim dan aset perikanan secara aman dan terintegrasi.</p>
                 </div>
 
-                @if ($errors->any())
+                <?php if($errors->any()): ?>
                     <div class="error-message">
                         <strong>Login gagal!</strong>
-                        @foreach ($errors->all() as $error)
-                            <div>{{ $error }}</div>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div><?php echo e($error); ?></div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                @endif
-                @if (session('success'))
+                <?php endif; ?>
+                <?php if(session('success')): ?>
                     <div class="success-message">
-                        {{ session('success') }}
-                    </div>
-                @endif
+                        <?php echo e(session('success')); ?>
 
-                <form method="POST" action="{{ route('login.store') }}">
-                    @csrf
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST" action="<?php echo e(route('login.store')); ?>">
+                    <?php echo csrf_field(); ?>
 
                     <div class="form-group">
                         <label for="username">Username</label>
                         <div class="input-wrapper">
                             <input type="text" class="form-control" id="username" name="username"
-                                placeholder="Masukan Nama" required value="{{ old('username') }}" autofocus>
+                                placeholder="Masukan Nama" required value="<?php echo e(old('username')); ?>" autofocus>
                             <i class="fas fa-user input-icon"></i>
                         </div>
                     </div>
@@ -576,7 +577,7 @@
                     </div>
 
                     <div class="remember-me">
-                        <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                        <input type="checkbox" id="remember" name="remember" <?php echo e(old('remember') ? 'checked' : ''); ?>>
                         <label for="remember">Ingat saya untuk sesi berikutnya</label>
                     </div>
 
@@ -617,3 +618,4 @@
 </body>
 
 </html>
+<?php /**PATH C:\xampp\htdocs\SipetangApp\web-laravel\resources\views/login.blade.php ENDPATH**/ ?>

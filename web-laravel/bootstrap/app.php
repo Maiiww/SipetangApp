@@ -15,13 +15,5 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (\Throwable $e) {
-            echo "<div style='background:#f8d7da;color:#721c24;padding:20px;font-family:monospace;white-space:pre-wrap;'>";
-            echo "<h1>CRITICAL ERROR DETECTED</h1>";
-            echo "<b>Message:</b> " . $e->getMessage() . "<br><br>";
-            echo "<b>File:</b> " . $e->getFile() . " on line " . $e->getLine() . "<br><br>";
-            echo "<b>Stack Trace:</b>\n" . $e->getTraceAsString();
-            echo "</div>";
-            die();
-        });
+        // Normal exception handling
     })->create();

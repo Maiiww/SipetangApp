@@ -121,8 +121,8 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
 
-      <ScrollView 
-        contentContainerStyle={styles.scrollContent} 
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[COLORS.primary]} />
@@ -258,7 +258,7 @@ export default function HomeScreen() {
           <View style={styles.footerLine} />
 
           <Text style={styles.copyrightText}>
-            © 2024 DINAS PERIKANAN KABUPATEN SUBANG. ALL RIGHTS RESERVED.
+            © 2026 DINAS PERIKANAN KABUPATEN SUBANG. ALL RIGHTS RESERVED.
           </Text>
         </View>
 
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    
+
     backgroundColor: COLORS.orange,
     borderRadius: 3,
   },
