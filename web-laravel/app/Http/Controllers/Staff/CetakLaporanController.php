@@ -171,7 +171,8 @@ class CetakLaporanController extends Controller
                 ], 200);
             }
 
-            $html = $this->generateHTML($laporan, $validated['jenis_laporan'] ?? null, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
+            $jenisLaporan = !empty($validated['laporan_id']) ? 'harian' : ($validated['jenis_laporan'] ?? null);
+            $html = $this->generateHTML($laporan, $jenisLaporan, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
 
             return response()->json([
                 'success' => true,
@@ -269,10 +270,11 @@ class CetakLaporanController extends Controller
             }
 
             // Generate file berdasarkan format
+            $jenisLaporan = !empty($validated['laporan_id']) ? 'harian' : ($validated['jenis_laporan'] ?? null);
             if ($validated['format'] === 'pdf') {
-                return $this->generatePDF($laporan, $validated['jenis_laporan'] ?? null, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
+                return $this->generatePDF($laporan, $jenisLaporan, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
             } else {
-                return $this->generateExcel($laporan, $validated['jenis_laporan'] ?? null, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
+                return $this->generateExcel($laporan, $jenisLaporan, $validated['bulan'] ?? null, $validated['tahun'] ?? null);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([

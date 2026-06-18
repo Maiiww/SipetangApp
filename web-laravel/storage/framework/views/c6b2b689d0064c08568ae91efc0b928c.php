@@ -618,4 +618,4 @@
 </body>
 
 </html>
-<?php /**PATH C:\xampp\htdocs\SipetangApp\web-laravel\resources\views/login.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/login.blade.php ENDPATH**/ ?>

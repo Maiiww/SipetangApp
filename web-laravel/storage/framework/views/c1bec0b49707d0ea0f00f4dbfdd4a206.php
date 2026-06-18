@@ -34,4 +34,4 @@
 
 <style>
     .hover-opacity-100:hover { opacity: 1 !important; color: var(--sipetang-orange) !important; transition: all 0.3s ease; }
-</style><?php /**PATH C:\xampp\htdocs\SipetangApp\web-laravel\resources\views/layouts/header.blade.php ENDPATH**/ ?>
+</style><?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/layouts/header.blade.php ENDPATH**/ ?>

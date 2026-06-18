@@ -152,4 +152,156 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Mendapatkan NO. ID otomatis berikutnya berdasarkan role
+     */
+    public function getNextId(Request $request)
+    {
+        try {
+            $role = $request->query('role');
+            
+            $prefixes = [
+                'admin' => 'ADM',
+                'juruRekap' => 'JR',
+                'staff' => 'STF',
+            ];
+
+            // Normalise role (case insensitive lookup)
+            $normalizedRole = null;
+            foreach ($prefixes as $key => $prefix) {
+                if (strcasecmp($key, $role) === 0) {
+                    $normalizedRole = $key;
+                    break;
+                }
+            }
+
+            if (!$normalizedRole) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Role tidak valid'
+                ], 400);
+            }
+
+            $prefix = $prefixes[$normalizedRole];
+
+            // Ambil semua no_induk untuk role ini (case-insensitive check)
+            $noInduks = User::whereRaw('LOWER(role) = ?', [strtolower($normalizedRole)])
+                ->pluck('no_induk')
+                ->toArray();
+
+            $maxVal = 0;
+            foreach ($noInduks as $noInduk) {
+                if ($noInduk && preg_match('/\d+$/', $noInduk, $matches)) {
+                    $val = (int)$matches[0];
+                    if ($val > $maxVal) {
+                        $maxVal = $val;
+                    }
+                }
+            }
+
+            $nextIndex = $maxVal + 1;
+            $nextId = $prefix . sprintf('%02d', $nextIndex);
+
+            return response()->json([
+                'success' => true,
+                'next_id' => $nextId
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Get Next ID Error', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Memperbarui data user di database
+     */
+    public function update(Request $request)
+    {
+        try {
+            Log::info('Update User Request', $request->all());
+
+            $userId = $request->input('user_id');
+
+            $validated = $request->validate([
+                'user_id' => 'required|integer|exists:users,id',
+                'nama' => 'required|string|max:100',
+                'no_induk' => 'required|string|max:20',
+                'username' => 'required|string|max:50|unique:users,username,' . $userId,
+                'password' => 'nullable|string|min:6|confirmed',
+                'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+                'no_telepon' => 'required|string|max:20',
+                'alamat' => 'required|string|max:255',
+                'role' => 'required|in:admin,Admin,juruRekap,staff',
+                'wilayah' => 'nullable|string|max:100'
+            ], [
+                'nama.required' => 'Nama petugas harus diisi',
+                'no_induk.required' => 'Nomor induk harus diisi',
+                'username.required' => 'Username harus diisi',
+                'username.unique' => 'Username sudah terdaftar',
+                'password.confirmed' => 'Password tidak sesuai dengan konfirmasinya',
+                'jenis_kelamin.required' => 'Jenis kelamin harus dipilih',
+                'no_telepon.required' => 'Nomor telepon harus diisi',
+                'alamat.required' => 'Alamat harus diisi',
+                'role.required' => 'Role harus dipilih'
+            ]);
+
+            $user = User::findOrFail($userId);
+
+            // Normalise role value to store in DB
+            $roleVal = strtolower($validated['role']);
+            if ($roleVal === 'jururekap') {
+                $roleVal = 'juruRekap';
+            }
+
+            $updateData = [
+                'nama' => $validated['nama'],
+                'no_induk' => $validated['no_induk'],
+                'username' => $validated['username'],
+                'jenis_kelamin' => $validated['jenis_kelamin'],
+                'no_telepon' => $validated['no_telepon'],
+                'alamat' => $validated['alamat'],
+                'role' => $roleVal,
+                'wilayah' => $validated['wilayah'] ?? null
+            ];
+
+            if (!empty($validated['password'])) {
+                $updateData['password'] = Hash::make($validated['password']);
+            }
+
+            $user->update($updateData);
+
+            Log::info('User updated successfully', [
+                'id' => $user->id,
+                'username' => $user->username,
+                'role' => $user->role
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data user berhasil diperbarui',
+                'data' => [
+                    'id' => $user->id,
+                    'username' => $user->username,
+                    'role' => $user->role
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation Error on Update', $e->errors());
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Update User Error', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

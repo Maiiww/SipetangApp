@@ -53,9 +53,10 @@ class DashboardController extends Controller
             'anomaliDetected' => $anomaliDetected,
         ];
 
-        // Data Aktivitas Terbaru (5 tangkapan/laporan terakhir dari juru rekap)
+        // Data Aktivitas Terbaru (5 tangkapan/laporan terakhir dari juru rekap dalam 24 jam terakhir)
         $tangkapanTerbaru = Tangkapan::with('user')
             ->whereIn('status', ['Menunggu Validasi', 'Divalidasi', 'Ditolak', 'Draft'])
+            ->where('created_at', '>=', Carbon::now()->subDay())
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();

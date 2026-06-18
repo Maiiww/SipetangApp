@@ -1277,7 +1277,7 @@
         }
     </script>
     <!-- Sidebar -->
-    @include('components.sidebar-menu')
+    <?php echo $__env->make('components.sidebar-menu', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -1289,9 +1289,9 @@
                         <button type="button" id="notificationToggle" class="header-icon" aria-expanded="false"
                             style="cursor: pointer; border: none; background: transparent;">
                             <i class="fas fa-bell"></i>
-                            @if (isset($stats['pending']) && $stats['pending'] > 0)
-                                <span class="notification-badge">{{ $stats['pending'] }}</span>
-                            @endif
+                            <?php if(isset($stats['pending']) && $stats['pending'] > 0): ?>
+                                <span class="notification-badge"><?php echo e($stats['pending']); ?></span>
+                            <?php endif; ?>
                         </button>
 
                         <div id="notificationDropdown"
@@ -1300,8 +1300,8 @@
                                 style="padding: 12px 14px; border-bottom: 1px solid #eee; font-weight: 700; color: #1a4d7d;">
                                 Notifikasi</div>
                             <div style="padding: 12px; max-height: 260px; overflow: auto; color: #333;">
-                                @if (isset($stats['pending']) && $stats['pending'] > 0)
-                                    <p style="margin: 0 0 10px;">Terdapat <strong>{{ $stats['pending'] }}</strong>
+                                <?php if(isset($stats['pending']) && $stats['pending'] > 0): ?>
+                                    <p style="margin: 0 0 10px;">Terdapat <strong><?php echo e($stats['pending']); ?></strong>
                                         laporan menunggu validasi.</p>
                                     <div style="display:flex; gap:8px;">
                                         <button type="button" onclick="showPending()" class="btn-filter"
@@ -1309,9 +1309,9 @@
                                         <button type="button" onclick="closeNotificationDropdown()" class="btn-filter"
                                             style="background:#e0e0e0;color:#0d2640;">Tutup</button>
                                     </div>
-                                @else
+                                <?php else: ?>
                                     <p style="margin:0; color:#666;">Tidak ada notifikasi baru.</p>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -1336,10 +1336,10 @@
             <div class="stat-card" onclick="setStatusFilter('Menunggu Validasi', this)" style="cursor: pointer;">
                 <div class="stat-content">
                     <div class="stat-label"><i class="fas fa-hourglass-half"></i> Menunggu</div>
-                    <div class="stat-value">{{ $stats['pending'] }}</div>
+                    <div class="stat-value"><?php echo e($stats['pending']); ?></div>
                 </div>
                 <div class="stat-icon-box stat-icon-pending">
-                    <img src="{{ asset('images/file.png') }}" alt="Menunggu"
+                    <img src="<?php echo e(asset('images/file.png')); ?>" alt="Menunggu"
                         style="width: 50px; height: 50px; object-fit: contain;">
                 </div>
             </div>
@@ -1347,10 +1347,10 @@
             <div class="stat-card" onclick="setStatusFilter('Divalidasi', this)" style="cursor: pointer;">
                 <div class="stat-content">
                     <div class="stat-label"><i class="fas fa-check"></i> Tervalidasi Hari Ini</div>
-                    <div class="stat-value">{{ $stats['validated'] }}</div>
+                    <div class="stat-value"><?php echo e($stats['validated']); ?></div>
                 </div>
                 <div class="stat-icon-box stat-icon-validated">
-                    <img src="{{ asset('images/list.png') }}" alt="Tervalidasi"
+                    <img src="<?php echo e(asset('images/list.png')); ?>" alt="Tervalidasi"
                         style="width: 50px; height: 50px; object-fit: contain;">
                 </div>
             </div>
@@ -1358,11 +1358,11 @@
             <div class="stat-card">
                 <div class="stat-content">
                     <div class="stat-label"><i class="fas fa-weight"></i> Total Volume Tervalidasi</div>
-                    <div class="stat-value">{{ number_format($stats['totalVolume'] / 1000, 2) }} <span style="font-size:14px;font-weight:600;color:#64748b;">Ton</span></div>
-                    <div style="font-size:11px;color:#94a3b8;margin-top:4px;">= {{ number_format($stats['totalVolume'], 0) }} Kg</div>
+                    <div class="stat-value"><?php echo e(number_format($stats['totalVolume'] / 1000, 2)); ?> <span style="font-size:14px;font-weight:600;color:#64748b;">Ton</span></div>
+                    <div style="font-size:11px;color:#94a3b8;margin-top:4px;">= <?php echo e(number_format($stats['totalVolume'], 0)); ?> Kg</div>
                 </div>
                 <div class="stat-icon-box stat-icon-validated">
-                    <img src="{{ asset('images/bar-graph.png') }}" alt="Volume"
+                    <img src="<?php echo e(asset('images/bar-graph.png')); ?>" alt="Volume"
                         style="width: 50px; height: 50px; object-fit: contain;">
                 </div>
             </div>
@@ -1370,12 +1370,12 @@
 
         <!-- Filters Section -->
         <div class="filters-section">
-            <form method="GET" action="{{ route('staff.validasi') }}" id="filterForm"
+            <form method="GET" action="<?php echo e(route('staff.validasi')); ?>" id="filterForm"
                 style="width: 100%; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <!-- Search Box -->
                 <div style="flex: 1; min-width: 250px; display: flex; gap: 8px;">
                     <input type="text" name="search" placeholder="Cari nama pembeli, jenis ikan..."
-                        value="{{ request('search') }}"
+                        value="<?php echo e(request('search')); ?>"
                         style="flex: 1; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
                     <button type="submit" class="btn-filter" style="background: #1a4d7d; color: white;">
                         <i class="fas fa-search"></i> Cari
@@ -1386,20 +1386,20 @@
                 <div class="filter-group">
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <span style="font-size: 12px; color: #999; font-weight: 600;">Filter:</span>
-                        <button type="button" class="btn-filter {{ empty($statusFilter) ? 'active' : '' }}"
+                        <button type="button" class="btn-filter <?php echo e(empty($statusFilter) ? 'active' : ''); ?>"
                             onclick="setStatusFilter('', this)">
                             <i class="fas fa-list"></i> Semua
                         </button>
                         <button type="button"
-                            class="btn-filter {{ $statusFilter === 'Menunggu Validasi' ? 'active' : '' }}"
+                            class="btn-filter <?php echo e($statusFilter === 'Menunggu Validasi' ? 'active' : ''); ?>"
                             onclick="setStatusFilter('Menunggu Validasi', this)">
                             <i class="fas fa-hourglass-half"></i> Menunggu
                         </button>
-                        <button type="button" class="btn-filter {{ $statusFilter === 'Divalidasi' ? 'active' : '' }}"
+                        <button type="button" class="btn-filter <?php echo e($statusFilter === 'Divalidasi' ? 'active' : ''); ?>"
                             onclick="setStatusFilter('Divalidasi', this)">
                             <i class="fas fa-check"></i> Divalidasi
                         </button>
-                        <button type="button" class="btn-filter {{ $statusFilter === 'Ditolak' ? 'active' : '' }}"
+                        <button type="button" class="btn-filter <?php echo e($statusFilter === 'Ditolak' ? 'active' : ''); ?>"
                             onclick="setStatusFilter('Ditolak', this)">
                             <i class="fas fa-times"></i> Ditolak
                         </button>
@@ -1411,41 +1411,42 @@
                     <select name="tpi" id="tpiFilter" onchange="document.getElementById('filterForm').submit()"
                         style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px; background-color: white;">
                         <option value="">Pilih TPI</option>
-                        @foreach ($tpiOptions as $tpi)
-                            <option value="{{ $tpi }}" {{ $tpiFilter === $tpi ? 'selected' : '' }}>
-                                {{ $tpi }}
+                        <?php $__currentLoopData = $tpiOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tpi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($tpi); ?>" <?php echo e($tpiFilter === $tpi ? 'selected' : ''); ?>>
+                                <?php echo e($tpi); ?>
+
                             </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
 
                 <!-- Date Filter -->
                 <div style="min-width: 180px;">
-                    <input type="date" name="date" id="dateFilter" value="{{ request('date') }}"
+                    <input type="date" name="date" id="dateFilter" value="<?php echo e(request('date')); ?>"
                         onchange="document.getElementById('filterForm').submit()"
                         style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
                 </div>
 
                 <!-- Hidden status input -->
-                <input type="hidden" name="status" id="statusInput" value="{{ $statusFilter }}">
+                <input type="hidden" name="status" id="statusInput" value="<?php echo e($statusFilter); ?>">
             </form>
         </div>
 
-        @if (session('success'))
+        <?php if(session('success')): ?>
             <div
                 style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
                 <i class="fas fa-check-circle"></i>
-                <span>{{ session('success') }}</span>
+                <span><?php echo e(session('success')); ?></span>
             </div>
-        @endif
+        <?php endif; ?>
 
-        @if (session('error'))
+        <?php if(session('error')): ?>
             <div
                 style="background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
                 <i class="fas fa-exclamation-circle"></i>
-                <span>{{ session('error') }}</span>
+                <span><?php echo e(session('error')); ?></span>
             </div>
-        @endif
+        <?php endif; ?>
 
         <!-- Table Section -->
         <div class="table-section">
@@ -1455,7 +1456,7 @@
                         Data Laporan Hasil Tangkap
                     </div>
                     <div style="font-size: 12px; color: #999; margin-top: 2px;">
-                        Total <strong style="color: #0d2640;">{{ $laporans->total() }}</strong> data ditemukan
+                        Total <strong style="color: #0d2640;"><?php echo e($laporans->total()); ?></strong> data ditemukan
                     </div>
                 </div>
 
@@ -1485,55 +1486,58 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($laporans as $laporan)
+                    <?php $__empty_1 = true; $__currentLoopData = $laporans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $laporan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
                             <td>
                                 <div class="date-cell">
-                                    {{ $laporan->created_at->format('d M Y') }}
+                                    <?php echo e($laporan->created_at->format('d M Y')); ?>
+
                                 </div>
                             </td>
                             <td>
-                                {{ $laporan->user->wilayah ?? '-' }}
+                                <?php echo e($laporan->user->wilayah ?? '-'); ?>
+
                             </td>
                             <td>
-                                <div class="tpi-name">{{ $laporan->nama_pembeli }}</div>
+                                <div class="tpi-name"><?php echo e($laporan->nama_pembeli); ?></div>
                             </td>
                             <td>
-                                <div class="tpi-name">{{ $laporan->nama_nelayan }}</div>
+                                <div class="tpi-name"><?php echo e($laporan->nama_nelayan); ?></div>
                             </td>
                             <td>
-                                <div class="fish-badge">{{ $laporan->jenis_ikan }}</div>
+                                <div class="fish-badge"><?php echo e($laporan->jenis_ikan); ?></div>
                             </td>
                             <td>
-                                <div class="volume-cell">{{ number_format($laporan->berat, 2) }} Kg</div>
+                                <div class="volume-cell"><?php echo e(number_format($laporan->berat, 2)); ?> Kg</div>
                             </td>
                             <td>
                                 <div
-                                    class="status-badge status-{{ strtolower(str_replace(' ', '-', $laporan->status)) }}">
-                                    {{ $laporan->status === 'Divalidasi' ? 'Tervalidasi' : $laporan->status }}
+                                    class="status-badge status-<?php echo e(strtolower(str_replace(' ', '-', $laporan->status))); ?>">
+                                    <?php echo e($laporan->status === 'Divalidasi' ? 'Tervalidasi' : $laporan->status); ?>
+
                                 </div>
                             </td>
                             <td>
                                 <div class="action-cell">
-                                    @if (in_array($laporan->status, ['Draft', 'Menunggu Validasi', 'Revisi']))
-                                        <form action="{{ route('staff.validasi.validate', $laporan->id) }}"
+                                    <?php if(in_array($laporan->status, ['Draft', 'Menunggu Validasi', 'Revisi'])): ?>
+                                        <form action="<?php echo e(route('staff.validasi.validate', $laporan->id)); ?>"
                                             method="POST" style="display: inline;">
-                                            @csrf
+                                            <?php echo csrf_field(); ?>
                                             <button type="submit" class="action-btn action-validate">
                                                 <i class="fas fa-check"></i> validasi
                                             </button>
                                         </form>
                                         <button type="button" class="action-btn action-reject"
-                                            onclick="openRejectModal({{ $laporan->id }}, '{{ $laporan->nama_pembeli }}')">
+                                            onclick="openRejectModal(<?php echo e($laporan->id); ?>, '<?php echo e($laporan->nama_pembeli); ?>')">
                                             <i class="fas fa-times"></i> Tolak
                                         </button>
-                                    @else
-                                        <span style="font-size: 12px; color: #999;">{{ $laporan->status }}</span>
-                                    @endif
+                                    <?php else: ?>
+                                        <span style="font-size: 12px; color: #999;"><?php echo e($laporan->status); ?></span>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="8" style="text-align: center; padding: 30px; color: #999;">
                                 <i class="fas fa-inbox"
@@ -1541,10 +1545,11 @@
                                 Tidak ada data untuk ditampilkan
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
-            {{ $laporans->appends(request()->query())->links('pagination.custom') }}
+            <?php echo e($laporans->appends(request()->query())->links('pagination.custom')); ?>
+
         </div>
 
         <!-- Reject Modal -->
@@ -1555,7 +1560,7 @@
                 <h3 style="font-size: 18px; color: #0d2640; margin-bottom: 15px;">Tolak Laporan</h3>
                 <p id="rejectModalText" style="color: #666; margin-bottom: 20px;"></p>
                 <form id="rejectForm" method="POST" style="margin-bottom: 20px;">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <textarea id="rejectTextarea" name="catatan" placeholder="Alasan penolakan (wajib diisi)"
                         style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 14px; min-height: 100px;"
                         required></textarea>
@@ -1571,9 +1576,9 @@
         </div>
 
         <!-- HIDDEN FORM UNTUK VALIDASI MASSAL -->
-        <form id="hiddenBulkForm" action="{{ route('staff.validasi.bulk') }}" method="POST"
+        <form id="hiddenBulkForm" action="<?php echo e(route('staff.validasi.bulk')); ?>" method="POST"
             style="display: none;">
-            @csrf
+            <?php echo csrf_field(); ?>
             <input type="hidden" name="validate_all" id="validateAllInput" value="0">
         </form>
 
@@ -1655,7 +1660,7 @@
 
             // === LOGIC VALIDASI MASSAL ===
             function confirmBulkValidation() {
-                const total = {{ $stats['pending'] }};
+                const total = <?php echo e($stats['pending']); ?>;
                 if (total === 0) {
                     alert('Tidak ada laporan yang perlu divalidasi saat ini.');
                     return;
@@ -1733,8 +1738,8 @@
                 <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
                 <div class="profile-avatar">
                     STF</div>
-                <div class="profile-name">{{ $currentUser->nama ?? $currentUser->username }}</div>
-                <div class="profile-role">{{ ucfirst($currentUser->role) }}</div>
+                <div class="profile-name"><?php echo e($currentUser->nama ?? $currentUser->username); ?></div>
+                <div class="profile-role"><?php echo e(ucfirst($currentUser->role)); ?></div>
             </div>
             <div class="profile-modal-body">
                 <div class="profile-item">
@@ -1743,7 +1748,7 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">Lokasi Penempatan</div>
-                        <div class="profile-item-value">{{ $currentUser->wilayah ?? '-' }}</div>
+                        <div class="profile-item-value"><?php echo e($currentUser->wilayah ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -1753,7 +1758,7 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">Jenis Kelamin</div>
-                        <div class="profile-item-value">{{ $currentUser->jenis_kelamin ?? '-' }}</div>
+                        <div class="profile-item-value"><?php echo e($currentUser->jenis_kelamin ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -1763,7 +1768,7 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">No. Telepon</div>
-                        <div class="profile-item-value">{{ $currentUser->no_telepon ?? '-' }}</div>
+                        <div class="profile-item-value"><?php echo e($currentUser->no_telepon ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -1773,7 +1778,7 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">Alamat</div>
-                        <div class="profile-item-value">{{ $currentUser->alamat ?? '-' }}</div>
+                        <div class="profile-item-value"><?php echo e($currentUser->alamat ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -1783,11 +1788,11 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">Status</div>
-                        @if ($currentUser->is_active ?? true)
+                        <?php if($currentUser->is_active ?? true): ?>
                             <span class="profile-status active">Aktif</span>
-                        @else
+                        <?php else: ?>
                             <span class="profile-status inactive">Nonaktif</span>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -1938,7 +1943,7 @@
             <div class="toast-count" id="toastCount">0 Laporan Baru</div>
             <div class="toast-sub" id="toastSub">Menunggu validasi dari juru rekap</div>
             <div class="toast-items" id="toastItems"></div>
-            <button class="toast-btn" onclick="window.location.href='{{ route('staff.validasi') }}'">
+            <button class="toast-btn" onclick="window.location.href='<?php echo e(route('staff.validasi')); ?>'">
                 <i class="fas fa-clipboard-check"></i>&nbsp; Lihat & Validasi Sekarang
             </button>
         </div>
@@ -1949,10 +1954,10 @@
     // REAL-TIME POLLING NOTIFICATION SYSTEM
     // =====================================================
     (function () {
-        const POLL_URL      = '{{ route("staff.validasi.poll") }}';
+        const POLL_URL      = '<?php echo e(route("staff.validasi.poll")); ?>';
         const POLL_INTERVAL = 10000; // 10 seconds
-        let lastKnownId     = {{ \App\Models\Tangkapan::whereIn('status', ['Draft','Menunggu Validasi'])->max('id') ?? 0 }};
-        let lastPending     = {{ $stats['pending'] }};
+        let lastKnownId     = <?php echo e(\App\Models\Tangkapan::whereIn('status', ['Draft','Menunggu Validasi'])->max('id') ?? 0); ?>;
+        let lastPending     = <?php echo e($stats['pending']); ?>;
         let toastTimer      = null;
         let audioCtx        = null;
 
@@ -2129,3 +2134,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/Staff/validasi-laporan.blade.php ENDPATH**/ ?>

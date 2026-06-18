@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>Cetak Laporan - SIPETANG</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1826,7 +1826,7 @@
             document.body.classList.add('dark-mode');
         }
     </script>
-    @include('components.sidebar-menu')
+    <?php echo $__env->make('components.sidebar-menu', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <main class="main-content">
         <div class="header">
@@ -1862,17 +1862,18 @@
                     </div>
                 </div>
 
-                <form id="filterForm" method="GET" action="{{ route('staff.cetak') }}">
+                <form id="filterForm" method="GET" action="<?php echo e(route('staff.cetak')); ?>">
                     <!-- Asal TPI -->
                     <div style="margin-bottom: 20px;">
                         <div class="form-section-label">Asal TPI</div>
                         <select id="filterTpi" name="tpi" onchange="triggerFilter()" class="form-select-styled">
                             <option value="">Semua TPI</option>
-                            @foreach ($tpiList as $tpi)
-                                <option value="{{ $tpi->id }}" @if ($tpiFilter == $tpi->id) selected @endif>
-                                    {{ $tpi->wilayah }}
+                            <?php $__currentLoopData = $tpiList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tpi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($tpi->id); ?>" <?php if($tpiFilter == $tpi->id): ?> selected <?php endif; ?>>
+                                    <?php echo e($tpi->wilayah); ?>
+
                                 </option>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
 
@@ -1883,12 +1884,12 @@
                             <div>
                                 <label style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px;">Mulai Dari</label>
                                 <input type="date" id="filterStartDate" name="start_date" onchange="triggerFilter()"
-                                    value="{{ $startDate }}" class="form-input-styled">
+                                    value="<?php echo e($startDate); ?>" class="form-input-styled">
                             </div>
                             <div>
                                 <label style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px;">Sampai Dengan</label>
                                 <input type="date" id="filterEndDate" name="end_date" onchange="triggerFilter()"
-                                    value="{{ $endDate }}" class="form-input-styled">
+                                    value="<?php echo e($endDate); ?>" class="form-input-styled">
                             </div>
                         </div>
                     </div>
@@ -1971,12 +1972,12 @@
                             <div class="form-section-label" style="margin-bottom: 8px;">Pilih Tahun</div>
                             <select id="filterTahun" name="tahun" onchange="triggerFilter()" class="form-select-styled">
                                 <option value="">-- Pilih Tahun --</option>
-                                @php
+                                <?php
                                     $currentYear = date('Y');
                                     for ($year = $currentYear; $year >= $currentYear - 5; $year--) {
                                         echo '<option value="' . $year . '">' . $year . '</option>';
                                     }
-                                @endphp
+                                ?>
                             </select>
                             <button type="button" onclick="triggerPaperPreview('tahunan')" class="btn-preview">
                                 <i class="fas fa-eye"></i> Lihat Detail Laporan
@@ -2041,7 +2042,7 @@
 
                 <!-- Table Container -->
                 <div id="tableContainer">
-                    @if ($laporans->count() > 0)
+                    <?php if($laporans->count() > 0): ?>
                         <table class="report-table">
                             <thead>
                                 <tr>
@@ -2053,47 +2054,50 @@
                                 </tr>
                             </thead>
                             <tbody id="laporanTableBody">
-                                @foreach ($laporans as $laporan)
+                                <?php $__currentLoopData = $laporans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $laporan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
                                         <td>
                                             <span style="background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.03em;">
-                                                #LAP-{{ str_pad($laporan->id, 4, '0', STR_PAD_LEFT) }}
+                                                #LAP-<?php echo e(str_pad($laporan->id, 4, '0', STR_PAD_LEFT)); ?>
+
                                             </span>
                                         </td>
-                                        <td style="color: #64748b; font-size: 13px;">{{ $laporan->created_at->format('d M Y, H:i') }}</td>
+                                        <td style="color: #64748b; font-size: 13px;"><?php echo e($laporan->created_at->format('d M Y, H:i')); ?></td>
                                         <td>
                                             <span class="badge">
                                                 <i class="fas fa-map-marker-alt" style="font-size: 10px;"></i>
-                                                @if ($laporan->user)
-                                                    TPI {{ str_ireplace('tpi ', '', $laporan->user->wilayah ?: $laporan->user->nama) }}
-                                                @else
+                                                <?php if($laporan->user): ?>
+                                                    TPI <?php echo e(str_ireplace('tpi ', '', $laporan->user->wilayah ?: $laporan->user->nama)); ?>
+
+                                                <?php else: ?>
                                                     N/A
-                                                @endif
+                                                <?php endif; ?>
                                             </span>
                                         </td>
-                                        <td style="font-weight: 600; color: #334155; font-size: 13px;">{{ $laporan->user ? $laporan->user->nama : 'N/A' }}</td>
+                                        <td style="font-weight: 600; color: #334155; font-size: 13px;"><?php echo e($laporan->user ? $laporan->user->nama : 'N/A'); ?></td>
                                         <td>
                                             <div style="display: flex; gap: 8px; align-items: center;">
                                                 <button type="button" class="action-btn btn-detail tbl-btn-detail"
-                                                    data-id="{{ $laporan->id }}">
+                                                    data-id="<?php echo e($laporan->id); ?>">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </button>
                                                 <button type="button" class="action-btn btn-download tbl-btn-download"
-                                                    data-id="{{ $laporan->id }}">
+                                                    data-id="<?php echo e($laporan->id); ?>">
                                                     <i class="fas fa-cloud-arrow-down"></i> Download
                                                 </button>
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
 
                         <!-- Pagination -->
                         <div style="margin-top: 20px; display: flex; justify-content: flex-end;" id="paginationContainer">
-                            {{ $laporans->links('pagination.custom') }}
+                            <?php echo e($laporans->links('pagination.custom')); ?>
+
                         </div>
-                    @else
+                    <?php else: ?>
                         <div class="empty-state">
                             <div class="empty-state-icon">
                                 <i class="fas fa-folder-open"></i>
@@ -2101,7 +2105,7 @@
                             <p style="font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 6px;">Belum Ada Laporan</p>
                             <p style="font-size: 13px; color: #94a3b8;">Data laporan yang tervalidasi akan muncul di sini</p>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -2153,7 +2157,7 @@
             params.append('page', 1);
 
              // AJAX request
-             fetch(`{{ route('staff.cetak.filter') }}?${params.toString()}`, {
+             fetch(`<?php echo e(route('staff.cetak.filter')); ?>?${params.toString()}`, {
                      method: 'GET',
                      headers: {
                          'Accept': 'application/json',
@@ -2379,7 +2383,7 @@
             if (tahun) params.append('tahun', tahun);
             params.append('page', page);
 
-            fetch(`{{ route('staff.cetak.filter') }}?${params.toString()}`, {
+            fetch(`<?php echo e(route('staff.cetak.filter')); ?>?${params.toString()}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -2452,12 +2456,12 @@
             });
 
             // Fetch HTML preview
-            fetch('{{ route('staff.cetak.preview_html') }}', {
+            fetch('<?php echo e(route('staff.cetak.preview_html')); ?>', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '<?php echo e(csrf_token()); ?>',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify({
@@ -2636,13 +2640,13 @@
             // Create form untuk download
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '{{ route('staff.cetak.download') }}';
+            form.action = '<?php echo e(route('staff.cetak.download')); ?>';
 
             // Add CSRF token
             const csrfToken = document.createElement('input');
             csrfToken.type = 'hidden';
             csrfToken.name = '_token';
-            csrfToken.value = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+            csrfToken.value = document.querySelector('meta[name="csrf-token"]')?.content || '<?php echo e(csrf_token()); ?>';
             form.appendChild(csrfToken);
 
             // Add form data
@@ -2716,12 +2720,12 @@
             });
 
             // AJAX request to preview HTML
-            fetch('{{ route('staff.cetak.preview_html') }}', {
+            fetch('<?php echo e(route('staff.cetak.preview_html')); ?>', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '<?php echo e(csrf_token()); ?>',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify({ laporan_id: laporanId })
@@ -2908,8 +2912,8 @@
                 <button class="profile-modal-close" onclick="closeProfileModal()">&times;</button>
                 <div class="profile-avatar">
                     STF</div>
-                <div class="profile-name">{{ Auth::user()->nama ?? Auth::user()->username }}</div>
-                <div class="profile-role">{{ ucfirst(Auth::user()->role) }}</div>
+                <div class="profile-name"><?php echo e(Auth::user()->nama ?? Auth::user()->username); ?></div>
+                <div class="profile-role"><?php echo e(ucfirst(Auth::user()->role)); ?></div>
             </div>
             <div class="profile-modal-body">
                 <div class="profile-item">
@@ -2918,7 +2922,7 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">Lokasi Penempatan</div>
-                        <div class="profile-item-value">{{ Auth::user()->wilayah ?? '-' }}</div>
+                        <div class="profile-item-value"><?php echo e(Auth::user()->wilayah ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -2928,7 +2932,7 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">Jenis Kelamin</div>
-                        <div class="profile-item-value">{{ Auth::user()->jenis_kelamin ?? '-' }}</div>
+                        <div class="profile-item-value"><?php echo e(Auth::user()->jenis_kelamin ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -2938,7 +2942,7 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">No. Telepon</div>
-                        <div class="profile-item-value">{{ Auth::user()->no_telepon ?? '-' }}</div>
+                        <div class="profile-item-value"><?php echo e(Auth::user()->no_telepon ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -2948,7 +2952,7 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">Alamat</div>
-                        <div class="profile-item-value">{{ Auth::user()->alamat ?? '-' }}</div>
+                        <div class="profile-item-value"><?php echo e(Auth::user()->alamat ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -2958,11 +2962,11 @@
                     </div>
                     <div class="profile-item-content">
                         <div class="profile-item-label">Status</div>
-                        @if (Auth::user()->is_active ?? true)
+                        <?php if(Auth::user()->is_active ?? true): ?>
                             <span class="profile-status active">Aktif</span>
-                        @else
+                        <?php else: ?>
                             <span class="profile-status inactive">Nonaktif</span>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -2985,3 +2989,4 @@
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/Staff/cetak-laporan.blade.php ENDPATH**/ ?>

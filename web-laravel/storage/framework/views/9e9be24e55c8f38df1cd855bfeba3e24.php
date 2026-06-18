@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>Manajemen User - SIPETANG</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1063,7 +1063,7 @@
             document.body.classList.add('dark-mode');
         }
     </script>
-    @include('components.sidebar-menu')
+    <?php echo $__env->make('components.sidebar-menu', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <div class="main-content">
         <div class="header">
@@ -1077,7 +1077,8 @@
 
                 <div class="profile-icon-btn" onclick="openAdminProfileModal()" title="Profil Saya">
                     <div class="profile-avatar" style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">
-                        {{ strtoupper(substr(Auth::user()->nama ?? Auth::user()->username ?? 'ADM', 0, 3)) }}
+                        <?php echo e(strtoupper(substr(Auth::user()->nama ?? Auth::user()->username ?? 'ADM', 0, 3))); ?>
+
                     </div>
                 </div>
             </div>
@@ -1091,7 +1092,7 @@
         <div class="filter-row">
             <div class="total-card">
                 <small>TOTAL DATA USER</small>
-                <h2>{{ count($users) }}</h2>
+                <h2><?php echo e(count($users)); ?></h2>
             </div>
             <div class="filter-form">
                 <div class="form-group">
@@ -1134,86 +1135,87 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($users as $user)
-                        <tr data-username="{{ strtolower($user->nama ?? $user->username) }}"
-                            data-id="{{ strtolower($user->no_induk ?? '') }}" data-role="{{ $user->role ?? '' }}"
-                            data-gender="{{ $user->jenis_kelamin ?? '' }}">
+                    <?php $__empty_1 = true; $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr data-username="<?php echo e(strtolower($user->nama ?? $user->username)); ?>"
+                            data-id="<?php echo e(strtolower($user->no_induk ?? '')); ?>" data-role="<?php echo e($user->role ?? ''); ?>"
+                            data-gender="<?php echo e($user->jenis_kelamin ?? ''); ?>">
                             <td>
                                 <div class="user-info">
                                     <div class="avatar"
                                         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                                        {{ strtoupper(substr($user->nama ?? $user->username, 0, 2)) }}
+                                        <?php echo e(strtoupper(substr($user->nama ?? $user->username, 0, 2))); ?>
+
                                     </div>
                                     <div>
-                                        <strong>{{ $user->nama ?? $user->username }}</strong>
+                                        <strong><?php echo e($user->nama ?? $user->username); ?></strong>
                                         <br>
-                                        <small style="color: #999;">{{ $user->no_induk ?? '-' }}</small>
+                                        <small style="color: #999;"><?php echo e($user->no_induk ?? '-'); ?></small>
                                     </div>
                                 </div>
                             </td>
-                            <td><span class="tpi-badge">{{ $user->wilayah ?? 'Umum' }}</span></td>
-                            <td>{{ $user->jenis_kelamin ?? '-' }}</td>
-                            <td>{{ $user->no_telepon ?? '-' }}</td>
-                            <td>{{ $user->alamat ?? '-' }}</td>
+                            <td><span class="tpi-badge"><?php echo e($user->wilayah ?? 'Umum'); ?></span></td>
+                            <td><?php echo e($user->jenis_kelamin ?? '-'); ?></td>
+                            <td><?php echo e($user->no_telepon ?? '-'); ?></td>
+                            <td><?php echo e($user->alamat ?? '-'); ?></td>
                             <td>
-                                @if ($user->is_active ?? true)
+                                <?php if($user->is_active ?? true): ?>
                                     <span class="status-badge status-aktif">
                                         <i class="fas fa-circle-check"></i> Aktif
                                     </span>
-                                @else
+                                <?php else: ?>
                                     <span class="status-badge status-nonaktif">
                                         <i class="fas fa-circle-xmark"></i> Nonaktif
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </td>
                             <td style="text-align: center; position: relative;">
-                                @if ($user->role !== 'admin')
+                                <?php if($user->role !== 'admin'): ?>
                                     <button class="btn-aksi-menu" onclick="toggleMenu(event, this)">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <div class="action-dropdown" style="display: none;">
                                             <button type="button" class="dropdown-item"
                                                 onclick="openEditModal(this)"
-                                                data-id="{{ $user->id }}"
-                                                data-nama="{{ $user->nama ?? $user->username }}"
-                                                data-no-induk="{{ $user->no_induk ?? '' }}"
-                                                data-username="{{ $user->username }}"
-                                                data-role="{{ $user->role }}"
-                                                data-jenis-kelamin="{{ $user->jenis_kelamin ?? '' }}"
-                                                data-no-telepon="{{ $user->no_telepon ?? '' }}"
-                                                data-alamat="{{ $user->alamat ?? '' }}"
-                                                data-wilayah="{{ $user->wilayah ?? '' }}">
+                                                data-id="<?php echo e($user->id); ?>"
+                                                data-nama="<?php echo e($user->nama ?? $user->username); ?>"
+                                                data-no-induk="<?php echo e($user->no_induk ?? ''); ?>"
+                                                data-username="<?php echo e($user->username); ?>"
+                                                data-role="<?php echo e($user->role); ?>"
+                                                data-jenis-kelamin="<?php echo e($user->jenis_kelamin ?? ''); ?>"
+                                                data-no-telepon="<?php echo e($user->no_telepon ?? ''); ?>"
+                                                data-alamat="<?php echo e($user->alamat ?? ''); ?>"
+                                                data-wilayah="<?php echo e($user->wilayah ?? ''); ?>">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
-                                        @if ($user->is_active ?? true)
+                                        <?php if($user->is_active ?? true): ?>
                                             <button type="button" class="dropdown-item"
-                                                onclick="deactivateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                                onclick="deactivateUser(<?php echo e($user->id); ?>, '<?php echo e($user->nama ?? $user->username); ?>')">
                                                 <i class="fas fa-ban"></i> Nonaktifkan
                                             </button>
-                                        @else
+                                        <?php else: ?>
                                             <button type="button" class="dropdown-item"
-                                                onclick="activateUser({{ $user->id }}, '{{ $user->nama ?? $user->username }}')">
+                                                onclick="activateUser(<?php echo e($user->id); ?>, '<?php echo e($user->nama ?? $user->username); ?>')">
                                                 <i class="fas fa-check-circle"></i> Aktifkan
                                             </button>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
-                                @else
+                                <?php else: ?>
                                     <span style="color: #999; font-size: 12px;">-</span>
-                                @endif
+                                <?php endif; ?>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="7" style="text-align: center; color: #999; padding: 30px;">Tidak ada data
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
 
             <div class="pagination">
                 <p class="page-info">
-                    {{ count($users) > 0 ? 'Menampilkan ' . count($users) . ' data' : 'Tidak ada data' }}</p>
+                    <?php echo e(count($users) > 0 ? 'Menampilkan ' . count($users) . ' data' : 'Tidak ada data'); ?></p>
                 <div class="page-nav">
                     <a href="#" class="page-link"><i class="fas fa-chevron-left"></i></a>
                     <a href="#" class="page-link active">1</a>
@@ -1235,8 +1237,8 @@
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
 
-            <form id="formTambahUser" action="{{ route('admin.user.store') }}" method="POST">
-                @csrf
+            <form id="formTambahUser" action="<?php echo e(route('admin.user.store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <div class="form-row full">
                     <div class="form-group-modal">
                         <label>NAMA PETUGAS *</label>
@@ -1338,8 +1340,8 @@
                 <button class="modal-close" onclick="closeEditModal()">&times;</button>
             </div>
 
-            <form id="formEditUser" action="{{ route('admin.user.update') }}" method="POST">
-                @csrf
+            <form id="formEditUser" action="<?php echo e(route('admin.user.update')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="user_id" id="edit_user_id">
                 
                 <div class="form-row full">
@@ -1540,7 +1542,7 @@
                         }
                     });
 
-                    fetch(`{{ route('admin.user.update-status') }}`, {
+                    fetch(`<?php echo e(route('admin.user.update-status')); ?>`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -1607,7 +1609,7 @@
                         }
                     });
 
-                    fetch(`{{ route('admin.user.update-status') }}`, {
+                    fetch(`<?php echo e(route('admin.user.update-status')); ?>`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -2019,7 +2021,7 @@
         });
     </script>
 
-    @if (session('welcome'))
+    <?php if(session('welcome')): ?>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
@@ -2031,7 +2033,7 @@
                 });
             });
         </script>
-    @endif
+    <?php endif; ?>
     <!-- Modal Profil Admin -->
     <div id="adminProfileModal" class="modal">
         <div class="modal-content" style="max-width: 450px; padding: 30px; position: relative;">
@@ -2041,52 +2043,59 @@
             
             <div class="profile-modal-avatar-container">
                 <div class="profile-modal-avatar" style="font-size: 32px; font-weight: 800; letter-spacing: 0.5px;">
-                    {{ strtoupper(substr(Auth::user()->nama ?? Auth::user()->username ?? 'ADM', 0, 3)) }}
+                    <?php echo e(strtoupper(substr(Auth::user()->nama ?? Auth::user()->username ?? 'ADM', 0, 3))); ?>
+
                 </div>
-                <h3 class="profile-modal-name">{{ Auth::user()->nama ?? Auth::user()->username }}</h3>
-                <span class="profile-modal-badge">{{ Auth::user()->role ?? 'Admin' }}</span>
+                <h3 class="profile-modal-name"><?php echo e(Auth::user()->nama ?? Auth::user()->username); ?></h3>
+                <span class="profile-modal-badge"><?php echo e(Auth::user()->role ?? 'Admin'); ?></span>
             </div>
 
             <div class="profile-details-grid">
                 <div class="profile-detail-card">
                     <div class="profile-detail-label">No. Induk / ID</div>
                     <div class="profile-detail-value">
-                        <i class="fas fa-id-badge"></i> {{ Auth::user()->no_induk ?? '-' }}
+                        <i class="fas fa-id-badge"></i> <?php echo e(Auth::user()->no_induk ?? '-'); ?>
+
                     </div>
                 </div>
                 
                 <div class="profile-detail-card">
                     <div class="profile-detail-label">Username</div>
                     <div class="profile-detail-value">
-                        <i class="fas fa-user"></i> {{ Auth::user()->username ?? '-' }}
+                        <i class="fas fa-user"></i> <?php echo e(Auth::user()->username ?? '-'); ?>
+
                     </div>
                 </div>
 
                 <div class="profile-detail-card">
                     <div class="profile-detail-label">Jenis Kelamin</div>
                     <div class="profile-detail-value">
-                        <i class="fas fa-venus-mars"></i> {{ Auth::user()->jenis_kelamin ?? '-' }}
+                        <i class="fas fa-venus-mars"></i> <?php echo e(Auth::user()->jenis_kelamin ?? '-'); ?>
+
                     </div>
                 </div>
 
                 <div class="profile-detail-card">
                     <div class="profile-detail-label">No. Telepon</div>
                     <div class="profile-detail-value">
-                        <i class="fas fa-phone"></i> {{ Auth::user()->no_telepon ?? '-' }}
+                        <i class="fas fa-phone"></i> <?php echo e(Auth::user()->no_telepon ?? '-'); ?>
+
                     </div>
                 </div>
 
                 <div class="profile-detail-card full-width">
                     <div class="profile-detail-label">Wilayah Tugas</div>
                     <div class="profile-detail-value">
-                        <i class="fas fa-map-marker-alt"></i> {{ Auth::user()->wilayah ?? 'Dinas Pusat (Subang)' }}
+                        <i class="fas fa-map-marker-alt"></i> <?php echo e(Auth::user()->wilayah ?? 'Dinas Pusat (Subang)'); ?>
+
                     </div>
                 </div>
 
                 <div class="profile-detail-card full-width">
                     <div class="profile-detail-label">Alamat</div>
                     <div class="profile-detail-value">
-                        <i class="fas fa-home"></i> {{ Auth::user()->alamat ?? '-' }}
+                        <i class="fas fa-home"></i> <?php echo e(Auth::user()->alamat ?? '-'); ?>
+
                     </div>
                 </div>
             </div>
@@ -2141,3 +2150,4 @@
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/Admin/manajemen-user.blade.php ENDPATH**/ ?>

@@ -98,7 +98,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/manajemen-user', [UserController::class, 'index'])
         ->name('admin.manajemen.user');
 
+    Route::get('/admin/user/next-id', [UserController::class, 'getNextId'])->name('admin.user.next-id');
     Route::post('/admin/user/store', [UserController::class, 'store'])->name('admin.user.store');
+    Route::post('/admin/user/update', [UserController::class, 'update'])->name('admin.user.update');
     Route::post('/admin/user/update-status', [UserController::class, 'updateStatus'])->name('admin.user.update-status');
 });
 

@@ -20,6 +20,7 @@ class ValidasiController extends Controller
         $search = $request->input('search', '');
         $statusFilter = $request->input('status', '');
         $tpiFilter = $request->input('tpi', '');
+        $dateFilter = $request->input('date', '');
 
         // Daftar 8 TPI yang tersedia
         $tpiOptions = ['Patimban', 'Genteng', 'Mayangan', 'Cirewang', 'Muara Ciasem', 'Blanakan', 'Rawameneng', 'Cilamaya Girang'];
@@ -42,7 +43,11 @@ class ValidasiController extends Controller
 
         // If specific status filter selected, apply it
         if (!empty($statusFilter) && in_array($statusFilter, $validStatuses)) {
-            $query->where('status', $statusFilter);
+            if ($statusFilter === 'Menunggu Validasi') {
+                $query->whereIn('status', ['Draft', 'Menunggu Validasi']);
+            } else {
+                $query->where('status', $statusFilter);
+            }
         }
 
         // Apply search filter
@@ -53,6 +58,11 @@ class ValidasiController extends Controller
                     ->orWhere('nama_nelayan', 'like', '%' . $search . '%')
                     ->orWhere('jenis_ikan', 'like', '%' . $search . '%');
             });
+        }
+
+        // Apply date filter
+        if (!empty($dateFilter)) {
+            $query->whereDate('created_at', '=', $dateFilter);
         }
 
         // Get tangkapans with pagination
@@ -81,7 +91,7 @@ class ValidasiController extends Controller
                 ->count(),
         ];
 
-        return view('Staff.validasi-laporan', compact('laporans', 'stats', 'search', 'statusFilter', 'tpiFilter', 'tpiOptions', 'currentUser'));
+        return view('Staff.validasi-laporan', compact('laporans', 'stats', 'search', 'statusFilter', 'tpiFilter', 'dateFilter', 'tpiOptions', 'currentUser'));
     }
 
     /**

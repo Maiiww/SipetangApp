@@ -809,4 +809,4 @@
         });
     </script>
 </body>
-</html><?php /**PATH C:\xampp\htdocs\SipetangApp\web-laravel\resources\views/welcome.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/welcome.blade.php ENDPATH**/ ?>
