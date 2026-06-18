@@ -28,35 +28,12 @@ class ValidasiController extends Controller
         $query = Tangkapan::query();
         $currentUser = Auth::user();
 
-        // Filter berdasarkan role dan pilihan TPI
-        // Jika staff dari Dinas Pusat (central office), bisa lihat semua TPI atau filter spesifik
-        // Jika staff dari TPI tertentu, hanya lihat TPI mereka (atau filter spesifik jika ada)
-        if ($currentUser->role === 'staff') {
-            // Jika staff dari Dinas Pusat
-            if (strpos($currentUser->wilayah, 'Pusat') !== false || strpos($currentUser->wilayah, 'pusat') !== false) {
-                // Central office staff: boleh filter berdasarkan tpiFilter jika ada
-                if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
-                    $query->whereHas('user', function ($q) use ($tpiFilter) {
-                        $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
-                    });
-                }
-                // Jika tidak ada tpiFilter, lihat semua TPI (tidak ada WHERE clause)
-            } else {
-                // Local TPI staff: filter berdasarkan TPI mereka
-                if (!empty($currentUser->wilayah)) {
-                    $query->whereHas('user', function ($q) use ($currentUser) {
-                        $q->where('wilayah', 'LIKE', '%' . $currentUser->wilayah . '%');
-                    });
-                }
-            }
-        } else {
-            // Admin/Head Staff: boleh filter berdasarkan tpiFilter jika ada
-            if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
-                $query->whereHas('user', function ($q) use ($tpiFilter) {
-                    $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
-                });
-            }
-            // Jika tidak ada tpiFilter, lihat semua TPI (tidak ada WHERE clause)
+        // Semua Staff & Admin bisa melihat seluruh data TPI (Tidak dibatasi wilayah)
+        // Boleh memfilter berdasarkan tpiFilter jika ada
+        if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
+            $query->whereHas('user', function ($q) use ($tpiFilter) {
+                $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
+            });
         }
 
         // Filter by validation status (hanya tampil yang valid)
@@ -86,28 +63,10 @@ class ValidasiController extends Controller
         $statQuery = Tangkapan::query();
 
         // Apply same TPI filter untuk stats
-        if ($currentUser->role === 'staff') {
-            if (strpos($currentUser->wilayah, 'Pusat') !== false || strpos($currentUser->wilayah, 'pusat') !== false) {
-                // Central office staff
-                if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
-                    $statQuery->whereHas('user', function ($q) use ($tpiFilter) {
-                        $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
-                    });
-                }
-            } else {
-                // Local TPI staff
-                if (!empty($currentUser->wilayah)) {
-                    $statQuery->whereHas('user', function ($q) use ($currentUser) {
-                        $q->where('wilayah', 'LIKE', '%' . $currentUser->wilayah . '%');
-                    });
-                }
-            }
-        } else {
-            if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
-                $statQuery->whereHas('user', function ($q) use ($tpiFilter) {
-                    $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
-                });
-            }
+        if (!empty($tpiFilter) && in_array($tpiFilter, $tpiOptions)) {
+            $statQuery->whereHas('user', function ($q) use ($tpiFilter) {
+                $q->where('wilayah', 'LIKE', '%' . $tpiFilter . '%');
+            });
         }
 
         $stats = [
@@ -201,17 +160,7 @@ class ValidasiController extends Controller
 
             $query = Tangkapan::whereIn('status', ['Draft', 'Menunggu Validasi']);
 
-            // Terapkan filter wilayah sesuai role staff
-            if ($currentUser->role === 'staff') {
-                if (strpos($currentUser->wilayah, 'Pusat') === false && strpos($currentUser->wilayah, 'pusat') === false) {
-                    if (!empty($currentUser->wilayah)) {
-                        $query->whereHas('user', function ($q) use ($currentUser) {
-                            $q->where('wilayah', 'LIKE', '%' . $currentUser->wilayah . '%');
-                        });
-                    }
-                }
-            }
-
+            // Tidak ada filter wilayah, Staff bisa validasi semua TPI
             $tangkapans = $query->get();
 
             if ($tangkapans->isEmpty()) {
@@ -274,18 +223,7 @@ class ValidasiController extends Controller
 
         $query = Tangkapan::whereIn('status', ['Draft', 'Menunggu Validasi']);
 
-        if ($currentUser->role === 'staff') {
-            if (
-                strpos($currentUser->wilayah, 'Pusat') === false &&
-                strpos($currentUser->wilayah, 'pusat') === false &&
-                !empty($currentUser->wilayah)
-            ) {
-                $query->whereHas('user', function ($q) use ($currentUser) {
-                    $q->where('wilayah', 'LIKE', '%' . $currentUser->wilayah . '%');
-                });
-            }
-        }
-
+        // Tidak ada filter wilayah, poll semua TPI
         $pending   = $query->count();
         $latestId  = $query->max('id') ?? 0;
 

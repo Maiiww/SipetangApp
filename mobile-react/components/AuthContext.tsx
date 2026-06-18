@@ -1,10 +1,11 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type AuthContextType = {
   isAuthenticated: boolean;
   isAuthChecking: boolean;
   signIn: () => Promise<void>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,8 +16,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      setIsAuthenticated(false);
-      setIsAuthChecking(false);
+      try {
+        const storedUserId = await AsyncStorage.getItem('user_id');
+        if (storedUserId) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Gagal mengecek sesi login:", error);
+        setIsAuthenticated(false);
+      } finally {
+        setIsAuthChecking(false);
+      }
     };
 
     initializeAuth();
@@ -26,7 +38,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(true);
   }, []);
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
+    try {
+      await AsyncStorage.removeItem('user_id');
+    } catch (error) {
+      console.error("Gagal menghapus sesi login:", error);
+    }
     setIsAuthenticated(false);
   }, []);
 

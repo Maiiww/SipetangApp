@@ -16,6 +16,21 @@ export default function EditDataScreen() {
     const [isSaving, setIsSaving] = useState(false);
     const [catatanStaf, setCatatanStaf] = useState('');
 
+    // --- STATE CUSTOM POPUP ---
+    const [popupVisible, setPopupVisible] = useState(false);
+    const [popupType, setPopupType] = useState<'success' | 'offline' | 'error' | 'confirm'>('success');
+    const [popupTitle, setPopupTitle] = useState('');
+    const [popupMessage, setPopupMessage] = useState('');
+    const [onConfirm, setOnConfirm] = useState<(() => void) | null>(null);
+
+    const showPopup = (type: 'success' | 'offline' | 'error' | 'confirm', title: string, message: string, confirmAction: (() => void) | null = null) => {
+        setPopupType(type);
+        setPopupTitle(title);
+        setPopupMessage(message);
+        setOnConfirm(() => confirmAction);
+        setPopupVisible(true);
+    };
+
 
     const [namaPembeli, setNamaPembeli] = useState('');
     const [namaNelayan, setNamaNelayan] = useState('');
@@ -65,7 +80,7 @@ export default function EditDataScreen() {
                 setCatatanStaf(data.catatan || 'Tidak ada catatan khusus dari staf.');
             }
         } catch (error) {
-            Alert.alert("Error", "Gagal mengambil data dari server.");
+            showPopup('error', "Error", "Gagal mengambil data dari server.");
         } finally {
             setLoading(false);
         }
@@ -73,7 +88,7 @@ export default function EditDataScreen() {
 
     const handleSimpanRevisi = async () => {
         if (!jenisIkan || !berat || !harga || !namaPembeli || !namaNelayan) {
-            Alert.alert("Perhatian", "Semua kolom wajib diisi!");
+            showPopup('error', "Perhatian", "Semua kolom wajib diisi!");
             return;
         }
 
@@ -97,14 +112,12 @@ export default function EditDataScreen() {
             const json = await response.json();
 
             if (json.status === 'success') {
-                Alert.alert("Berhasil!", "Data telah direvisi dan dikembalikan ke Staf.", [
-                    { text: "OK", onPress: () => router.back() }
-                ]);
+                showPopup('success', "Berhasil!", "Data telah direvisi dan dikembalikan ke Staf.", () => router.back());
             } else {
-                Alert.alert("Gagal", json.message || "Gagal menyimpan revisi.");
+                showPopup('error', "Gagal", json.message || "Gagal menyimpan revisi.");
             }
         } catch (error) {
-            Alert.alert("Error", "Gagal terhubung ke server.");
+            showPopup('error', "Error", "Gagal terhubung ke server.");
         } finally {
             setIsSaving(false);
         }
@@ -220,6 +233,76 @@ export default function EditDataScreen() {
                     </View>
                 </View>
             </Modal>
+
+            {/* --- CUSTOM POPUP MODAL --- */}
+            <Modal
+                visible={popupVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => {
+                    setPopupVisible(false);
+                    if (popupType !== 'error' && onConfirm) onConfirm();
+                }}
+            >
+                <View style={styles.popupOverlay}>
+                    <View style={styles.popupContent}>
+                        {popupType === 'success' && (
+                            <View style={[styles.popupIconBox, { backgroundColor: '#D1FAE5' }]}>
+                                <Ionicons name="checkmark-circle" size={45} color="#059669" />
+                            </View>
+                        )}
+                        {popupType === 'offline' && (
+                            <View style={[styles.popupIconBox, { backgroundColor: '#F3F4F6' }]}>
+                                <Ionicons name="cloud-offline" size={40} color="#6B7280" />
+                            </View>
+                        )}
+                        {popupType === 'error' && (
+                            <View style={[styles.popupIconBox, { backgroundColor: '#FEE2E2' }]}>
+                                <Ionicons name="close-circle" size={45} color="#DC2626" />
+                            </View>
+                        )}
+                        {popupType === 'confirm' && (
+                            <View style={[styles.popupIconBox, { backgroundColor: '#FEE2E2' }]}>
+                                <Ionicons name="log-out-outline" size={45} color="#DC2626" />
+                            </View>
+                        )}
+                        
+                        <Text style={styles.popupTitle}>{popupTitle}</Text>
+                        <Text style={styles.popupMessage}>{popupMessage}</Text>
+                        
+                        {popupType === 'confirm' ? (
+                            <View style={styles.popupBtnRow}>
+                                <TouchableOpacity 
+                                    style={[styles.popupBtnHalf, {backgroundColor: '#E5E7EB'}]}
+                                    onPress={() => setPopupVisible(false)}
+                                >
+                                    <Text style={[styles.popupBtnText, {color: '#6B7280'}]}>Batal</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity 
+                                    style={[styles.popupBtnHalf, {backgroundColor: '#DC2626'}]}
+                                    onPress={() => {
+                                        setPopupVisible(false);
+                                        if (onConfirm) onConfirm();
+                                    }}
+                                >
+                                    <Text style={styles.popupBtnText}>Oke</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) : (
+                            <TouchableOpacity 
+                                style={[styles.popupBtn, popupType === 'error' ? {backgroundColor: '#DC2626'} : {backgroundColor: '#002D62'}]}
+                                onPress={() => {
+                                    setPopupVisible(false);
+                                    if (onConfirm) onConfirm();
+                                }}
+                            >
+                                <Text style={styles.popupBtnText}>Oke, Mengerti</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                </View>
+            </Modal>
+
         </View>
     );
 }
@@ -291,5 +374,71 @@ const styles = StyleSheet.create({
         flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
         paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#F9FAFB'
     },
-    modalItemText: { fontSize: 16, color: '#374151' }
+    modalItemText: { fontSize: 16, color: '#374151' },
+    // --- STYLING CUSTOM POPUP ---
+    popupOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popupContent: {
+        width: '85%',
+        backgroundColor: '#FFF',
+        borderRadius: 24,
+        padding: 30,
+        alignItems: 'center',
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+    },
+    popupIconBox: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    popupTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#002D62',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    popupMessage: {
+        fontSize: 14,
+        color: '#6B7280',
+        textAlign: 'center',
+        marginBottom: 25,
+        lineHeight: 22,
+    },
+    popupBtn: {
+        width: '100%',
+        height: 50,
+        borderRadius: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popupBtnRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    popupBtnHalf: {
+        width: '48%',
+        height: 50,
+        borderRadius: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popupBtnText: {
+        color: '#FFF',
+        fontWeight: 'bold',
+        fontSize: 16,
+        letterSpacing: 0.5,
+    },
 });

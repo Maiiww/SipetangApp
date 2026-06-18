@@ -9,6 +9,7 @@ import {
   StatusBar,
   ScrollView,
   Image,
+  Modal,
   Alert,
   ActivityIndicator
 } from 'react-native';
@@ -18,6 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../components/AuthContext';
 import API_URL from '../../config';
+import appJson from '../../app.json';
 
 const COLORS = {
   primary: '#002D62',
@@ -41,6 +43,21 @@ export default function ProfilScreen() {
     const [isLoading, setIsLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
 
+    // --- STATE CUSTOM POPUP ---
+    const [popupVisible, setPopupVisible] = useState(false);
+    const [popupType, setPopupType] = useState<'success' | 'offline' | 'error' | 'confirm'>('success');
+    const [popupTitle, setPopupTitle] = useState('');
+    const [popupMessage, setPopupMessage] = useState('');
+    const [onConfirm, setOnConfirm] = useState<(() => void) | null>(null);
+
+    const showPopup = (type: 'success' | 'offline' | 'error' | 'confirm', title: string, message: string, confirmAction: (() => void) | null = null) => {
+        setPopupType(type);
+        setPopupTitle(title);
+        setPopupMessage(message);
+        setOnConfirm(() => confirmAction);
+        setPopupVisible(true);
+    };
+
     const fetchProfileData = async () => {
         try {
             const userId = await AsyncStorage.getItem('user_id') || '1'; 
@@ -51,10 +68,10 @@ export default function ProfilScreen() {
             if (response.ok && json.status === 'success') {
                 setProfileData(json.data);
             } else {
-                Alert.alert('Error', 'Gagal memuat data profil');
+                showPopup('error', 'Error', 'Gagal memuat data profil');
             }
         } catch (error) {
-            Alert.alert('Error', 'Tidak dapat terhubung ke server');
+            showPopup('error', 'Error', 'Tidak dapat terhubung ke server');
         } finally {
             setIsLoading(false);
         }
@@ -69,7 +86,7 @@ export default function ProfilScreen() {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         
         if (permissionResult.granted === false) {
-            Alert.alert('Izin Ditolak', 'Anda harus memberikan izin akses galeri untuk mengganti foto profil.');
+            showPopup('error', 'Izin Ditolak', 'Anda harus memberikan izin akses galeri untuk mengganti foto profil.');
             return;
         }
 
@@ -108,35 +125,28 @@ export default function ProfilScreen() {
             const json = await response.json();
 
             if (response.ok && json.status === 'success') {
-                Alert.alert('Sukses', 'Foto profil berhasil diperbarui!');
+                showPopup('success', 'Sukses', 'Foto profil berhasil diperbarui!');
                 fetchProfileData(); 
             } else {
-                Alert.alert('Gagal', json.message || 'Terjadi kesalahan saat mengunggah foto.');
+                showPopup('error', 'Gagal', json.message || 'Terjadi kesalahan saat mengunggah foto.');
             }
         } catch (error) {
-            Alert.alert('Error', 'Gagal terhubung ke server saat mengunggah foto.');
+            showPopup('error', 'Error', 'Gagal terhubung ke server saat mengunggah foto.');
         } finally {
             setIsUploading(false);
         }
     };
 
     const handleLogout = () => {
-        Alert.alert(
+        showPopup(
+            'confirm',
             "Konfirmasi Keluar",
             "Apakah Anda yakin ingin keluar dari aplikasi?",
-            [
-                { text: "Batal", style: "cancel" },
-                { 
-                    text: "Keluar", 
-                    style: "destructive",
-                    onPress: async () => {
-                        await AsyncStorage.removeItem('user_id');
-                        
-                        signOut();
-                        router.replace('/login');
-                    }
-                }
-            ]
+            async () => {
+                await AsyncStorage.removeItem('user_id');
+                signOut();
+                router.replace('/login');
+            }
         );
     };
 
@@ -248,9 +258,73 @@ export default function ProfilScreen() {
                     <Text style={styles.logoutButtonText}>KELUAR</Text>
                 </TouchableOpacity>
 
-                <Text style={styles.versionText}>Versi Aplikasi 2.1.0-stable</Text>
+                <Text style={styles.versionText}>Versi Aplikasi {appJson.expo.version}</Text>
 
             </ScrollView>
+
+            {/* --- CUSTOM POPUP MODAL --- */}
+            <Modal
+                visible={popupVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setPopupVisible(false)}
+            >
+                <View style={styles.popupOverlay}>
+                    <View style={styles.popupContent}>
+                        {popupType === 'success' && (
+                            <View style={[styles.popupIconBox, { backgroundColor: '#D1FAE5' }]}>
+                                <Ionicons name="checkmark-circle" size={45} color="#059669" />
+                            </View>
+                        )}
+                        {popupType === 'offline' && (
+                            <View style={[styles.popupIconBox, { backgroundColor: '#F3F4F6' }]}>
+                                <Ionicons name="cloud-offline" size={40} color="#6B7280" />
+                            </View>
+                        )}
+                        {popupType === 'error' && (
+                            <View style={[styles.popupIconBox, { backgroundColor: '#FEE2E2' }]}>
+                                <Ionicons name="close-circle" size={45} color="#DC2626" />
+                            </View>
+                        )}
+                        {popupType === 'confirm' && (
+                            <View style={[styles.popupIconBox, { backgroundColor: '#FEE2E2' }]}>
+                                <Ionicons name="log-out-outline" size={45} color="#DC2626" />
+                            </View>
+                        )}
+                        
+                        <Text style={styles.popupTitle}>{popupTitle}</Text>
+                        <Text style={styles.popupMessage}>{popupMessage}</Text>
+                        
+                        {popupType === 'confirm' ? (
+                            <View style={styles.popupBtnRow}>
+                                <TouchableOpacity 
+                                    style={[styles.popupBtnHalf, {backgroundColor: COLORS.lightGray}]}
+                                    onPress={() => setPopupVisible(false)}
+                                >
+                                    <Text style={[styles.popupBtnText, {color: COLORS.grayText}]}>Batal</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity 
+                                    style={[styles.popupBtnHalf, {backgroundColor: '#DC2626'}]}
+                                    onPress={() => {
+                                        setPopupVisible(false);
+                                        if (onConfirm) onConfirm();
+                                    }}
+                                >
+                                    <Text style={styles.popupBtnText}>Keluar</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) : (
+                            <TouchableOpacity 
+                                style={[styles.popupBtn, popupType === 'error' ? {backgroundColor: '#DC2626'} : {backgroundColor: COLORS.primary}]}
+                                onPress={() => setPopupVisible(false)}
+                            >
+                                <Text style={styles.popupBtnText}>Oke, Mengerti</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                </View>
+            </Modal>
+
         </SafeAreaView>
     );
 }
@@ -411,5 +485,71 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 12,
         color: COLORS.grayText,
+    },
+    // --- STYLING CUSTOM POPUP ---
+    popupOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popupContent: {
+        width: '85%',
+        backgroundColor: COLORS.white,
+        borderRadius: 24,
+        padding: 30,
+        alignItems: 'center',
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+    },
+    popupIconBox: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    popupTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: COLORS.primary,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    popupMessage: {
+        fontSize: 14,
+        color: COLORS.grayText,
+        textAlign: 'center',
+        marginBottom: 25,
+        lineHeight: 22,
+    },
+    popupBtn: {
+        width: '100%',
+        height: 50,
+        borderRadius: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popupBtnRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    popupBtnHalf: {
+        width: '48%',
+        height: 50,
+        borderRadius: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popupBtnText: {
+        color: COLORS.white,
+        fontWeight: 'bold',
+        fontSize: 16,
+        letterSpacing: 0.5,
     },
 });

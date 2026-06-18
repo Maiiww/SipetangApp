@@ -39,7 +39,12 @@ export default function TambahDataScreen() {
     const [harga, setHarga] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const [daftarIkanDinamis, setDaftarIkanDinamis] = useState([]);
+    // --- STATE CUSTOM POPUP ---
+    const [popupVisible, setPopupVisible] = useState(false);
+    const [popupType, setPopupType] = useState<'success' | 'offline' | 'error'>('success');
+    const [popupMessage, setPopupMessage] = useState('');
+
+    const [daftarIkanDinamis, setDaftarIkanDinamis] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchDaftarIkan = async () => {
@@ -47,13 +52,25 @@ export default function TambahDataScreen() {
                 const response = await fetch(`${API_URL}/ikan`); 
                 const json = await response.json();
                 
-                console.log("Data Ikan dari DB:", json.data);
-                
                 if (json.status === 'success') {
                     setDaftarIkanDinamis(json.data);
+                    // Simpan ke cache lokal untuk keperluan offline
+                    await AsyncStorage.setItem('cached_ikan', JSON.stringify(json.data));
                 }
             } catch (error) {
-                console.log("Gagal memuat daftar ikan:", error);
+                console.log("Gagal memuat daftar ikan dari server, mencoba membaca dari cache lokal...", error);
+                // Jika offline, ambil dari cache lokal
+                try {
+                    const cachedIkan = await AsyncStorage.getItem('cached_ikan');
+                    if (cachedIkan) {
+                        setDaftarIkanDinamis(JSON.parse(cachedIkan));
+                    } else {
+                        // Fallback data jika belum pernah buka online sama sekali
+                        setDaftarIkanDinamis(['Kakap Merah', 'Kerapu', 'Tongkol', 'Tenggiri', 'Cumi-cumi', 'Udang']);
+                    }
+                } catch (e) {
+                    console.log("Gagal membaca cache lokal");
+                }
             }
         };
 
@@ -65,7 +82,9 @@ export default function TambahDataScreen() {
 
     const handleSimpanData = async () => {
         if (!namaPembeli || !namaNelayan || !berat || !jenisIkan || !harga) {
-            Alert.alert('Gagal', 'Pastikan semua kolom formulir telah diisi.');
+            setPopupType('error');
+            setPopupMessage('Pastikan semua kolom formulir telah diisi.');
+            setPopupVisible(true);
             return;
         }
 
@@ -85,26 +104,60 @@ export default function TambahDataScreen() {
                 harga_jual: parseInt(harga.replace(/[^0-9]/g, ''), 10), 
             };
 
-            const response = await fetch(`${API_URL}/tangkapan`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
+            let isOffline = false;
 
-            const data = await response.json();
+            try {
+                // Coba kirim ke server
+                const response = await fetch(`${API_URL}/tangkapan`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
 
-            if (response.ok && data.status === 'success') {
-                Alert.alert('Sukses', 'Data berhasil disimpan!', [
-                    { text: 'OK', onPress: () => router.back() }
-                ]);
-            } else {
-                Alert.alert('Gagal Menyimpan', data.message || 'Terjadi kesalahan di server.');
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    setPopupType('success');
+                    setPopupMessage('Data berhasil dikirim dan disimpan ke server!');
+                    setPopupVisible(true);
+                } else {
+                    setPopupType('error');
+                    setPopupMessage(data.message || 'Terjadi kesalahan di server.');
+                    setPopupVisible(true);
+                }
+            } catch (networkError) {
+                // Jika gagal koneksi, simpan secara offline
+                console.log("Jaringan gagal, menyimpan secara offline...");
+                isOffline = true;
+                
+                // Tambahkan field khusus untuk data offline
+                const offlinePayload = {
+                    ...payload,
+                    id: 'offline_' + Date.now(), // ID sementara
+                    created_at: new Date().toISOString(),
+                    is_offline: true
+                };
+
+                // Ambil antrean offline sebelumnya
+                const existingOfflineData = await AsyncStorage.getItem('offline_tangkapan');
+                let offlineArray = existingOfflineData ? JSON.parse(existingOfflineData) : [];
+                
+                // Tambahkan data baru ke antrean
+                offlineArray.push(offlinePayload);
+                await AsyncStorage.setItem('offline_tangkapan', JSON.stringify(offlineArray));
+
+                setPopupType('offline');
+                setPopupMessage('Internet terputus. Data Anda diamankan di HP dan akan dikirim saat sinyal kembali.');
+                setPopupVisible(true);
             }
+
         } catch (error) {
-            Alert.alert('Error Jaringan', 'Gagal terhubung ke server Laravel.');
+            setPopupType('error');
+            setPopupMessage('Terjadi kesalahan pada sistem aplikasi.');
+            setPopupVisible(true);
             console.log(error);
         } finally {
             setIsLoading(false);
@@ -261,6 +314,56 @@ export default function TambahDataScreen() {
 
             </View>
             </TouchableOpacity>
+        </Modal>
+
+        {/* --- CUSTOM POPUP MODAL --- */}
+        <Modal
+            visible={popupVisible}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => {
+                setPopupVisible(false);
+                if (popupType !== 'error') router.back();
+            }}
+        >
+            <View style={styles.popupOverlay}>
+                <View style={styles.popupContent}>
+                    {popupType === 'success' && (
+                        <View style={[styles.popupIconBox, { backgroundColor: '#D1FAE5' }]}>
+                            <Ionicons name="checkmark-circle" size={45} color="#059669" />
+                        </View>
+                    )}
+                    {popupType === 'offline' && (
+                        <View style={[styles.popupIconBox, { backgroundColor: '#F3F4F6' }]}>
+                            <Ionicons name="cloud-offline" size={40} color="#6B7280" />
+                        </View>
+                    )}
+                    {popupType === 'error' && (
+                        <View style={[styles.popupIconBox, { backgroundColor: '#FEE2E2' }]}>
+                            <Ionicons name="close-circle" size={45} color="#DC2626" />
+                        </View>
+                    )}
+                    
+                    <Text style={styles.popupTitle}>
+                        {popupType === 'success' ? 'Tersimpan Online!' : 
+                         popupType === 'offline' ? 'Tersimpan Offline!' : 'Gagal Menyimpan'}
+                    </Text>
+                    
+                    <Text style={styles.popupMessage}>{popupMessage}</Text>
+                    
+                    <TouchableOpacity 
+                        style={[styles.popupBtn, popupType === 'error' ? {backgroundColor: '#DC2626'} : {backgroundColor: COLORS.primary}]}
+                        onPress={() => {
+                            setPopupVisible(false);
+                            if (popupType !== 'error') {
+                                router.back();
+                            }
+                        }}
+                    >
+                        <Text style={styles.popupBtnText}>Oke, Mengerti</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </Modal>
 
         </SafeAreaView>
@@ -433,5 +536,59 @@ const styles = StyleSheet.create({
     modalItemText: {
         fontSize: 14,
         color: '#111827',
+    },
+    // --- STYLING CUSTOM POPUP ---
+    popupOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popupContent: {
+        width: '85%',
+        backgroundColor: COLORS.white,
+        borderRadius: 24,
+        padding: 30,
+        alignItems: 'center',
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+    },
+    popupIconBox: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    popupTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: COLORS.primary,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    popupMessage: {
+        fontSize: 14,
+        color: COLORS.grayText,
+        textAlign: 'center',
+        marginBottom: 25,
+        lineHeight: 22,
+    },
+    popupBtn: {
+        width: '100%',
+        height: 50,
+        borderRadius: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popupBtnText: {
+        color: COLORS.white,
+        fontWeight: 'bold',
+        fontSize: 16,
+        letterSpacing: 0.5,
     },
 });
