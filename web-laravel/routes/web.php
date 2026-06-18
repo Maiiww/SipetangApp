@@ -112,3 +112,9 @@ Route::get('/register', function () {
 Route::get('/forgot-password', function () {
     return view('auth.forgot-password');
 })->name('password.request');
+
+// Route Rahasia untuk Symlink cPanel
+Route::get('/buat-symlink', function () {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    return 'Berhasil membuka gembok brankas foto!';
+});
