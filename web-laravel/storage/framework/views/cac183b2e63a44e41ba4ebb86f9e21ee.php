@@ -532,7 +532,7 @@
 </head>
 
 <body>
-    @include('components.sidebar-menu')
+    <?php echo $__env->make('components.sidebar-menu', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <main class="main-content">
         <div style="margin-bottom: 30px;">
@@ -547,42 +547,43 @@
             <div>
                 <div class="panel">
                     <div class="panel-header">
-                        <h2><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Antrean Revisi ({{ $revisions->count() }} Laporan)</h2>
+                        <h2><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Antrean Revisi (<?php echo e($revisions->count()); ?> Laporan)</h2>
                     </div>
 
-                    @if ($revisions->count() > 0)
+                    <?php if($revisions->count() > 0): ?>
                         <div class="revisions-list">
-                            @foreach ($revisions as $rev)
+                            <?php $__currentLoopData = $revisions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rev): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="revision-card">
                                     <div class="revision-card-header">
                                         <div>
-                                            <span class="revision-title">Revisi: {{ $rev->jenis_ikan }}</span>
+                                            <span class="revision-title">Revisi: <?php echo e($rev->jenis_ikan); ?></span>
                                             <div class="revision-meta">
-                                                <span>Nelayan: {{ $rev->nama_nelayan }}</span> &bull; 
-                                                <span>Berat: {{ number_format($rev->berat, 1) }} kg</span>
+                                                <span>Nelayan: <?php echo e($rev->nama_nelayan); ?></span> &bull; 
+                                                <span>Berat: <?php echo e(number_format($rev->berat, 1)); ?> kg</span>
                                             </div>
                                             <div class="revision-meta" style="margin-top: 2px;">
-                                                <span>Ditolak Pada: {{ $rev->rejected_at ? \Carbon\Carbon::parse($rev->rejected_at)->translatedFormat('d M Y H:i') : '-' }}</span>
+                                                <span>Ditolak Pada: <?php echo e($rev->rejected_at ? \Carbon\Carbon::parse($rev->rejected_at)->translatedFormat('d M Y H:i') : '-'); ?></span>
                                             </div>
                                         </div>
-                                        <button class="btn btn-primary" onclick="openRevisiModal({{ $rev->id }}, '{{ $rev->jenis_ikan }}', '{{ $rev->nama_nelayan }}', '{{ $rev->nama_pembeli }}', {{ $rev->berat }}, {{ $rev->harga_jual }}, '{{ addslashes($rev->catatan) }}')">
+                                        <button class="btn btn-primary" onclick="openRevisiModal(<?php echo e($rev->id); ?>, '<?php echo e($rev->jenis_ikan); ?>', '<?php echo e($rev->nama_nelayan); ?>', '<?php echo e($rev->nama_pembeli); ?>', <?php echo e($rev->berat); ?>, <?php echo e($rev->harga_jual); ?>, '<?php echo e(addslashes($rev->catatan)); ?>')">
                                             <i class="fas fa-edit"></i> Perbaiki
                                         </button>
                                     </div>
 
                                     <div class="rejection-reason">
                                         <strong>Alasan Penolakan Staff:</strong><br>
-                                        {{ $rev->catatan ?? 'Tidak ada catatan khusus.' }}
+                                        <?php echo e($rev->catatan ?? 'Tidak ada catatan khusus.'); ?>
+
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-                    @else
+                    <?php else: ?>
                         <div style="text-align: center; padding: 40px 0; color: #94a3b8;">
                             <i class="fas fa-clipboard-check" style="font-size: 44px; margin-bottom: 12px; opacity: 0.5;"></i>
                             <p style="font-size: 14.5px; font-weight: 600;">Semua aman! Tidak ada laporan yang perlu direvisi.</p>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -593,10 +594,10 @@
                         <h2><i class="fas fa-history"></i> Riwayat Aktivitas</h2>
                     </div>
 
-                    @if ($history->count() > 0)
+                    <?php if($history->count() > 0): ?>
                         <div class="timeline">
-                            @foreach ($history as $log)
-                                @php
+                            <?php $__currentLoopData = $history; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     $icon = 'fa-check';
                                     $class = 'status-success';
                                     $label = 'Berhasil Input';
@@ -618,36 +619,38 @@
                                         $label = 'Draft Disimpan';
                                         $msg = 'Menyimpan draft ' . $log->jenis_ikan . ' ' . number_format($log->berat, 1) . ' KG';
                                     }
-                                @endphp
+                                ?>
                                 <div class="timeline-card">
-                                    <div class="timeline-icon-box {{ $class }}">
-                                        <i class="fas {{ $icon }}"></i>
+                                    <div class="timeline-icon-box <?php echo e($class); ?>">
+                                        <i class="fas <?php echo e($icon); ?>"></i>
                                     </div>
                                     <div class="timeline-details">
                                         <h4 style="display: flex; justify-content: space-between; align-items: center;">
-                                            <span>{{ $label }}</span>
-                                            @if ($log->status === 'Ditolak')
-                                                <a href="javascript:void(0)" onclick="openRevisiModal({{ $log->id }}, '{{ $log->jenis_ikan }}', '{{ $log->nama_nelayan }}', '{{ $log->nama_pembeli }}', {{ $log->berat }}, {{ $log->harga_jual }}, '{{ addslashes($log->catatan) }}')" style="color: #ef4444; font-size: 11px; text-decoration: none; font-weight: 700; margin-left: 8px;">Perbaiki Sekarang &gt;</a>
-                                            @endif
+                                            <span><?php echo e($label); ?></span>
+                                            <?php if($log->status === 'Ditolak'): ?>
+                                                <a href="javascript:void(0)" onclick="openRevisiModal(<?php echo e($log->id); ?>, '<?php echo e($log->jenis_ikan); ?>', '<?php echo e($log->nama_nelayan); ?>', '<?php echo e($log->nama_pembeli); ?>', <?php echo e($log->berat); ?>, <?php echo e($log->harga_jual); ?>, '<?php echo e(addslashes($log->catatan)); ?>')" style="color: #ef4444; font-size: 11px; text-decoration: none; font-weight: 700; margin-left: 8px;">Perbaiki Sekarang &gt;</a>
+                                            <?php endif; ?>
                                         </h4>
-                                        <p>{{ $msg }}</p>
+                                        <p><?php echo e($msg); ?></p>
                                     </div>
                                     <span class="timeline-time">
-                                        {{ \Carbon\Carbon::parse($log->created_at)->diffForHumans() }}
+                                        <?php echo e(\Carbon\Carbon::parse($log->created_at)->diffForHumans()); ?>
+
                                     </span>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
 
                         <div style="margin-top: 25px;">
-                            {{ $history->links('pagination.custom') }}
+                            <?php echo e($history->links('pagination.custom')); ?>
+
                         </div>
-                    @else
+                    <?php else: ?>
                         <div style="text-align: center; padding: 40px 0; color: #94a3b8;">
                             <i class="fas fa-folder-open" style="font-size: 40px; margin-bottom: 12px; opacity: 0.5;"></i>
                             <p>Belum ada riwayat aktivitas</p>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -666,7 +669,7 @@
             </div>
 
             <form action="" method="POST" id="revisiForm">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="rev_nama_nelayan">Nama Nelayan</label>
@@ -681,9 +684,9 @@
                     <div class="form-group">
                         <label for="rev_jenis_ikan">Jenis Ikan</label>
                         <select name="jenis_ikan" id="rev_jenis_ikan" class="form-control" required>
-                            @foreach ($ikanList as $ikanName)
-                                <option value="{{ $ikanName }}">{{ $ikanName }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = $ikanList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ikanName): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($ikanName); ?>"><?php echo e($ikanName); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
 
@@ -735,7 +738,7 @@
         }
 
         // Show Premium SweetAlert popups on redirect notifications
-        @if (session('success'))
+        <?php if(session('success')): ?>
             Swal.fire({
                 html: `
                     <div class="swal-animation-container">
@@ -747,7 +750,7 @@
                         </div>
                     </div>
                     <div class="swal2-custom-title">Berhasil!</div>
-                    <div class="swal2-custom-text">{{ session('success') }}</div>
+                    <div class="swal2-custom-text"><?php echo e(session('success')); ?></div>
                 `,
                 showConfirmButton: true,
                 confirmButtonText: 'Selesai',
@@ -757,9 +760,9 @@
                     confirmButton: 'premium-swal-btn'
                 }
             });
-        @endif
+        <?php endif; ?>
 
-        @if (session('error'))
+        <?php if(session('error')): ?>
             Swal.fire({
                 html: `
                     <div class="swal-animation-container">
@@ -771,7 +774,7 @@
                         </div>
                     </div>
                     <div class="swal2-custom-title">Gagal!</div>
-                    <div class="swal2-custom-text">{{ session('error') }}</div>
+                    <div class="swal2-custom-text"><?php echo e(session('error')); ?></div>
                 `,
                 showConfirmButton: true,
                 confirmButtonText: 'Tutup',
@@ -781,9 +784,9 @@
                     confirmButton: 'premium-swal-btn premium-swal-btn-danger'
                 }
             });
-        @endif
+        <?php endif; ?>
 
-        @if (isset($errors) && $errors->any())
+        <?php if(isset($errors) && $errors->any()): ?>
             Swal.fire({
                 html: `
                     <div class="swal-animation-container">
@@ -795,7 +798,7 @@
                         </div>
                     </div>
                     <div class="swal2-custom-title">Terjadi Kesalahan!</div>
-                    <div class="swal2-custom-text">{!! implode("<br>", $errors->all()) !!}</div>
+                    <div class="swal2-custom-text"><?php echo implode("<br>", $errors->all()); ?></div>
                 `,
                 showConfirmButton: true,
                 confirmButtonText: 'Perbaiki',
@@ -805,8 +808,9 @@
                     confirmButton: 'premium-swal-btn premium-swal-btn-warning'
                 }
             });
-        @endif
+        <?php endif; ?>
     </script>
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/JuruRekap/riwayat.blade.php ENDPATH**/ ?>

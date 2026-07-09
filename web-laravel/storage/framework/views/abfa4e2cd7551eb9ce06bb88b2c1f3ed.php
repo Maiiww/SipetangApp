@@ -505,7 +505,7 @@
 </head>
 
 <body>
-    @include('components.sidebar-menu')
+    <?php echo $__env->make('components.sidebar-menu', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <main class="main-content">
         <div style="margin-bottom: 20px; text-align: center;">
@@ -517,25 +517,25 @@
             <div class="profile-header">
                 <div class="avatar-container">
                     <div class="avatar-inner">
-                        @php
+                        <?php
                             $user = Auth::user();
                             if ($user->foto_profil) {
                                 $avatarUrl = asset('storage/profil/' . $user->foto_profil);
                             } else {
                                 $avatarUrl = 'https://ui-avatars.com/api/?name=' . urlencode($user->nama) . '&background=002D62&color=fff&size=128';
                             }
-                        @endphp
-                        <img src="{{ $avatarUrl }}" alt="Foto Profil" class="avatar-img">
+                        ?>
+                        <img src="<?php echo e($avatarUrl); ?>" alt="Foto Profil" class="avatar-img">
                     </div>
                 </div>
-                <div class="profile-name">{{ $user->nama }}</div>
+                <div class="profile-name"><?php echo e($user->nama); ?></div>
                 <div class="profile-role">Juru Rekap</div>
             </div>
 
             <div class="profile-body">
                 <!-- Photo Upload Form -->
-                <form action="{{ route('jururekap.profile.update_foto') }}" method="POST" enctype="multipart/form-data" class="upload-form">
-                    @csrf
+                <form action="<?php echo e(route('jururekap.profile.update_foto')); ?>" method="POST" enctype="multipart/form-data" class="upload-form">
+                    <?php echo csrf_field(); ?>
                     <div style="flex: 1;">
                         <span style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">UBAH FOTO PROFIL</span>
                         <span style="font-size: 11px; color: #94a3b8; display: block;">Format JPEG, PNG, JPG (Maks. 2MB)</span>
@@ -554,7 +554,7 @@
                     </div>
                     <div class="detail-content">
                         <div class="detail-label">ID Juru Rekap</div>
-                        <div class="detail-value">{{ $user->no_induk ?? '-' }}</div>
+                        <div class="detail-value"><?php echo e($user->no_induk ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -564,7 +564,7 @@
                     </div>
                     <div class="detail-content">
                         <div class="detail-label">Nomor Telepon</div>
-                        <div class="detail-value">{{ $user->no_telepon ?? '-' }}</div>
+                        <div class="detail-value"><?php echo e($user->no_telepon ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -574,7 +574,7 @@
                     </div>
                     <div class="detail-content">
                         <div class="detail-label">Wilayah Tugas</div>
-                        <div class="detail-value">{{ $user->wilayah ?? '-' }}</div>
+                        <div class="detail-value"><?php echo e($user->wilayah ?? '-'); ?></div>
                     </div>
                 </div>
 
@@ -585,18 +585,19 @@
                     <div class="detail-content">
                         <div class="detail-label">Status Akun</div>
                         <div class="detail-value" style="display: flex; align-items: center;">
-                            @php
+                            <?php
                                 $status = $user->status_akun ?? ($user->is_active ? 'Aktif' : 'Nonaktif');
-                            @endphp
-                            <span class="status-dot" style="background: {{ strtolower($status) === 'aktif' ? '#10b981' : '#ef4444' }};"></span>
-                            Status: {{ $status }}
+                            ?>
+                            <span class="status-dot" style="background: <?php echo e(strtolower($status) === 'aktif' ? '#10b981' : '#ef4444'); ?>;"></span>
+                            Status: <?php echo e($status); ?>
+
                         </div>
                     </div>
                 </div>
 
                 <div class="action-section">
-                    <form id="profile-logout-form" method="POST" action="{{ route('logout') }}">
-                        @csrf
+                    <form id="profile-logout-form" method="POST" action="<?php echo e(route('logout')); ?>">
+                        <?php echo csrf_field(); ?>
                         <button type="button" class="btn btn-orange" onclick="confirmProfileLogout(event)">
                             <i class="fas fa-sign-out-alt"></i> Keluar
                         </button>
@@ -640,7 +641,7 @@
         }
 
         // Show Premium SweetAlert popups on redirect notifications
-        @if (session('success'))
+        <?php if(session('success')): ?>
             Swal.fire({
                 html: `
                     <div class="swal-animation-container">
@@ -652,7 +653,7 @@
                         </div>
                     </div>
                     <div class="swal2-custom-title">Berhasil!</div>
-                    <div class="swal2-custom-text">{{ session('success') }}</div>
+                    <div class="swal2-custom-text"><?php echo e(session('success')); ?></div>
                 `,
                 showConfirmButton: true,
                 confirmButtonText: 'Selesai',
@@ -662,9 +663,9 @@
                     confirmButton: 'premium-swal-btn'
                 }
             });
-        @endif
+        <?php endif; ?>
 
-        @if (session('error'))
+        <?php if(session('error')): ?>
             Swal.fire({
                 html: `
                     <div class="swal-animation-container">
@@ -676,7 +677,7 @@
                         </div>
                     </div>
                     <div class="swal2-custom-title">Gagal!</div>
-                    <div class="swal2-custom-text">{{ session('error') }}</div>
+                    <div class="swal2-custom-text"><?php echo e(session('error')); ?></div>
                 `,
                 showConfirmButton: true,
                 confirmButtonText: 'Tutup',
@@ -686,9 +687,9 @@
                     confirmButton: 'premium-swal-btn premium-swal-btn-danger'
                 }
             });
-        @endif
+        <?php endif; ?>
 
-        @if (isset($errors) && $errors->any())
+        <?php if(isset($errors) && $errors->any()): ?>
             Swal.fire({
                 html: `
                     <div class="swal-animation-container">
@@ -700,7 +701,7 @@
                         </div>
                     </div>
                     <div class="swal2-custom-title">Terjadi Kesalahan!</div>
-                    <div class="swal2-custom-text">{!! implode("<br>", $errors->all()) !!}</div>
+                    <div class="swal2-custom-text"><?php echo implode("<br>", $errors->all()); ?></div>
                 `,
                 showConfirmButton: true,
                 confirmButtonText: 'Perbaiki',
@@ -710,8 +711,9 @@
                     confirmButton: 'premium-swal-btn premium-swal-btn-warning'
                 }
             });
-        @endif
+        <?php endif; ?>
     </script>
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/JuruRekap/profile.blade.php ENDPATH**/ ?>

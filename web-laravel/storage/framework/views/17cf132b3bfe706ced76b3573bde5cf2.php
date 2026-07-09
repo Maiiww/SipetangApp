@@ -587,7 +587,7 @@
 </head>
 
 <body>
-    @include('components.sidebar-menu')
+    <?php echo $__env->make('components.sidebar-menu', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <main class="main-content">
         <div style="margin-bottom: 30px;">
@@ -601,7 +601,7 @@
             <div class="stat-card">
                 <div class="stat-details">
                     <h3>Total Berat Hari Ini</h3>
-                    <div class="value">{{ number_format($totalBerat, 1) }}<span class="unit">KG</span></div>
+                    <div class="value"><?php echo e(number_format($totalBerat, 1)); ?><span class="unit">KG</span></div>
                 </div>
                 <div class="stat-icon icon-blue">
                     <i class="fas fa-weight"></i>
@@ -611,7 +611,7 @@
             <div class="stat-card">
                 <div class="stat-details">
                     <h3>Produksi Hari Ini</h3>
-                    <div class="value">{{ $totalProduksi }}<span class="unit">Laporan</span></div>
+                    <div class="value"><?php echo e($totalProduksi); ?><span class="unit">Laporan</span></div>
                 </div>
                 <div class="stat-icon icon-orange">
                     <i class="fas fa-calculator"></i>
@@ -620,19 +620,19 @@
         </div>
 
         <div class="filter-panel">
-            <form action="{{ route('jururekap.kelola') }}" method="GET" class="filter-form" id="filterForm">
+            <form action="<?php echo e(route('jururekap.kelola')); ?>" method="GET" class="filter-form" id="filterForm">
                 <div class="input-group">
                     <label>Pilih Tanggal</label>
-                    <input type="date" name="tanggal" value="{{ $tanggal }}" class="filter-input" onchange="this.form.submit()">
+                    <input type="date" name="tanggal" value="<?php echo e($tanggal); ?>" class="filter-input" onchange="this.form.submit()">
                 </div>
 
                 <div class="input-group">
                     <label>Jenis Ikan</label>
                     <select name="jenis_ikan" class="filter-input" onchange="this.form.submit()">
                         <option value="">Semua Ikan</option>
-                        @foreach ($ikanList as $ikanName)
-                            <option value="{{ $ikanName }}" {{ $jenisIkan === $ikanName ? 'selected' : '' }}>{{ $ikanName }}</option>
-                        @endforeach
+                        <?php $__currentLoopData = $ikanList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ikanName): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($ikanName); ?>" <?php echo e($jenisIkan === $ikanName ? 'selected' : ''); ?>><?php echo e($ikanName); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
             </form>
@@ -644,18 +644,18 @@
 
         <div class="table-panel">
             <div class="table-header">
-                <h2>Daftar Catatan Tangkapan Tanggal {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</h2>
+                <h2>Daftar Catatan Tangkapan Tanggal <?php echo e(\Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y')); ?></h2>
                 
-                <form id="kirimStafForm" action="{{ route('jururekap.kirim') }}" method="POST" style="display: inline;">
-                    @csrf
-                    <input type="hidden" name="tanggal" value="{{ $tanggal }}">
-                    <button type="button" onclick="confirmKirimStaf(event)" class="btn btn-orange" {{ !$hasDrafts ? 'disabled style=opacity:0.6;cursor:not-allowed;box-shadow:none;' : '' }} title="{{ !$hasDrafts ? 'Tidak ada data draft untuk dikirim pada tanggal ini' : 'Kirim semua data draft hari ini ke staf dinas' }}">
+                <form id="kirimStafForm" action="<?php echo e(route('jururekap.kirim')); ?>" method="POST" style="display: inline;">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="tanggal" value="<?php echo e($tanggal); ?>">
+                    <button type="button" onclick="confirmKirimStaf(event)" class="btn btn-orange" <?php echo e(!$hasDrafts ? 'disabled style=opacity:0.6;cursor:not-allowed;box-shadow:none;' : ''); ?> title="<?php echo e(!$hasDrafts ? 'Tidak ada data draft untuk dikirim pada tanggal ini' : 'Kirim semua data draft hari ini ke staf dinas'); ?>">
                         <i class="fas fa-paper-plane"></i> Kirim ke Staf Dinas
                     </button>
                 </form>
             </div>
 
-            @if ($catches->count() > 0)
+            <?php if($catches->count() > 0): ?>
                 <div style="overflow-x: auto;">
                     <table class="reports-table">
                         <thead>
@@ -671,8 +671,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($catches as $index => $catch)
-                                @php
+                            <?php $__currentLoopData = $catches; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $catch): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     $statusClass = 'badge-draft';
                                     $statusLabel = 'Draft';
                                     if ($catch->status === 'Menunggu Validasi') {
@@ -685,41 +685,43 @@
                                         $statusClass = 'badge-danger';
                                         $statusLabel = 'Ditolak';
                                     }
-                                @endphp
+                                ?>
                                 <tr>
-                                    <td>{{ $catches->firstItem() + $index }}</td>
-                                    <td><strong>{{ $catch->nama_nelayan }}</strong></td>
-                                    <td>{{ $catch->nama_pembeli }}</td>
-                                    <td>{{ $catch->jenis_ikan }}</td>
-                                    <td>{{ number_format($catch->berat, 2) }} kg</td>
-                                    <td>Rp {{ number_format($catch->harga_jual, 0, ',', '.') }}</td>
-                                    <td><span class="badge {{ $statusClass }}">{{ $statusLabel }}</span></td>
+                                    <td><?php echo e($catches->firstItem() + $index); ?></td>
+                                    <td><strong><?php echo e($catch->nama_nelayan); ?></strong></td>
+                                    <td><?php echo e($catch->nama_pembeli); ?></td>
+                                    <td><?php echo e($catch->jenis_ikan); ?></td>
+                                    <td><?php echo e(number_format($catch->berat, 2)); ?> kg</td>
+                                    <td>Rp <?php echo e(number_format($catch->harga_jual, 0, ',', '.')); ?></td>
+                                    <td><span class="badge <?php echo e($statusClass); ?>"><?php echo e($statusLabel); ?></span></td>
                                     <td>
-                                        @if ($catch->status === 'Ditolak')
+                                        <?php if($catch->status === 'Ditolak'): ?>
                                             <span style="color: #991b1b; font-size: 12px; font-weight: 600;">
-                                                <i class="fas fa-exclamation-triangle"></i> {{ $catch->catatan ?? 'Perlu direvisi' }}
+                                                <i class="fas fa-exclamation-triangle"></i> <?php echo e($catch->catatan ?? 'Perlu direvisi'); ?>
+
                                             </span>
-                                        @elseif ($catch->status === 'Draft')
+                                        <?php elseif($catch->status === 'Draft'): ?>
                                             <small style="color: #64748b; font-weight: 600;">Belum dikirim ke staff</small>
-                                        @else
+                                        <?php else: ?>
                                             <span style="color: #64748b;">-</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                 </div>
                 
                 <div style="margin-top: 25px;">
-                    {{ $catches->links('pagination.custom') }}
+                    <?php echo e($catches->links('pagination.custom')); ?>
+
                 </div>
-            @else
+            <?php else: ?>
                 <div style="text-align: center; padding: 60px 0; color: #94a3b8;">
                     <i class="fas fa-inbox" style="font-size: 50px; margin-bottom: 15px; opacity: 0.5;"></i>
                     <p style="font-size: 15px; font-weight: 600;">Tidak ada catatan data hasil tangkap pada tanggal ini</p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </main>
 
@@ -730,8 +732,8 @@
                 Input Hasil Tangkapan Baru
                 <button class="close-btn" onclick="closeInputModal()">&times;</button>
             </div>
-            <form action="{{ route('jururekap.input.store') }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('jururekap.input.store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nama_nelayan">Nama Nelayan</label>
@@ -747,9 +749,9 @@
                         <label for="jenis_ikan">Jenis Ikan</label>
                         <select name="jenis_ikan" id="jenis_ikan" class="form-control" required>
                             <option value="">Pilih jenis ikan</option>
-                            @foreach ($ikanList as $ikanName)
-                                <option value="{{ $ikanName }}">{{ $ikanName }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = $ikanList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ikanName): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($ikanName); ?>"><?php echo e($ikanName); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
 
@@ -822,7 +824,7 @@
         }
 
         // Show Premium SweetAlert popups on redirect notifications
-        @if (session('success'))
+        <?php if(session('success')): ?>
             Swal.fire({
                 html: `
                     <div class="swal-animation-container">
@@ -834,7 +836,7 @@
                         </div>
                     </div>
                     <div class="swal2-custom-title">Berhasil!</div>
-                    <div class="swal2-custom-text">{{ session('success') }}</div>
+                    <div class="swal2-custom-text"><?php echo e(session('success')); ?></div>
                 `,
                 showConfirmButton: true,
                 confirmButtonText: 'Selesai',
@@ -844,9 +846,9 @@
                     confirmButton: 'premium-swal-btn'
                 }
             });
-        @endif
+        <?php endif; ?>
 
-        @if (session('error'))
+        <?php if(session('error')): ?>
             Swal.fire({
                 html: `
                     <div class="swal-animation-container">
@@ -858,7 +860,7 @@
                         </div>
                     </div>
                     <div class="swal2-custom-title">Gagal!</div>
-                    <div class="swal2-custom-text">{{ session('error') }}</div>
+                    <div class="swal2-custom-text"><?php echo e(session('error')); ?></div>
                 `,
                 showConfirmButton: true,
                 confirmButtonText: 'Tutup',
@@ -868,9 +870,9 @@
                     confirmButton: 'premium-swal-btn premium-swal-btn-danger'
                 }
             });
-        @endif
+        <?php endif; ?>
 
-        @if (isset($errors) && $errors->any())
+        <?php if(isset($errors) && $errors->any()): ?>
             Swal.fire({
                 html: `
                     <div class="swal-animation-container">
@@ -882,7 +884,7 @@
                         </div>
                     </div>
                     <div class="swal2-custom-title">Terjadi Kesalahan!</div>
-                    <div class="swal2-custom-text">{!! implode("<br>", $errors->all()) !!}</div>
+                    <div class="swal2-custom-text"><?php echo implode("<br>", $errors->all()); ?></div>
                 `,
                 showConfirmButton: true,
                 confirmButtonText: 'Perbaiki',
@@ -892,8 +894,9 @@
                     confirmButton: 'premium-swal-btn premium-swal-btn-warning'
                 }
             });
-        @endif
+        <?php endif; ?>
     </script>
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/JuruRekap/kelola.blade.php ENDPATH**/ ?>

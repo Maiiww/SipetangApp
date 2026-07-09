@@ -392,6 +392,10 @@
                         <a href="<?php echo e(url('/login')); ?>" id="btn-masuk-dashboard" class="btn px-4 py-3 fw-bold border-0 shadow" style="background-color: white; color: var(--sipetang-navy); border-radius: 8px;">
                             <i class="fas fa-sign-in-alt me-2"></i> Masuk ke Dashboard
                         </a>
+                        <!-- Button Download APK -->
+                        <a href="<?php echo e(asset('apk/sipetang-v1.1.0.apk')); ?>" id="btn-download-apk" class="btn px-4 py-3 fw-bold shadow-sm" style="background-color: #3DDC84; color: white; border: none; border-radius: 8px; transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='translateY(0)';">
+                            <i class="fab fa-android me-2" style="font-size: 1.1rem;"></i> Download APK Android
+                        </a>
                         <a href="#faq" id="btn-pelajari-sistem" class="btn px-4 py-3 fw-bold shadow-sm" style="background-color: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 8px;">
                             Pelajari Sistem
                         </a>

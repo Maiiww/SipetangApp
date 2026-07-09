@@ -116,14 +116,27 @@
         const performLogout = () => {
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
-                    title: 'Konfirmasi Keluar',
-                    text: 'Apakah Anda yakin ingin keluar?',
-                    icon: 'question',
+                    html: `
+                        <div class="swal-animation-container">
+                            <div class="swal-questionmark-circle">
+                                <svg class="swal-questionmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                    <circle class="swal-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                                    <path class="swal-questionmark__check" fill="none" d="M26 12 Q26 22 26 26 T26 32 M26 38h.01"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="swal2-custom-title">Konfirmasi Keluar</div>
+                        <div class="swal2-custom-text">Apakah Anda yakin ingin keluar dari akun SIPETANG?</div>
+                    `,
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#0a3b99',
                     confirmButtonText: 'Ya, Keluar',
                     cancelButtonText: 'Batal',
+                    buttonsStyling: false,
+                    customClass: {
+                        popup: 'premium-swal-popup',
+                        confirmButton: 'premium-swal-btn premium-swal-btn-danger',
+                        cancelButton: 'premium-swal-btn premium-swal-btn-secondary'
+                    },
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -288,4 +301,21 @@
     .sidebar-logout-button i {
         font-size: 16px !important;
     }
+
+    /* Premium SweetAlert for Sidebar Logout */
+    .premium-swal-popup { border-radius: 24px !important; padding: 30px !important; box-shadow: 0 20px 50px rgba(10, 59, 153, 0.12) !important; border: 1px solid rgba(10, 59, 153, 0.08) !important; background: #ffffff !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; }
+    .swal2-custom-title { font-size: 22px !important; font-weight: 800 !important; color: #0f172a !important; margin-top: 20px !important; margin-bottom: 8px !important; letter-spacing: -0.5px !important; }
+    .swal2-custom-text { font-size: 14.5px !important; color: #64748b !important; line-height: 1.6 !important; margin-bottom: 24px !important; }
+    .swal-animation-container { display: flex; justify-content: center; align-items: center; margin: 15px 0 10px 0; }
+    .swal-questionmark-circle { width: 80px; height: 80px; border-radius: 50%; background: #eff6ff; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.08); position: relative; }
+    .swal-questionmark { width: 44px; height: 44px; stroke-width: 4; stroke: #2563eb; stroke-miterlimit: 10; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .swal-checkmark__circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 4; stroke: #0a3b99; fill: none; animation: swal-stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+    .swal-questionmark__check { stroke-dasharray: 48; stroke-dashoffset: 48; animation: swal-stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.3s forwards; }
+    @keyframes swal-stroke { 100% { stroke-dashoffset: 0; } }
+    .premium-swal-btn { background: linear-gradient(135deg, #0a3b99 0%, #1d65d0 100%) !important; color: white !important; border: none !important; padding: 12px 35px !important; font-size: 14px !important; font-weight: 700 !important; border-radius: 12px !important; cursor: pointer !important; box-shadow: 0 4px 15px rgba(10, 59, 153, 0.2) !important; transition: all 0.3s ease !important; outline: none !important; min-width: 120px; margin: 0 5px !important; }
+    .premium-swal-btn:hover { transform: translateY(-2px) !important; box-shadow: 0 6px 20px rgba(10, 59, 153, 0.3) !important; }
+    .premium-swal-btn-danger { background: linear-gradient(135deg, #dc3545 0%, #e4606d 100%) !important; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2) !important; }
+    .premium-swal-btn-danger:hover { box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3) !important; }
+    .premium-swal-btn-secondary { background: #e2e8f0 !important; color: #475569 !important; box-shadow: none !important; }
+    .premium-swal-btn-secondary:hover { background: #cbd5e1 !important; transform: translateY(-2px) !important; }
 </style>

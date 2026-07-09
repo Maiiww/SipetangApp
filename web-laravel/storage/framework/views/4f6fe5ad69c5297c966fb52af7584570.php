@@ -331,21 +331,22 @@
 </head>
 
 <body>
-    @include('components.sidebar-menu')
+    <?php echo $__env->make('components.sidebar-menu', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <main class="main-content">
         <!-- Toast Welcome -->
-        @if (session('welcome'))
+        <?php if(session('welcome')): ?>
             <div class="welcome-banner toast-welcome" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); margin-bottom: 20px; padding: 20px 30px;">
                 <h2 style="font-size: 18px; display: flex; align-items: center; gap: 10px;">
                     <i class="fas fa-check-circle"></i>
-                    {{ session('welcome') }}
+                    <?php echo e(session('welcome')); ?>
+
                 </h2>
             </div>
-        @endif
+        <?php endif; ?>
 
         <div class="welcome-banner">
-            <h1>Selamat Datang, {{ Auth::user()->nama }}</h1>
+            <h1>Selamat Datang, <?php echo e(Auth::user()->nama); ?></h1>
             <p>Di Sistem Informasi Pencatatan Hasil Tangkap (SIPETANG). Mewujudkan tata kelola data perikanan Kabupaten Subang yang akurat, transparan, dan realtime.</p>
         </div>
 
@@ -353,7 +354,7 @@
             <div class="stat-card">
                 <div class="stat-details">
                     <h3>Total Produksi Anda</h3>
-                    <div class="value">{{ $userTotalTon }}<span class="unit">TON</span></div>
+                    <div class="value"><?php echo e($userTotalTon); ?><span class="unit">TON</span></div>
                     <div class="subtext">Akumulasi seluruh hasil tangkap</div>
                 </div>
                 <div class="stat-icon icon-blue">
@@ -364,7 +365,7 @@
             <div class="stat-card">
                 <div class="stat-details">
                     <h3>Jumlah Input Data</h3>
-                    <div class="value">{{ $userCount }}<span class="unit">Laporan</span></div>
+                    <div class="value"><?php echo e($userCount); ?><span class="unit">Laporan</span></div>
                     <div class="subtext">Catatan hasil tangkap terdaftar</div>
                 </div>
                 <div class="stat-icon icon-orange">
@@ -375,7 +376,7 @@
             <div class="stat-card">
                 <div class="stat-details">
                     <h3>Wilayah Kerja</h3>
-                    <div class="value" style="font-size: 20px; font-weight: 800; color: #1e293b; margin-top: 8px;">{{ Auth::user()->wilayah ?? 'TPI Blanakan' }}</div>
+                    <div class="value" style="font-size: 20px; font-weight: 800; color: #1e293b; margin-top: 8px;"><?php echo e(Auth::user()->wilayah ?? 'TPI Blanakan'); ?></div>
                     <div class="subtext">Lokasi pencatatan Anda</div>
                 </div>
                 <div class="stat-icon icon-green">
@@ -400,13 +401,13 @@
                 <div class="panel">
                     <div class="panel-header">
                         <h2><i class="fas fa-history"></i> Catatan Terbaru</h2>
-                        <a href="{{ route('jururekap.kelola') }}" style="color: #0a3b99; text-decoration: none; font-size: 13px; font-weight: 700;">Kelola Semua <i class="fas fa-arrow-right"></i></a>
+                        <a href="<?php echo e(route('jururekap.kelola')); ?>" style="color: #0a3b99; text-decoration: none; font-size: 13px; font-weight: 700;">Kelola Semua <i class="fas fa-arrow-right"></i></a>
                     </div>
 
-                    @if ($recentCatches->count() > 0)
+                    <?php if($recentCatches->count() > 0): ?>
                         <div class="activity-list">
-                            @foreach ($recentCatches as $catch)
-                                @php
+                            <?php $__currentLoopData = $recentCatches; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $catch): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     $initials = strtoupper(substr($catch->jenis_ikan, 0, 2));
                                     $statusClass = 'badge-draft';
                                     $statusLabel = 'Draft';
@@ -420,27 +421,27 @@
                                         $statusClass = 'badge-danger';
                                         $statusLabel = 'Ditolak';
                                     }
-                                @endphp
+                                ?>
                                 <div class="activity-item">
                                     <div class="activity-left">
-                                        <div class="fish-avatar">{{ $initials }}</div>
+                                        <div class="fish-avatar"><?php echo e($initials); ?></div>
                                         <div class="activity-info">
-                                            <h4>{{ $catch->jenis_ikan }} - {{ number_format($catch->berat, 1) }} kg</h4>
-                                            <p>Nelayan: {{ $catch->nama_nelayan }} | Tanggal: {{ \Carbon\Carbon::parse($catch->created_at)->translatedFormat('d M Y') }}</p>
+                                            <h4><?php echo e($catch->jenis_ikan); ?> - <?php echo e(number_format($catch->berat, 1)); ?> kg</h4>
+                                            <p>Nelayan: <?php echo e($catch->nama_nelayan); ?> | Tanggal: <?php echo e(\Carbon\Carbon::parse($catch->created_at)->translatedFormat('d M Y')); ?></p>
                                         </div>
                                     </div>
                                     <div>
-                                        <span class="badge {{ $statusClass }}">{{ $statusLabel }}</span>
+                                        <span class="badge <?php echo e($statusClass); ?>"><?php echo e($statusLabel); ?></span>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-                    @else
+                    <?php else: ?>
                         <div style="text-align: center; padding: 40px 0; color: #94a3b8;">
                             <i class="fas fa-folder-open" style="font-size: 40px; margin-bottom: 12px; opacity: 0.5;"></i>
                             <p>Belum ada data pencatatan hasil tangkap</p>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -453,28 +454,29 @@
                     </div>
                     <div class="weather-main">
                         <div class="weather-temp">
-                            <span>{{ $cuacaData['suhu'] ?? '30°C' }}</span>
+                            <span><?php echo e($cuacaData['suhu'] ?? '30°C'); ?></span>
                         </div>
                         <div class="weather-info">
-                            <div class="weather-desc">{{ $cuacaData['cuaca'] ?? 'Cerah' }}</div>
+                            <div class="weather-desc"><?php echo e($cuacaData['cuaca'] ?? 'Cerah'); ?></div>
                             <div class="weather-wind">
-                                <i class="fas fa-wind"></i> {{ $cuacaData['kecepatan_angin'] ?? '10 km/jam' }} ({{ $cuacaData['arah_angin'] ?? 'Utara' }})
+                                <i class="fas fa-wind"></i> <?php echo e($cuacaData['kecepatan_angin'] ?? '10 km/jam'); ?> (<?php echo e($cuacaData['arah_angin'] ?? 'Utara'); ?>)
                             </div>
                         </div>
                     </div>
 
-                    @php
+                    <?php
                         $isWeatherWarning = false;
                         if (isset($cuacaData['peringatan']) && str_contains(strtolower($cuacaData['peringatan']), 'gelombang')) {
                             $isWeatherWarning = true;
                         }
-                    @endphp
+                    ?>
 
-                    <div class="weather-warning {{ $isWeatherWarning ? 'alert-active' : '' }}">
-                        <i class="fas {{ $isWeatherWarning ? 'fa-exclamation-triangle' : 'fa-info-circle' }}"></i>
+                    <div class="weather-warning <?php echo e($isWeatherWarning ? 'alert-active' : ''); ?>">
+                        <i class="fas <?php echo e($isWeatherWarning ? 'fa-exclamation-triangle' : 'fa-info-circle'); ?>"></i>
                         <div>
                             <strong>Peringatan Cuaca:</strong><br>
-                            {{ $cuacaData['peringatan'] ?? 'Wilayah Utara Subang Kondisi Aman' }}
+                            <?php echo e($cuacaData['peringatan'] ?? 'Wilayah Utara Subang Kondisi Aman'); ?>
+
                         </div>
                     </div>
                 </div>
@@ -487,11 +489,11 @@
                     <div style="display: flex; flex-direction: column; gap: 15px;">
                         <div>
                             <span style="font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase;">Total Produksi Bulan Ini</span>
-                            <div style="font-size: 24px; font-weight: 800; color: #0a3b99; margin-top: 4px;">{{ $globalTon }} TON</div>
+                            <div style="font-size: 24px; font-weight: 800; color: #0a3b99; margin-top: 4px;"><?php echo e($globalTon); ?> TON</div>
                         </div>
                         <div style="border-top: 1px solid #f1f5f9; padding-top: 15px;">
                             <span style="font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase;">Update Terakhir</span>
-                            <div style="font-size: 13px; font-weight: 600; color: #334155; margin-top: 4px;">{{ $formattedLastUpdate }}</div>
+                            <div style="font-size: 13px; font-weight: 600; color: #334155; margin-top: 4px;"><?php echo e($formattedLastUpdate); ?></div>
                         </div>
                     </div>
                 </div>
@@ -504,8 +506,8 @@
         document.addEventListener("DOMContentLoaded", function () {
             const ctx = document.getElementById('trendChart').getContext('2d');
             
-            const labels = {!! json_encode($trendLabels) !!};
-            const values = {!! json_encode($trendValues) !!};
+            const labels = <?php echo json_encode($trendLabels); ?>;
+            const values = <?php echo json_encode($trendValues); ?>;
 
             const chart = new Chart(ctx, {
                 type: 'line',
@@ -575,3 +577,4 @@
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\SipetangApp\web-laravel\resources\views/JuruRekap/dashboard.blade.php ENDPATH**/ ?>
